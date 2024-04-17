@@ -1,0 +1,54 @@
+﻿@model YYBagProgram.Models.LoginPostViewModel;
+@{
+    ViewData["titlemsg"] = "登入";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+
+<div class="main_editor">
+    <div id="client_login_top" class="main_top_row">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x400/">
+        </div>
+        <div class="div_login">
+            <div class="lb_login">
+                <sapn>登入</sapn>
+            </div>
+            <div class="div_login_1">
+                <form asp-action="Login" asp-controller="Member" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form_group" id="client_login">
+                        <div style="margin: 10px 20px">
+                            <input class="comm_input_320" type="number" asp-for="strMemberGuid" placeholder="請輸入註冊之電話號碼" />
+                            <span asp-validation-for="strMemberGuid" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form_group" id="client_login_password">
+                        <div style="margin: 10px 20px">
+                            <input class="comm_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" />
+                            <span asp-validation-for="strMemberPassWord" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="from_group">
+                        <div style="margin: 10px 20px">
+                            <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+                        </div>
+                    </div>
+                </form>
+                <div id="forget_password" class="div_item_right">
+                    <a asp-action="Register" asp-controller="Member" class="a_register">註冊</a>
+                    <a asp-action="ReSetPassword" asp-controller="Member" class="a_resetpassword">忘記密碼</a>
+                </div>
+                <hr />
+            </div>
+        </div>
+    </div>
+
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

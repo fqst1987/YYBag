@@ -1,0 +1,38 @@
+﻿@model YYBagProgram.Models.ProductColor;
+@{
+    ViewData["titlemsg"] = "新增商品顏色數量頁面(管理者)";
+    string strBagsId = ViewData["strBagsId"].ToString();
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column" id="create_top">
+        <form asp-action="ProductColorCreate" asp-controller="ProductsColorDetails" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="strID" value="temp">
+            <div class="form_group">
+                <label asp-for="strBagsId" class="comm_label"></label>
+                <input asp-for="strBagsId" class="comm_input" readonly value="@strBagsId" />
+                <span asp-validation-for="strBagsId" class="text-danger" value=@strBagsId></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="strColor" class="comm_label"></label>
+                <input asp-for="strColor" class="comm_input" />
+                <span asp-validation-for="strColor" class="text-danger"></span>
+            </div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("ProductColorMain", "ProductsColorDetails", new { id = @strBagsId})'">取消</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

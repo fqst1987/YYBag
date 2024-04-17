@@ -1,0 +1,85 @@
+﻿<!--Administer-->
+@model IEnumerable<YYBagProgram.Models.Product>
+
+@{
+    ViewData["titlemsg"] = "商品總攬(管理者)";
+}
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+
+<div class="main_editor">
+    <p>
+       <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "Products")'">
+           新增
+       </button>
+    </p>
+    <table class="table_product">
+        <thead class="th_product">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.strBagsName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BagType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dLength)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dWidth)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dHigh)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dWeight)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.strMaterial)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dateLastUpdateTime)
+                </th>
+                <th>編輯</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.strBagsName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BagType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dLength)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dWidth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dHigh)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dWeight)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.strMaterial)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dateLastUpdateTime)
+                    </td>
+                    <td>
+                        <a asp-action="ProductColorMain" asp-controller="ProductsColorDetails" asp-route-strBagsId="@item.strBagsId">編輯商品顏色、圖片</a> |
+                        <a asp-action="Edit" asp-route-strBagsId="@item.strBagsId">修改商品內容</a> |
+                        <a asp-action="Delete" asp-route-id="@item.strBagsId">刪除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

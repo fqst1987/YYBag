@@ -1,0 +1,112 @@
+﻿@{
+    string companyid = "12345678";
+    string version = DateTime.Now.ToString("yyyy");
+}
+<!--頁首、頁尾-->
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/homepage.min.css" />
+    <link rel="stylesheet" href="~/css/product.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <div class="menu_wrapper">
+        <div class="memu_wrapper_mid">
+            <div style="width:20%">
+                <button type="button" onclick="location.href='@Url.Action("HomePage", "Home")'" class="btn_home">
+                    <img class="img_logo" src="~/images/30x30.png" alt="" />
+                    <p>YYBag</p>
+                </button>
+            </div>
+            <div class="menu_items">
+                <ul >
+                    <li>
+                        <span>
+                            <a href="#">新進商品</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a asp-action="Main" asp-controller="MonthlyHot">本月主打</a>
+                        </span>
+                    </li>
+                    <li>
+                        @if (User.IsInRole("Administer"))
+                        {
+                            <span>
+                                <a asp-action="Main" asp-controller="Products">全部商品</a>
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                <a asp-action="AllProducts" asp-controller="Products">全部商品</a>
+                            </span>
+                        }
+                    </li>
+                    <li>
+                        <span>
+                            <a onclick="">最新活動</a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="login_shoplist">
+                <ul>
+                    <li id="shoplist">
+                        <span>
+                            <a asp-action="ShopList" asp-controller="Member">購物車</a>
+                        </span>
+                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li id="login">
+                            <span>
+                                <a asp-action="Login" asp-controller="Member">會員登入</a>
+                            </span>
+                        </li>
+                        <li id="signup">
+                            <span>
+                                <a asp-action="Register" asp-controller="Member">註冊</a>
+                            </span>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li id="membercenter">
+                            <span><a asp-action="MemberCenter", asp-controller="Member">會員中心</a></span>
+                        </li>
+                        <li id="logout">
+                            <span><a asp-action="LogOut", asp-controller="Member">登出</a></span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main_mid">
+            @RenderBody()
+        </div>
+    </div>
+    <div class="menu_wrapper">
+        <div class="footer">
+            <div class="company_info">
+                <p>© eyeShow愛秀生活資訊 - YYBags  @version</p>
+                <p>統一編號 : @companyid / 營業人名稱 : 双生活有限公司</p>
+            </div>
+            <button type="button" class="social_media">
+                <div class="instgram">
+                    <img src="/images/icons8-instagram-24.png" />
+                </div>
+                <a style="text-decoration:none; color:white; font-size: 16px; margin: 0 0 0 5px;" href="https://www.instagram.com/yy_bagg/">YYBags</a>
+            </button>
+        </div>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

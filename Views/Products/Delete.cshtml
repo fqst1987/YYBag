@@ -1,0 +1,53 @@
+﻿@model YYBagProgram.Models.Product
+
+@{
+    ViewData["titlemsg"] = "商品刪除";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div id="delete_top" class="main_top_column">
+        <div class="form_group">
+            <label class="comm_label" >@Html.DisplayNameFor(model => model.strBagsName)</label>
+            <input class="comm_input" value="@Html.DisplayFor(model => model.strBagsName)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.BagType)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.BagType)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.strDescription)</label>
+            <textarea class="comm_textarea" disabled>@Html.DisplayFor(model => model.strDescription)</textarea>
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.dLength)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.dLength)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.dWidth)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.dWidth)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.dHigh)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.dHigh)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.dWeight)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.dWeight)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.strMaterial)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.strMaterial)" readonly />
+        </div>
+    </div>
+    <div class="form_submit">
+        <button type="button" class="btn_delete" onclick="location.href='@Url.Action("Delete", "Products", new {Model.strBagsId})">刪除</button>
+        <button type="button" class="btn_cancel" onclick="location.href='@Url.Action("Main", "Products", new {Model.strBagsId})'">取消</button>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

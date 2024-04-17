@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YYBagProgram", "YYBagProgram.csproj", "{DC0C229F-ECDF-4567-9EFA-E45755706605}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC0C229F-ECDF-4567-9EFA-E45755706605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC0C229F-ECDF-4567-9EFA-E45755706605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC0C229F-ECDF-4567-9EFA-E45755706605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC0C229F-ECDF-4567-9EFA-E45755706605}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AC98392-F612-4C94-B722-2984CC3B0FBC}
+	EndGlobalSection
+EndGlobal

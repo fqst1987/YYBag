@@ -1,0 +1,101 @@
+﻿@using YYBagProgram.Enums;
+
+@model YYBagProgram.Models.Product
+
+@{
+    ViewData["titlemsg"] = "商品編輯";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div id="edit_down" class="main_top_column">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="strBagsId" value="@Model.strBagsId" />
+            <div class="form_group">
+                <label asp-for="strBagsName" class="comm_label"></label>
+                <input asp-for="strBagsName" class="comm_input" />
+                <span asp-validation-for="strBagsName" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="BagType" class="comm_label"></label>
+                <select asp-for="BagType" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.BagType>()"></select>
+                <span asp-validation-for="BagType" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="strDescription" class="comm_label"></label>
+                <textarea asp-for="strDescription" class="comm_textarea" id="editor"></textarea>
+                <span asp-validation-for="strDescription" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="dLength" class="comm_label"></label>
+                <input asp-for="dLength" class="comm_input" />
+                <span asp-validation-for="dLength" class="text_danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="dWidth" class="comm_label"></label>
+                <input asp-for="dWidth" class="comm_input" />
+                <span asp-validation-for="dWidth" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="dHigh" class="comm_label"></label>
+                <input asp-for="dHigh" class="comm_input" />
+                <span asp-validation-for="dHigh" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="dWeight" class="comm_label"></label>
+                <input asp-for="dWeight" class="comm_input" />
+                <span asp-validation-for="dWeight" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="strMaterial" class="comm_label"></label>
+                <input asp-for="strMaterial" class="comm_input" />
+                <span asp-validation-for="strMaterial" class="text-danger"></span>
+            </div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <div></div>
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "Products")'">取消</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/ckeditor5/build/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: {
+                    items: [
+                        'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                        '|', 'alignment', 'outdent', 'indent', '|', 'fontSize', 'fontColor',
+                        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed',
+                        'undo', 'redo'
+                    ]
+                },
+                image: {
+                    toolbar: [
+                        'imageTextAlternative', 'imageStyle:inline',
+                        'imageStyle:block', 'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn', 'tableRow', 'mergeTableCells'
+                    ]
+                },
+                licenseKey: '',
+            })
+            .then(editor => {
+                window.editor = editor;
+            })
+            .catch(error => {
+                console.error('Oops, something went wrong!');
+                console.error(error);
+            });
+    </script>
+}

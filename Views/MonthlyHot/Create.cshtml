@@ -1,0 +1,72 @@
+﻿@model YYBagProgram.Models.MonthlyHotViewModel 
+
+@{
+    ViewData["titlemsg"] = "本月熱銷(新增)";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column" id="create">
+        <form asp-action="Create" asp-controller="MonthlyHot" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form_group">
+                <label asp-for="@Model.monthlyHot.Year" class="comm_label"></label>
+                <input asp-for="@Model.monthlyHot.Year" class="comm_input" type="number" min="1911" max="2100" value="@Model.monthlyHot.Year">
+                <span asp-validation-for="@Model.monthlyHot.Year" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.monthlyHot.Month" class="comm_label"></label>
+                <input asp-for="@Model.monthlyHot.Month" class="comm_input" type="number" min="1" max="12" value="@Model.monthlyHot.Month">
+                <span asp-validation-for="@Model.monthlyHot.Month" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.monthlyHot.strBagsId" class="comm_label"></label>
+                <select asp-for="@Model.monthlyHot.strBagsId" class="comm_input">
+                    <option value="">請選擇商品</option>
+                    @foreach(var item in Model.product)
+                    {
+                        <option value="@item.strBagsId">@item.strBagsName</option>
+                    }
+                </select>
+                <span asp-validation-for="@Model.monthlyHot.strBagsId" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=@Model.monthlyHot.img class="comm_label"></label>
+                <label class="btn_new">
+                    <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <div class="comm_fileupload">+</div>
+                </label>
+                <span asp-validation-for="@Model.monthlyHot.img" class="text-danger"></span>
+            </div>
+            <div id="previewImgs" class="previewiImgs"></div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "MonthlyHot")'">取消</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#imagefiles').on('change', function (e) {
+            const files = document.getElementById('imagefiles').files;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img')
+                    img.src = e.target.result;
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.padding = '0 10px 0 0';
+                    document.getElementById('previewImgs').appendChild(img);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        });
+    </script>
+}

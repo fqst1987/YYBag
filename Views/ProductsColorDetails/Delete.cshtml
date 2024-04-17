@@ -1,0 +1,57 @@
+﻿@model YYBagProgram.Models.ProductsColorDetail
+
+@{
+    ViewData["titlemsg"] = "商品顏色數量刪除";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div id="delete_top" class="main_top_column">
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.strColor)</label>
+            <input class="comm_input" value="@Html.DisplayFor(model => model.strColor)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.iTotal)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.iTotal)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.iRemain)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.iRemain)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.iPrice)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.iPrice)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.iDeliveryDays)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.iDeliveryDays)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.Images)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.Images)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.ProductStatus)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.ProductStatus)" readonly />
+        </div>
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="strID" />
+            <input type="hidden" asp-for="strColor"/>
+            <input type="hidden" asp-for="ProductStatus" />
+            <div class="form_submit">
+                <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strID" asp-route-strColor="@Model.strColor" asp-route-ProductStatus="@Model.ProductStatus" />
+            </div>
+           
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new {Model.strID})'">取消</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

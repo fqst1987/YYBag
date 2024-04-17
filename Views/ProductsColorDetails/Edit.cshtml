@@ -1,0 +1,105 @@
+﻿@using YYBagProgram.Enums;
+
+@model YYBagProgram.Models.PrdosuctsColorDetailViewModel
+
+@{
+    ViewData["titlemsg"] = "修改商品頁面";
+}
+
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+
+<div class="main_editor">
+    <div class="main_top_column" id="edit_top">
+        <form asp-action="Edit" asp-controller="ProductsColorDetails" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.productsColorDetail.strID" value="@Model.productsColorDetail.strID" />
+            <input type="hidden" asp-for="@Model.OriImages" />
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.strColor" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.strColor" class="comm_input" readonly />
+                <span asp-validation-for="@Model.productsColorDetail.strColor" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.iTotal" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.iTotal" class="comm_input" type="number" step="1" value="@Model.productsColorDetail.iTotal" />
+                <span asp-validation-for="@Model.productsColorDetail.iTotal" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.iRemain" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.iRemain" class="comm_input" type="number" step="1" />
+                <span asp-validation-for="@Model.productsColorDetail.iRemain" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.iPrice" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.iPrice" class="comm_input" type="number" step="1" />
+                <span asp-validation-for="@Model.productsColorDetail.iPrice" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.iDeliveryDays" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.iDeliveryDays" class="comm_input" type="number" step="1" />
+                <span asp-validation-for="@Model.productsColorDetail.iDeliveryDays" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.ProductStatus" class="comm_label"></label>
+                <select asp-for="@Model.productsColorDetail.ProductStatus" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.ProductStatus>()"></select>
+                <span asp-validation-for="@Model.productsColorDetail.iDeliveryDays" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="@Model.productsColorDetail.isOnline" class="comm_label"></label>
+                <input asp-for="@Model.productsColorDetail.isOnline" type="radio" value="true" id="isOnlineTrue"/>
+                <label for="isOnlineTrue">是</label>
+                <input asp-for="@Model.productsColorDetail.isOnline" type="radio" value="false" id="isOnlineFalse" />
+                <label for="isOnlineFalse">否</label>
+                <span asp-validation-for="@Model.productsColorDetail.isOnline" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=@Model.productsColorDetail.Images class="comm_label"></label>
+                <label class="btn_new">
+                    <input type="file" accept="image/*" multiple="multiple" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <div class="comm_fileupload">+</div>
+                </label>
+                <span asp-validation-for="@Model.productsColorDetail.Images" class="text-danger"></span>
+            </div>
+            <!--預覽-->
+            <div id="previewImgs" class="previewiImgs">
+                @if (Model.productsColorDetail.Images != null && Model.productsColorDetail.Images.Length > 0)
+                {
+                    string[] ImageURLs = Model.productsColorDetail.Images.Split(";");
+                    foreach(string ImageURL in ImageURLs)
+                    {
+                        <img src="~/images//bagimages/@ImageURL" style="width: 200px; height: 200px;"/>
+                    }
+                }
+            </div>
+            <!--預覽-->
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new { id = Model.productsColorDetail.strID} )'">取消</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#imagefiles').on('change', function (e) {
+            var outputsimages = document.getElementById('previewImgs');
+            var files = event.target.files;
+            for (var i = 0; i < files.length; i++) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = document.createElement('Img');
+                    img.src = e.target.result;
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    outputsimages.appendChild(img);
+                }
+                reader.readAsDataURL(files[i]);
+            }
+        });
+    </script>
+}

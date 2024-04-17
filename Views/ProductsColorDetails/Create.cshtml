@@ -1,0 +1,84 @@
+﻿@model YYBagProgram.Models.ProductsColorDetail
+@using YYBagProgram.Enums;
+@{
+    ViewData["titlemsg"] = "新增商品顏色數量頁面(管理者)";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column" id="create_top">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="strID" value="@Model.strID" />
+            <div class="form_group">
+                <label asp-for="strColor" class="comm_label"></label>
+                <input asp-for="strColor" class="comm_input" readonly/ value="@Model.strColor">
+                <span asp-validation-for="strColor" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="iTotal" class="comm_label"></label>
+                <input asp-for="iTotal" class="comm_input" type="number" step="1" value="@Model.iTotal"/>
+                <span asp-validation-for="iTotal" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="iRemain" class="comm_label"></label>
+                <input asp-for="iRemain" class="comm_input" type="number" step="1"/>
+                <span asp-validation-for="iRemain" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="iPrice" class="comm_label"></label>
+                <input asp-for="iPrice" class="comm_input" type="number" step="1" />
+                <span asp-validation-for="iPrice" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="iDeliveryDays" class="comm_label"></label>
+                <input asp-for="iDeliveryDays" class="comm_input" type="number" step="1" />
+                <span asp-validation-for="iDeliveryDays" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="ProductStatus" class="comm_label"></label>
+                <select asp-for="ProductStatus" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.ProductStatus>()"></select>
+                <span asp-validation-for="iDeliveryDays" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=Images class="comm_label"></label>
+                <label class="btn_new">
+                    <input type="file" accept="image/*" multiple="multiple" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <div class="comm_fileupload">+</div>
+                </label>
+                <span asp-validation-for="Images" class="text-danger"></span>
+            </div>
+            <div id="previewImgs" class="previewiImgs"></div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new { id = Model.strID} )'">取消</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#imagefiles').on('change', function (e) {
+            const files = document.getElementById('imagefiles').files;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img')
+                    img.src = e.target.result;
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.padding = '0 10px 0 0';
+                    document.getElementById('previewImgs').appendChild(img);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        });
+    </script>
+}
+
+

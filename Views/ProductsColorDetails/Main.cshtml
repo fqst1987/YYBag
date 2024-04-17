@@ -1,0 +1,95 @@
+﻿<!--Administer-->
+@model IEnumerable<YYBagProgram.Models.ProductsColorDetail>
+
+@{
+    ViewData["titlemsg"] = "編輯商品顏色、數量";
+    ProductColor proudctcolor = ViewData["proudctcolor"] as ProductColor;
+}
+
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "ProductsColorDetails", new { strID = proudctcolor?.strID, strColor = proudctcolor?.strColor})'">
+        新增
+    </button>
+    <button type="button" class="btn_cancel" onclick="location.href='@Url.Action("ProductColorMain", "ProductsColorDetails", new { strBagsId = proudctcolor?.strBagsId})'">
+        返回
+    </button>
+    <hr />
+    <div class="main_top_column">
+        <table class="table_product">
+            <thead class="th_product">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.strColor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.iTotal)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.iRemain)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.iPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.iDeliveryDays)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductStatus)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Images)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.isOnline)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {                   
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.strColor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iTotal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iRemain)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iDeliveryDays)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Images)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.isOnline)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="ProductsColorDetails" 
+                                asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-iProductStatus ="@((int)item.ProductStatus)">
+                                修改
+                            </a> |
+                            <a asp-action="Delete" asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-ProductStatus="@item.ProductStatus" >刪除</a> |
+                            <a asp-action="Details" asp-controller="Products" asp-route-strBagsId="@proudctcolor.strBagsId">預覽商品</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+

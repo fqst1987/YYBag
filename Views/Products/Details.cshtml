@@ -1,0 +1,430 @@
+﻿@using YYBagProgram.Enums;
+@using YYBagProgram.Comm;
+@model YYBagProgram.Models.ProductDetailViewModel;
+
+@{
+    ViewData["titlemsg"] = Model.Product?.strBagsName;
+    Product product = Model.Product;
+    List<ProductColor> productcolor = Model.ProductColor.ToList();
+    List<ProductsColorDetail> productscolordetail = Model.ProductColorsDetail.ToList();
+    string strBagType = EnumHelper<AllEnums.BagType>.GetDisplayValue(product.BagType);
+    //找不重複的照片檔案
+    List<string> urls = new List<string>();
+    foreach (var p in productscolordetail)
+    {
+        if (p.Images != null)
+        {
+            string[] urlstemp;
+            urlstemp = p.Images.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string urltemp in urlstemp)
+            {
+                urls.Add(urltemp);
+            }
+        }
+    }
+    urls = urls.Distinct().ToList();
+    int uplimit = 5;
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+
+<div class="main_editor_detail">
+    <div class="main_top_column_mid">
+        <div class="product_detail_1">
+            <div class="product_detail_photo">
+                @* big product image show *@
+                <div class="product_detail_photo_top">
+                    <img class="product_detail_img_495" src="" alt="YoYo's Bag" />
+                </div>
+                @*small product image show*@
+                <div class="product_detail_photo_bottom">
+                    @{
+                        for (int i = 0; i < urls.Count; i++)
+                        {
+                            if (i >= uplimit)
+                            {
+                                <img class="product_detail_img_95 none_display" src="~/images/bagimages/@urls[i]" />
+                            }
+                            else
+                            {
+                                <img class="product_detail_img_95" src="~/images/bagimages/@urls[i]" />
+                            }
+                        }
+                    }
+                    <button class="btn_preview" tabindex="-1" onclick="preimgs()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-left" viewBox="0 0 16 16">
+                            <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753" />
+                        </svg>
+                    </button>
+                    <button class="btn_next" tabindex="-1" onclick="nextimgs()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-right" viewBox="0 0 16 16">
+                            <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="product_detail_select">
+                <sapn class="product_detail_select_productname">@product.strBagsName</sapn>
+                <span class="product_detail_select_price"></span>
+                <div class="product_detail_color">
+                    <h3 class="product_h3">顏色</h3>
+                    <div class="product_detail_form_icon" id="product_detail_form_color">
+                        @{
+                            foreach (var obj in productcolor)
+                            {
+                                //get color
+                                string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+
+                                //generate btn_productcolor
+                                <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
+                                    <img src="~/images/bagimages/@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
+                                    <spam>@obj.strColor</spam>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="product_detail_status">
+                    <h3 class="product_h3">狀態</h3>
+                    <div class="product_detail_form" id="product_detail_form_staus">
+                        <div class="product_detail_form_icon" id="deliverydays">
+                        </div>
+                        <div class="product_detail_form_icon">
+                            @{
+                                if (!productscolordetail.Any(row => (int)row.ProductStatus == 1))
+                                {
+                                    <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
+                                        <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                        <span>現貨</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
+                                        <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                        <span>現貨</span>
+                                    </div>
+                                }
+
+                                if (!productscolordetail.Any(row => (int)row.ProductStatus == 2))
+                                {
+                                    <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
+                                        <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                        <span>預購</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
+                                        <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                        <span>預購</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="product_detail_remain">
+                    <h3 class="product_h3">數量</h3>
+                    <div style="display:flex; flex-direction: column;">
+                        <div class="input_quantity">
+                            <button class="btn_quantity" aria-label="Decrease" id="btn_quantity_decrease">
+                                <img src="~/icons/dash-lg.svg" style="width: 15px; height: 15px" />
+                            </button>
+                            <input type="number" id="productuplimit" class="comm_input_30" value="1" type="text" role="spinbutton" min="1" data-upper_limit="10" />
+                            <button class="btn_quantity" aria-label="Increase" id="btn_quantity_increase">
+                                <img src="~/icons/plus-lg.svg" style="width: 15px; height: 15px" />
+                            </button>
+                            <span id="span_remain" class="span_remain"></span>
+                        </div>
+                        <span class="error_message"></span>
+                    </div>
+                </div>
+                <div class="product_detail_buy">
+                    <button class="product_detail_addchart">
+                        <img src="/icons/cart4.svg" style="width: 25px; height: 25px; margin: 0 5px" />
+                        <span>加入購物車</span>
+                    </button>
+                    <button class="product_detail_addchart">
+                        <span>直接購買</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="product_detail_2">
+            <span class="product_detail_span">商品規格</span>
+            <div class="product_detail_Specification">
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">商品分類</h3>
+                    <span class="product_h4">@strBagType</span>
+                </div>
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">長度</h3>
+                    <span class="product_h4">@product.dLength cm</span>
+                </div>
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">寬度</h3>
+                    <span class="product_h4">@product.dWidth cm</span>
+                </div>
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">高度</h3>
+                    <span class="product_h4">@product.dHigh cm</span>
+                </div>
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">重量</h3>
+                    <span class="product_h4">@product.dWeight g</span>
+                </div>
+                <div class="product_detail_Specification_1">
+                    <h3 class="product_h3">材質</h3>
+                    <span class="product_h4">@product.strMaterial</span>
+                </div>
+            </div>
+        </div>
+        <div class="product_detail_3">
+            <span class="product_detail_span">商品敘述</span>
+            <div>
+                @Html.Raw(product.strDescription);
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        //definitions
+        var uplimitimgs = 5;
+        var imgelements = document.querySelectorAll(".product_detail_img_95");
+        var imgshowelement = document.querySelector(".product_detail_img_495")
+        var btnproductcolorelements = document.querySelectorAll(".btn_productcolor");
+        var btnproductstatuselements = document.querySelectorAll(".btn_productstatus");
+        var numberinput = document.querySelector(".comm_input_30");
+        var errormessage = document.querySelector(".error_message");
+        var btn_increase = document.getElementById("btn_quantity_increase");
+        var btn_decrease = document.getElementById("btn_quantity_decrease");
+
+        //color selected
+        btnproductcolorelements.forEach(btnproductcolorelement => {
+            btnproductcolorelement.addEventListener("click", () => {
+
+                document.querySelector(".btn_productcolor_selected")?.classList.remove("btn_productcolor_selected");
+                document.querySelector(".btn_productstatus_selected")?.classList.remove("btn_productstatus_selected");
+                btnproductcolorelement.classList.add("btn_productcolor_selected");
+
+                var strcolor = btnproductcolorelement.dataset.strcolor;
+                var strid = btnproductcolorelement.dataset.strid;
+
+                //change big product image show
+                imgshowelement.src = document.querySelector(".btn_productcolor_selected").querySelector("img").src
+                //show product status
+                updatestatus(strid, strcolor);
+
+            })
+        })
+
+        function updatestatus(strid, strcolor) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    displayStatus(data);
+                }
+            }
+            var url = '/Products/GetData/' + strid + '/' + strcolor;
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+
+        function displayStatus(data) {
+            //判斷是否有兩種
+            if (data.length == 1) {
+                if (data[0].productStatus == 1) {
+                    if (!data[0].isOnline) {
+                        document.getElementById("btn_productstatus_1").classList.add("disable");
+                    }
+                    else {
+                        document.getElementById("btn_productstatus_1").classList.remove("disable");
+                    }
+                    document.getElementById("btn_productstatus_2").classList.add("disable");
+                }
+                else {
+                    if (!data[0].isOnline) {
+                        document.getElementById("btn_productstatus_2").classList.add("disable");
+                    }
+                    else {
+                        document.getElementById("btn_productstatus_2").classList.remove("disable");
+                    }
+                    document.getElementById("btn_productstatus_1").classList.add("disable");
+                }
+            }
+            else {
+                //這邊是判斷是否有在賣
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].productStatus == 1) {
+                        if (!data[i].isOnline) {
+                            document.getElementById("btn_productstatus_1").classList.add("disable");
+                        }
+                        else {
+                            document.getElementById("btn_productstatus_1").classList.remove("disable");
+                        }
+                    }
+                    else if (data[i].productStatus == 2) {
+                        if (!data[i].isOnline) {
+                            document.getElementById("btn_productstatus_2").classList.add("disable");
+                        }
+                        else {
+                            document.getElementById("btn_productstatus_2").classList.remove("disable");
+                        }
+                    }
+                }
+            }
+        }
+
+        //status selected
+        btnproductstatuselements.forEach(btnproductstatuselement => {
+            btnproductstatuselement.addEventListener("click", () => {
+                document.querySelector(".btn_productstatus_selected")?.classList.remove("btn_productstatus_selected");
+                btnproductstatuselement.classList.add("btn_productstatus_selected");
+
+                var productstatus = btnproductstatuselement.dataset.productstatus;
+                var strcolor = document.querySelector(".btn_productcolor_selected").dataset.strcolor;
+                var strid = document.querySelector(".btn_productcolor_selected").dataset.strid;
+                updateRemain(strid, strcolor, productstatus);
+            })
+        })
+
+        function updateRemain(strid, strcolor, productstatus) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    displayRemain(data);
+                }
+            }
+            var url = '/Products/GetDataRemain/' + strid + '/' + strcolor + '/' + productstatus;
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+
+        function displayRemain(data) {
+            var remain = data[0].iRemain;
+            var price = data[0].iPrice;
+            var deliverydays = data[0].iDeliveryDays;
+            document.querySelector(".product_detail_select_price").innerHTML = "$" + price;
+            document.getElementById("span_remain").innerHTML = "剩餘數量為" + remain + "個";
+            document.getElementById("productuplimit").dataset.upper_limit = remain;
+            startindex = 1;
+            updatevalue(startindex);
+            updatedeliverdays(deliverydays);
+        }
+
+        //deliverydays
+        function updatedeliverdays(value) {
+
+            const a = document.getElementById("deliverydays");
+            if (a.childElementCount > 0) {
+                a.removeChild(document.getElementById("imgdeliverydays"));
+                a.removeChild(document.getElementById("spandeliverydays"));
+            }
+
+            const imgelement = document.createElement("img");
+            imgelement.id = "imgdeliverydays";
+            imgelement.src = "/icons//truck.svg";
+            imgelement.style.width = "22px";
+            imgelement.style.height = "22px";
+            const spanelement = document.createElement("span");
+            spanelement.id = "spandeliverydays"
+            if (value > 3) {
+                spanelement.innerHTML = "選擇商品為預購商品, 需較長備貨時間" + value + "天";
+            }
+            else if (value > 0 && value <= 3) {
+                spanelement.innerHTML = "選擇商品為現貨商品, 備貨時間為" + value + "天";
+            }
+
+            a.appendChild(imgelement);
+            a.appendChild(spanelement);
+        }
+
+        // input_quantity
+        function updatevalue(newvalue) {
+            var upperLimit = parseInt(numberinput.dataset.upper_limit);
+            if (newvalue > upperLimit) {
+                errormessage.textContent = "剩餘數量最多為 " + upperLimit + " 個";
+                numberinput.value = upperLimit;
+            } else if (newvalue < 1) {
+                errormessage.textContent = "數量不可少於 1 個";
+                numberinput.value = 1;
+            } else {
+                errormessage.textContent = "";
+                numberinput.value = newvalue;
+            }
+        }
+
+        numberinput.addEventListener("input", (event) => {
+            const value = parseInt(event.target.value, upperLimit);
+            var upperLimit = parseInt(numberinput.dataset.upper_limit);
+            if (!isNaN(value)) {
+                updatevalue(value);
+            }
+        });
+
+        btn_increase.onclick = function () {
+            let value = parseInt(numberinput.value, this.animate);
+            updatevalue(value + 1);
+        }
+
+        btn_decrease.onclick = function () {
+            let value = parseInt(numberinput.value, upperLimit);
+            var upperLimit = parseInt(numberinput.dataset.upper_limit);
+            updatevalue(value - 1);
+        }
+
+        //img selected
+        imgelements.forEach(imgelement => {
+            imgelement.addEventListener("click", () => {
+                document.querySelector(".product_detail_img_95_selected")?.classList.remove("product_detail_img_95_selected");
+                imgelement.classList.add("product_detail_img_95_selected");
+                imgshowelement.src = imgelement.src;
+            })
+        })
+
+        //img preview next switch
+        var startindex = 0;
+        function showimages(startindex) {
+            {
+                for (let i = 0; i < imgelements.length; i++) {
+                    if (i < startindex || i >= startindex + 5) {
+                        imgelements[i].classList.add("none_display");
+                    }
+                    else {
+                        imgelements[i].classList.remove("none_display");
+                    }
+                }
+            }
+        }
+        function preimgs() {
+            if (startindex > 0) {
+                startindex -= 1;
+                showimages(startindex);
+            }
+        }
+        function nextimgs() {
+            if (startindex + uplimitimgs < imgelements.length) {
+                startindex += 1;
+            }
+            showimages(startindex)
+        }
+
+        window.addEventListener("load", () => {
+            for (let i = 0; i < imgelements.length; i++) {
+                if (i > uplimitimgs) {
+                    imgelements[i].classList.add("none_display");
+                }
+            }
+            //product_detail_photo_top
+            var product_detail_img_495 = document.querySelector(".product_detail_img_495")
+            product_detail_img_495.src = imgelements[0].src;
+        })
+    </script>
+}
+
+

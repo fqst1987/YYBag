@@ -1,0 +1,55 @@
+﻿<!--Administer-->
+@model IEnumerable<YYBagProgram.Models.ProductColor>
+
+@{
+    ViewData["titlemsg"] = "商品顏色";
+    string strBagsId = ViewData["strBagsId"].ToString();
+    string strProductName = ViewData["strProductName"].ToString();
+}
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <button type="button" class="btn_new" onclick="location.href='@Url.Action("ProductColorCreate", "ProductsColorDetails", new { id = strBagsId})'">
+        新增
+    </button>
+    <button type="button" class="btn_return" onclick="location.href='@Url.Action("Main", "Products")'">
+        返回商品主頁
+    </button>
+    <table class="table_product">
+        <thead class="th_product">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.strID)
+                </th>
+                <th>
+                    商品名稱
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.strColor)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.strID)
+                    </td>
+                    <td>
+                        @strProductName
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.strColor)
+                    </td>
+                    <td>
+                        <a asp-action="Main" asp-route-strID="@item.strID">編輯</a> |
+                        <a asp-action="DeleteMain" asp-route-strID="@item.strID">刪除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

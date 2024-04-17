@@ -1,0 +1,106 @@
+﻿<!--Administer-->
+@model YYBagProgram.Models.ProductColorViewModel
+
+@{
+    ViewData["titlemsg"] = "刪除商品顏色、數量";
+}
+
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column">
+        <table class="table_product">
+            <thead class="th_product">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductColor.strBagsId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductColor.strColor)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.ProductColor.strBagsId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.ProductColor.strColor)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <div class="main_top_column">
+        <table class="table_product">
+            <thead class="th_product">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().strColor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().iTotal)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().iRemain)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().iPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().iDeliveryDays)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().ProductStatus)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductsColorDetail.FirstOrDefault().Images)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ProductsColorDetail)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.strColor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iTotal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iRemain)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.iDeliveryDays)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Images)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <div style="display: flex; position: relative; flex-direction: column; height: 60px; justify-content: space-between;">
+        <form asp-action="DeleteMain" method="post">
+            <input type="hidden" asp-for="@Model.ProductColor" />
+            <input type="hidden" asp-for="@Model.ProductsColorDetail" />
+            <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.ProductColor.strID" />
+        </form>
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("ProductColorMain", "ProductsColorDetails", new {Model.ProductColor.strBagsId})'">取消</button>
+    </div>
+
+</div>
+
+
