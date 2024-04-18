@@ -62,6 +62,10 @@ namespace YYBagProgram.Controllers
             {
                 ViewData["product"] = await _context.Product.ToListAsync();
             }
+            if (_context.MonthlyHots != null)
+            {
+                ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
+            }
 
             return View(monthlyHot);
         }
@@ -70,18 +74,28 @@ namespace YYBagProgram.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MonthlyHot model, IFormFile imagefiles)
         {
-            string imgpath = string.Empty;
-            if (!UploadImg(imagefiles, out imgpath))
+            if (imagefiles != null && imagefiles.Length > 0)
             {
-                throw new Exception("上傳圖片檔案失敗");
+                string imgpath = UploadImg(imagefiles);
+                model.img = imgpath;
             }
-            model.img = imgpath;
 
             if (ModelState.IsValid)
             {
                 _context.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Main));
+            }
+            else
+            {
+                if (_context.Product != null)
+                {
+                    ViewData["product"] = await _context.Product.ToListAsync();
+                }
+                if (_context.MonthlyHots != null)
+                {
+                    ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
+                }
             }
             return View(model);
         }
@@ -103,51 +117,45 @@ namespace YYBagProgram.Controllers
             {
                 return NotFound();
             }
-
-            MonthlyHotViewModel vm = new MonthlyHotViewModel();
             
             if (_context.Product != null)
             {
-                vm.product = await  _context.Product.ToListAsync();
+                ViewData["product"] = await  _context.Product.ToListAsync();
             }
 
-            vm.monthlyHot = model;
-            vm.OriImages = model.img;
+            if (_context.MonthlyHots != null)
+            {
+                ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
+            }
 
-            return View(vm);
+            ViewData["OriImages"] = model.img;
+
+            return View(model);
 
         }
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         [Route("MonthlyHot/Edit/{Year}/{Month}/{strBagsId}")]
-        public async Task<IActionResult> Edit(MonthlyHotViewModel vm, IFormFile imagefiles, string OriImages)
+        public async Task<IActionResult> Edit(MonthlyHot model, IFormFile imagefiles, string OriImages)
         {
-            string imgpath = string.Empty;
-            MonthlyHot monthlyhot = new MonthlyHot();
-
             if (ModelState.IsValid)
             {
-                monthlyhot = vm.monthlyHot;
 
                 if (imagefiles != null)
                 {
+                    string imgpath = UploadImg(imagefiles);
                     //刪除原本舊的檔案
                     System.IO.File.Delete(OriImages);
-
-                    if (UploadImg(imagefiles, out imgpath))
-                    {
-                        monthlyhot.img = imgpath;
-                    }
-
+                    model.img = imgpath;
                 }
                 else
                 {
-                    monthlyhot.img = vm.OriImages;
+                    model.img = OriImages;
                 }
 
                 try
                 {
-                    _context.Update(monthlyhot);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -157,8 +165,13 @@ namespace YYBagProgram.Controllers
 
                 return RedirectToAction("Main", "MonthlyHot");
             }
-
-            return View(vm);
+            else
+            {
+                ViewData["product"] = await _context.Product.ToListAsync();
+                ViewData["OriImages"] = OriImages;
+                return View(model);
+            }
+ 
         }
         #endregion
 
@@ -194,15 +207,16 @@ namespace YYBagProgram.Controllers
             var model = await _context.MonthlyHots.Where(row => row.Year == year && row.Month == month && row.strBagsId.Equals(strBagsId)).FirstAsync();
             if (model != null)
             {
-                _context.MonthlyHots.Remove(model);
+                 _context.MonthlyHots.Remove(model);
             }
             await _context.SaveChangesAsync();
             return RedirectToAction("Main", "MonthlyHot");
         }
         #endregion
 
-        private bool UploadImg(IFormFile target, out string targetpath)
+        private string UploadImg(IFormFile target)
         {
+            string targetpath = string.Empty;
             if (target != null && target.Length > 0)
             {
                 var uploadFolder = Path.Combine(_enviroment.WebRootPath, "upload", "monthlyhot", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
@@ -216,14 +230,8 @@ namespace YYBagProgram.Controllers
                 {
                     target.CopyTo(fileStream);
                 }
-
-                return true;
             }
-            else
-            {
-                targetpath = string.Empty;
-                return false;
-            }
+            return targetpath;
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿@model YYBagProgram.Models.MonthlyHotViewModel;
+﻿@model YYBagProgram.Models.MonthlyHot;
 
 @{
     ViewData["titlemsg"] = "本月熱銷(編輯)";
+    IList<Product> products = ViewData["product"] as IList<Product>;
+    IList<MonthlyHot> monthlyhot = ViewData["monthlyhot"] as IList<MonthlyHot>;
+    string oriImages = ViewData["OriImages"].ToString();
 }
 
 <head>
@@ -10,44 +13,45 @@
 <div class="main_editor">
     <div class="main_top_column" id="edit_top">
         <form asp-action="Edit" asp-controller="MonthlyHot" method="post" enctype="multipart/form-data">
-            <input asp-for="@Model.OriImages" value="@Model.monthlyHot.img" type="hidden" />
+            <input asp-for="img" value="@Model.img" type="hidden" />
+            <input type="hidden" name="OriImages" value="oriImages" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.Year" class="comm_label"></label>
-                <input asp-for="@Model.monthlyHot.Year" class="comm_input" value="@Model.monthlyHot.Year" readonly />
-                <span asp-validation-for="@Model.monthlyHot.Year" class="text-danger"></span>
+                <label asp-for="@Model.Year" class="comm_label"></label>
+                <input asp-for="@Model.Year" class="comm_input" value="@Model.Year" id="input_year" readonly />
+                <span asp-validation-for="@Model.Year" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.Month" class="comm_label"></label>
-                <input asp-for="@Model.monthlyHot.Month" class="comm_input" value="@Model.monthlyHot.Month" readonly />
-                <span asp-validation-for="@Model.monthlyHot.Month" class="text-danger"></span>
+                <label asp-for="@Model.Month" class="comm_label"></label>
+                <input asp-for="@Model.Month" class="comm_input" value="@Model.Month" id="input_month" readonly />
+                <span asp-validation-for="@Model.Month" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.strBagsId" class="comm_label"></label>
-                <select asp-for="@Model.monthlyHot.strBagsId" class="comm_input">
+                <label asp-for="@Model.strBagsId" class="comm_label"></label>
+                <select asp-for="@Model.strBagsId" class="comm_input" id="bagselect">
                     <option value="">請選擇商品</option>
-                    @foreach (var item in Model.product)
+                    @foreach (var item in products)
                     {
                         <option value="@item.strBagsId">@item.strBagsName</option>
                     }
                 </select>
-                <span asp-validation-for="@Model.monthlyHot.strBagsId" class="text-danger"></span>
+                <span asp-validation-for="@Model.strBagsId" class="text-danger"></span>
             </div>
 
             <div class="form_group">
-                <label asp-for=@Model.monthlyHot.img class="comm_label"></label>
+                <label asp-for=@Model.img class="comm_label"></label>
                 <label class="btn_new">
                     <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;" />
                     <div class="comm_fileupload">+</div>
                 </label>
-                <span asp-validation-for="@Model.monthlyHot.img" class="text-danger"></span>
+                <span asp-validation-for="@Model.img" class="text-danger"></span>
             </div>
             <!--預覽-->
             <div id="previewImgs" class="previewiImgs">
-                @if (Model.monthlyHot.img != null && Model.monthlyHot.img.Length > 0)
+                @if (Model.img != null && Model.img.Length > 0)
                 {
-                    int startIndex = Model.monthlyHot.img.IndexOf(@"\upload");
-                    <img style="width:200px; height:200px" src="@Model.monthlyHot.img.Substring(startIndex).Replace("\\", "/")" />
+                    int startIndex = Model.img.IndexOf(@"\upload");
+                    <img style="width:200px; height:200px" src="@Model.img.Substring(startIndex).Replace("\\", "/")" />
                 }
             </div>
             <div class="form_submit">
@@ -74,6 +78,31 @@
                     outputsimages.appendChild(img);
                 }
                 reader.readAsDataURL(files[i]);
+            }
+        });
+
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            var selectedValue = document.getElementById("bagselect").value; 
+            var inputyearValue = document.getElementById("input_year").value;
+            var inputmonthValue = document.getElementById("input_month").value;
+
+            //若沒選擇東西
+            if (!selectedValue) {
+                event.preventDefault();
+                alert("請選擇商品");
+                return;
+            }
+
+            var monthlyhot = @Html.Raw(Json.Serialize(monthlyhot));
+            var exists = monthlyhot.some(function (item) {
+                return (item.strBagsId === selectedValue && item.Year == inputyearValue && item.Month == inputmonthValue)
+            });
+
+            if (exists) {
+                event.preventDefault();
+                alert("此商品已經選擇過。請重新選擇其他商品");
+                return;
             }
         });
     </script>

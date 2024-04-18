@@ -1,7 +1,9 @@
-﻿@model YYBagProgram.Models.MonthlyHotViewModel 
+﻿@model YYBagProgram.Models.MonthlyHot; 
 
 @{
     ViewData["titlemsg"] = "本月熱銷(新增)";
+    IList<Product> products = ViewData["product"] as IList<Product>;
+    IList<MonthlyHot> monthlyhots = ViewData["monthlyhot"] as IList<MonthlyHot>;
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
@@ -11,33 +13,33 @@
         <form asp-action="Create" asp-controller="MonthlyHot" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.Year" class="comm_label"></label>
-                <input asp-for="@Model.monthlyHot.Year" class="comm_input" type="number" min="1911" max="2100" value="@Model.monthlyHot.Year">
-                <span asp-validation-for="@Model.monthlyHot.Year" class="text-danger"></span>
+                <label asp-for="@Model.Year" class="comm_label"></label>
+                <input asp-for="@Model.Year" class="comm_input" type="number" min="1911" max="2100" value="@Model.Year" id="input_year">
+                <span asp-validation-for="@Model.Year" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.Month" class="comm_label"></label>
-                <input asp-for="@Model.monthlyHot.Month" class="comm_input" type="number" min="1" max="12" value="@Model.monthlyHot.Month">
-                <span asp-validation-for="@Model.monthlyHot.Month" class="text-danger"></span>
+                <label asp-for="@Model.Month" class="comm_label"></label>
+                <input asp-for="@Model.Month" class="comm_input" type="number" min="1" max="12" value="@Model.Month" id="input_month">
+                <span asp-validation-for="@Model.Month" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.monthlyHot.strBagsId" class="comm_label"></label>
-                <select asp-for="@Model.monthlyHot.strBagsId" class="comm_input">
+                <label asp-for="@Model.strBagsId" class="comm_label"></label>
+                <select asp-for="@Model.strBagsId" class="comm_input" id="bagselect">
                     <option value="">請選擇商品</option>
-                    @foreach(var item in Model.product)
+                    @foreach(var item in products)
                     {
                         <option value="@item.strBagsId">@item.strBagsName</option>
                     }
                 </select>
-                <span asp-validation-for="@Model.monthlyHot.strBagsId" class="text-danger"></span>
+                <span asp-validation-for="@Model.strBagsId" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for=@Model.monthlyHot.img class="comm_label"></label>
+                <label asp-for=@Model.img class="comm_label"></label>
                 <label class="btn_new">
-                    <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;"/>
                     <div class="comm_fileupload">+</div>
                 </label>
-                <span asp-validation-for="@Model.monthlyHot.img" class="text-danger"></span>
+                <span asp-validation-for="@Model.img" class="text-danger"></span>
             </div>
             <div id="previewImgs" class="previewiImgs"></div>
             <div class="form_submit">
@@ -49,24 +51,39 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script>
-        $('#imagefiles').on('change', function (e) {
-            const files = document.getElementById('imagefiles').files;
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
 
-            for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.createElement('img')
-                    img.src = e.target.result;
-                    img.style.width = '200px';
-                    img.style.height = '200px';
-                    img.style.padding = '0 10px 0 0';
-                    document.getElementById('previewImgs').appendChild(img);
-                };
-                reader.readAsDataURL(files[i]);
+            var selectedValue = document.getElementById("bagselect").value;
+            var inputValueYear = document.getElementById("input_year").value;
+            var inputValueMonth = document.getElementById("input_month").value;
+
+            //若沒選擇東西
+            if (!selectedValue) {
+                event.preventDefault();
+                alert("請選擇商品");
+                return;
             }
+
+            //檢查是否重複
+            var monthlyhot = @Html.Raw(Json.Serialize(monthlyhots));
+            var exists = monthlyhot.some(function (item) {
+                if (item.strBagsId === selectedValue && item.Year == inputValueYear && item.Month == inputValueMonth) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+
+            if (exists) {
+                event.preventDefault();
+                alert("此商品已經選擇過。請重新選擇其他商品");
+                return;
+            }
+
+            //檢查是否第一次上傳圖片 如果是 沒有圖片的話 要上傳
         });
     </script>
 }
