@@ -52,6 +52,7 @@ namespace YYBagProgram.Controllers
         }
 
         [HttpPost, ActionName("ProductColorCreate")]
+        [ValidateAntiForgeryToken]
         [Route("ProductColorCreate/{strBagsId}")]
         public async Task<IActionResult> ProductColorCreate(ProductColor productColor)
         {

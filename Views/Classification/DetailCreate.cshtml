@@ -1,0 +1,62 @@
+﻿@model YYBagProgram.Models.ClassificationDetail;
+
+@{
+    ViewData["titlemsg"] = "自訂分類(新增)";
+    IList<Product> products = ViewData["products"] as IList<Product>;
+    IList<ClassificationDetail> classificationDetails = ViewData["classificationdetail"] as IList<ClassificationDetail>;
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column" id="create_down">
+        <form asp-action="DetailCreate" asp-controller="Classification" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for=Id value="@Model.Id" />
+            <div class="form_group">
+                <label asp-for="strBagsId" class="comm_label"></label>
+                <select asp-for="strBagsId" class="comm_input" id="bagselect">
+                    <option value="">請選擇商品</option>
+                    @foreach (var item in products)
+                    {
+                        <option value="@item.strBagsId">@item.strBagsName</option>
+                    }
+                </select>
+                <span asp-validation-for="strBagsId" class="text-danger"></span>
+            </div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <div></div>
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("DetailMain", "Classification", new { id = Model.Id})'">取消</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            var selectedValue = document.getElementById("bagselect").value;
+
+            //若沒選擇東西
+            if (!selectedValue) {
+                event.preventDefault();
+                alert("請選擇商品");
+                return;
+            }
+
+            var classificationDetails = @Html.Raw(Json.Serialize(classificationDetails));
+            var exists = classificationDetails.some(function (item) {
+                return item.strBagsId === selectedValue;
+            });
+
+            if (exists) {
+                event.preventDefault();
+                alert("此商品已經選擇過。請重新選擇其他商品");
+                return;
+            }
+        });
+    </script>
+}

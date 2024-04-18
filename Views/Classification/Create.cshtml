@@ -1,0 +1,28 @@
+﻿@model YYBagProgram.Models.Classification;
+
+@{
+    ViewData["titlemsg"] = "自訂分類(新增)";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div class="main_top_column" id="create_down">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for=Id value="temp" />
+            <div class="form_group">
+                <label asp-for="Name" class="comm_label"></label>
+                <input asp-for="Name" class="comm_input" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <div></div>
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "Classification")'">取消</button>
+        </div>
+    </div>
+</div>

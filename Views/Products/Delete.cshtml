@@ -41,9 +41,13 @@
             <input class="comm_input" value=" @Html.DisplayFor(model => model.strMaterial)" readonly />
         </div>
     </div>
+    <form asp-action="Delete" asp-controller="Products" method="post">
+        <div class="form_submit">
+            <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strBagsId" />
+        </div>
+    </form>
     <div class="form_submit">
-        <button type="button" class="btn_delete" onclick="location.href='@Url.Action("Delete", "Products", new {Model.strBagsId})">刪除</button>
-        <button type="button" class="btn_cancel" onclick="location.href='@Url.Action("Main", "Products", new {Model.strBagsId})'">取消</button>
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "Products", new {Model.strBagsId})'">取消</button>
     </div>
 </div>
 @section Scripts {

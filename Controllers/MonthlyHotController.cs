@@ -32,14 +32,20 @@ namespace YYBagProgram.Controllers
         public async Task<IActionResult> MonthlyHotMain()
         {
             //先找出全部的MonthlyHot
-            MonthlyHotViewModel vm = new MonthlyHotViewModel();
+            if (_context.MonthlyHots == null)
+            {
+                return NotFound();
+            }
 
             if (_context.Product!= null)
             {
-                
+                return NotFound();
             }
 
-            return View();
+            MonthlyHotViewModel vm = new MonthlyHotViewModel();
+            vm.monthlyHot = await _context.MonthlyHots.ToListAsync();
+
+            return View(vm);
         }
         #endregion
 
@@ -48,36 +54,32 @@ namespace YYBagProgram.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            MonthlyHotViewModel vm = new MonthlyHotViewModel();
-
             MonthlyHot monthlyHot = new MonthlyHot();
             monthlyHot.Year = DateTime.Now.Year;
             monthlyHot.Month = DateTime.Now.Month;
 
-            vm.monthlyHot = monthlyHot;
             if (_context.Product != null)
             {
-                vm.product = await _context.Product.ToListAsync();
+                ViewData["product"] = await _context.Product.ToListAsync();
             }
 
-
-            return View(vm);
+            return View(monthlyHot);
         }
         //[Authorize(Roles = "Administer")]
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MonthlyHotViewModel model, IFormFile imagefiles)
+        public async Task<IActionResult> Create(MonthlyHot model, IFormFile imagefiles)
         {
             string imgpath = string.Empty;
             if (!UploadImg(imagefiles, out imgpath))
             {
                 throw new Exception("上傳圖片檔案失敗");
             }
-            model.monthlyHot.img = imgpath;
+            model.img = imgpath;
 
             if (ModelState.IsValid)
             {
-                _context.Add(model.monthlyHot);
+                _context.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Main));
             }

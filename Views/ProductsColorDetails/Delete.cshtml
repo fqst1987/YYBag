@@ -39,11 +39,9 @@
         <form asp-action="Delete" method="post">
             <input type="hidden" asp-for="strID" />
             <input type="hidden" asp-for="strColor"/>
-            <input type="hidden" asp-for="ProductStatus" />
             <div class="form_submit">
                 <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strID" asp-route-strColor="@Model.strColor" asp-route-ProductStatus="@Model.ProductStatus" />
-            </div>
-           
+            </div>      
         </form>
         <div class="form_submit">
             <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new {Model.strID})'">取消</button>
