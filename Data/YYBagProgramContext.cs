@@ -21,6 +21,8 @@ namespace YYBagProgram.Data
             modelBuilder.Entity<ProductColor>().HasKey(p => new { p.strID});
             modelBuilder.Entity<Product>().HasKey(p => new { p.strBagsId });
             modelBuilder.Entity<MonthlyHot>().HasKey(p => new { p.Year, p.Month, p.strBagsId });
+            modelBuilder.Entity<Classification>().HasKey(p => new { p.Id });
+            modelBuilder.Entity<ClassificationDetail>().HasKey(p => new { p.Id, p.strBagsId });
         }
 
 
@@ -37,5 +39,9 @@ namespace YYBagProgram.Data
         public DbSet<OrderDetail> OrderDetail { get; set; }
 
         public DbSet<MonthlyHot> MonthlyHots { get; set; }
+
+        public DbSet<Classification> Classification { get; set; }
+
+        public DbSet<ClassificationDetail> ClassificationDetail { get; set; }
     }
 }

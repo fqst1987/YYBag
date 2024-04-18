@@ -1,0 +1,33 @@
+﻿@model YYBagProgram.Models.Classification
+
+@{
+    ViewData["titlemsg"] = "自訂分類(刪除)";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <div id="delete_top" class="main_top_column">
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.Id)</label>
+            <input class="comm_input" value="@Html.DisplayFor(model => model.Id)" readonly />
+        </div>
+        <div class="form_group">
+            <label class="comm_label">@Html.DisplayNameFor(model => model.Name)</label>
+            <input class="comm_input" value=" @Html.DisplayFor(model => model.Name)" readonly />
+        </div>
+    </div>
+    <form asp-action="Delete" method="post">
+        <div class="form_submit">
+            <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.Id" />
+        </div>
+    </form>
+    <div class="form_submit">
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "Classification")'">取消</button>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

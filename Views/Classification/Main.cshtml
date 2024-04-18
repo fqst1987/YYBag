@@ -1,0 +1,53 @@
+﻿<!--Administer-->
+@model IEnumerable<YYBagProgram.Models.Classification>
+
+@{
+    ViewData["titlemsg"] = "自訂分類(首頁)";
+}
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <p>
+        <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "Classification")'">
+            新增
+        </button>
+    </p>
+    <table class="table_product">
+        <thead class="th_product">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>編輯</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a asp-action="DetailMain" asp-controller="Classification" asp-route-id="@item.Id">
+                            查看明細 |
+                        </a>
+                        <a asp-action="Edit" asp-controller="Classification" asp-route-id="@item.Id">
+                            編輯 |
+                        </a>
+                        <a asp-action="Delete" asp-controller="Classification" asp-route-id="@item.Id">
+                            刪除
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

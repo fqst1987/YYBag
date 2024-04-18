@@ -1,0 +1,52 @@
+﻿<!--Administer-->
+@model IEnumerable<YYBagProgram.Models.ClassificationDetail>
+
+@{
+    ViewData["titlemsg"] = "自訂分類明細(首頁)";
+    IList<Product> products = ViewData["products"] as IList<Product>;
+}
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+</head>
+<div class="main_editor">
+    <p>
+        <button type="button" class="btn_new" onclick="location.href='@Url.Action("DetailCreate", "Classification", new {id = ViewData["id"].ToString()})'">
+            新增
+        </button>
+        <button type="button" class="btn_new" onclick="location.href='@Url.Action("Main", "Classification")'">
+            返回
+        </button>
+    </p>
+    <table class="table_product">
+        <thead class="th_product">
+            <tr>
+                <th>
+                    分類名稱
+                </th>
+                <th>
+                    商品名稱
+                </th>
+                <th>編輯</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @{
+                            var productName = products.Where(o => o.strBagsId.Equals(item.strBagsId)).Select(o => o.strBagsName).FirstOrDefault();
+                        }
+                        @Html.DisplayFor(modelItem => productName)
+                    </td>
+                    <td>
+                        <a asp-action="DetailDelete" asp-asp-controller="Classification" asp-route-id="@item.Id" asp-route-strBagsId="@item.strBagsId">刪除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
