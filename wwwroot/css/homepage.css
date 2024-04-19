@@ -348,6 +348,13 @@ align-self: end;
     position: relative;
 }
 
+.main_editor_autoheight{
+    width: 1200px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
 .main_editor {
     width: 1200px;
     height: 1200px;

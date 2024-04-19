@@ -52,7 +52,7 @@ function updateselectimg(index) {
 }
 
 window.addEventListener("load", () => {
-    startAutoSlide();
+    //startAutoSlide();
     for (let i = 0; i < imgelements.length; i++) {
         //下方圖片顯示位置僅顯示第一個
         if (i == 0) {
@@ -64,7 +64,7 @@ window.addEventListener("load", () => {
 
 selectimgelements.forEach(function (selectimgelement, selectindex) {
     selectimgelement.addEventListener("click", () => {
-        stopAutoSlide();
+        //stopAutoSlide();
         //下方點選點亮
         for (let i = 0; i < selectimgelements.length; i++) {
             if (i != selectindex) {

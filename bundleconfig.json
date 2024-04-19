@@ -12,6 +12,36 @@
     ]
   },
   {
+    "outputFileName": "CSS/ClassificationLayout.min.css",
+    "inputFiles": [
+      "CSS/ClassificationLayout.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/ClassificationLayout.min.css",
+    "inputFiles": [
+      "CSS/ClassificationLayout.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/carousel.min.css",
+    "inputFiles": [
+      "CSS/carousel.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Carousel.min.js",
+    "inputFiles": [
+      "wwwroot/js/Carousel.js"
+    ]
+  },
+  {
+    "outputFileName": "JS/Carousel.min.js",
+    "inputFiles": [
+      "JS/Carousel.js"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/js/Carousel.js",
     "inputFiles": [
       "JS/Carousel.js"

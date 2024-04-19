@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
 
@@ -27,6 +28,82 @@ namespace YYBagProgram.Controllers
             return _context.Classification != null ?
                         View(await _context.Classification.ToListAsync()) :
                         Problem("Entity set 'YYBagProgramContext.Classification'  is null.");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ClassificationMain(string strClassificationId)
+        {
+            CFViewModel vm = new CFViewModel();
+            List<string> listBagsId = new List<string>();
+            List<string> liststrID = new List<string>();
+
+            //找到分類
+            if (_context.Classification != null && strClassificationId != null)
+            {
+                vm.Classfications = await _context.Classification.ToListAsync();
+                vm.Classification = await _context.Classification.Where(row => row.Id.Equals(strClassificationId)).FirstOrDefaultAsync();
+                ViewData["titlemsg"] = vm.Classification?.Name;
+            }
+            //找到分類明細
+            if (_context.ClassificationDetail != null)
+            {
+                vm.ClassificationDetails = await _context.ClassificationDetail.Where(row => row.Id.Equals(strClassificationId)).ToListAsync();
+                //找到分類明細中的商品項目
+                listBagsId = vm.ClassificationDetails.Select(row => row.strBagsId).Distinct().ToList();             
+            }
+            //找到商品主檔
+            if (_context.Product != null)
+            {
+                var Products = await _context.Product.ToListAsync();
+                IList<Product> listProducts = new List<Product>();
+                foreach(var o in Products)
+                {
+                    if (listBagsId.Contains(o.strBagsId))
+                    {
+                        listProducts.Add(o);
+                    }
+                }
+                vm.Products = listProducts;               
+            }
+            //找到商品的顏色
+            if (_context.ProductColor != null)
+            {
+                var ProductColors = await _context.ProductColor.ToListAsync();
+                IList<ProductColor> listProductColors = new List<ProductColor>();
+                foreach (var o in ProductColors)
+                {
+                    if (listBagsId.Contains(o.strBagsId))
+                    {
+                        listProductColors.Add(o);
+                    }
+                }
+                vm.ProductColors = listProductColors;
+                liststrID = vm.ProductColors.Select(row => row.strID).Distinct().ToList();
+            }
+            //找到商品顏色數量明細
+            if (_context.ProductsColorDetail != null)
+            {
+                var ProductColorDetails = await _context.ProductsColorDetail.ToListAsync();
+                IList<ProductsColorDetail> listProductColorDetails = new List<ProductsColorDetail>();
+                foreach (var o in ProductColorDetails)
+                {
+                    if (liststrID.Contains(o.strID))
+                    {
+                        listProductColorDetails.Add(o);
+                    }
+                }
+                vm.ProductsColorDetails = listProductColorDetails;
+            }
+            //找當月主打
+            if (_context.MonthlyHots != null)
+            {
+                int iyear = DateTime.Now.Year;
+                int imonth = DateTime.Now.Month;
+                vm.MonthlyHots = await _context.MonthlyHots.Where(row => row.Year == iyear && row.Month == imonth).ToListAsync();
+            }
+
+
+            return View(vm);
         }
         #endregion
 

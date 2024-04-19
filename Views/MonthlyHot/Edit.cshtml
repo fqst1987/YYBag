@@ -1,10 +1,14 @@
 ﻿@model YYBagProgram.Models.MonthlyHot;
 
 @{
+    var oriImages = " ";
     ViewData["titlemsg"] = "本月熱銷(編輯)";
     IList<Product> products = ViewData["product"] as IList<Product>;
-    IList<MonthlyHot> monthlyhot = ViewData["monthlyhot"] as IList<MonthlyHot>;
-    string oriImages = ViewData["OriImages"].ToString();
+    IList<MonthlyHot> monthlyhots = ViewData["monthlyhot"] as IList<MonthlyHot>;
+    if (ViewData["OriImages"].ToString().Length > 0)
+    {
+        oriImages = ViewData["OriImages"].ToString();
+    }
 }
 
 <head>
@@ -14,7 +18,7 @@
     <div class="main_top_column" id="edit_top">
         <form asp-action="Edit" asp-controller="MonthlyHot" method="post" enctype="multipart/form-data">
             <input asp-for="img" value="@Model.img" type="hidden" />
-            <input type="hidden" name="OriImages" value="oriImages" />
+            <input type="hidden" name="OriImages" value="@oriImages" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form_group">
                 <label asp-for="@Model.Year" class="comm_label"></label>
@@ -81,29 +85,6 @@
             }
         });
 
-        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
-
-            var selectedValue = document.getElementById("bagselect").value; 
-            var inputyearValue = document.getElementById("input_year").value;
-            var inputmonthValue = document.getElementById("input_month").value;
-
-            //若沒選擇東西
-            if (!selectedValue) {
-                event.preventDefault();
-                alert("請選擇商品");
-                return;
-            }
-
-            var monthlyhot = @Html.Raw(Json.Serialize(monthlyhot));
-            var exists = monthlyhot.some(function (item) {
-                return (item.strBagsId === selectedValue && item.Year == inputyearValue && item.Month == inputmonthValue)
-            });
-
-            if (exists) {
-                event.preventDefault();
-                alert("此商品已經選擇過。請重新選擇其他商品");
-                return;
-            }
-        });
+        document.getElementById('bagselect').disabled = true;
     </script>
 }

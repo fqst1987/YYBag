@@ -161,7 +161,6 @@ namespace YYBagProgram.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 try
                 {
                     productsColorDetail.Images = GetImagesURL(imagefiles);

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.Intrinsics.X86;
 using YYBagProgram.Data;
 using YYBagProgram.Enums;
 using YYBagProgram.Models;
@@ -37,13 +39,13 @@ namespace YYBagProgram.Controllers
                 return NotFound();
             }
 
-            if (_context.Product!= null)
+            if (_context.Product == null)
             {
                 return NotFound();
             }
-
-            MonthlyHotViewModel vm = new MonthlyHotViewModel();
+            MonthlyHotCollectionViewModel vm = new MonthlyHotCollectionViewModel();
             vm.monthlyHot = await _context.MonthlyHots.ToListAsync();
+            vm.product = await _context.Product.ToListAsync();
 
             return View(vm);
         }
@@ -54,50 +56,47 @@ namespace YYBagProgram.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            MonthlyHotViewModel vm = new MonthlyHotViewModel();
+
             MonthlyHot monthlyHot = new MonthlyHot();
             monthlyHot.Year = DateTime.Now.Year;
             monthlyHot.Month = DateTime.Now.Month;
 
+            vm.MonthlyHot = monthlyHot;
+
             if (_context.Product != null)
             {
-                ViewData["product"] = await _context.Product.ToListAsync();
+                vm.listProduct = await _context.Product.ToListAsync();
             }
             if (_context.MonthlyHots != null)
             {
-                ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
+                vm.listMonthlyHot = await _context.MonthlyHots.ToListAsync();
             }
 
-            return View(monthlyHot);
+            return View(vm);
         }
         //[Authorize(Roles = "Administer")]
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MonthlyHot model, IFormFile imagefiles)
+        public async Task<IActionResult> Create(MonthlyHotViewModel vm, IFormFileCollection imagefiles)
         {
-            if (imagefiles != null && imagefiles.Length > 0)
-            {
-                string imgpath = UploadImg(imagefiles);
-                model.img = imgpath;
-            }
-
             if (ModelState.IsValid)
             {
-                _context.Add(model);
+                var monthlyhot = vm.MonthlyHot;
+                await _context.AddAsync(monthlyhot);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Main));
+                return RedirectToAction("Main", "MonthlyHot");
             }
-            else
+            if (_context.Product != null)
             {
-                if (_context.Product != null)
-                {
-                    ViewData["product"] = await _context.Product.ToListAsync();
-                }
-                if (_context.MonthlyHots != null)
-                {
-                    ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
-                }
+                vm.listProduct = await _context.Product.ToListAsync();
             }
-            return View(model);
+            if (_context.MonthlyHots != null)
+            {
+                vm.listMonthlyHot = await _context.MonthlyHots.ToListAsync();
+            }
+
+            return View(vm);
         }
         #endregion
 
@@ -128,7 +127,14 @@ namespace YYBagProgram.Controllers
                 ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
             }
 
-            ViewData["OriImages"] = model.img;
+            if(model.img == null)
+            {
+                ViewData["OriImages"] = string.Empty;
+            }
+            else{
+                ViewData["OriImages"] = model.img;
+            }
+
 
             return View(model);
 
@@ -136,12 +142,11 @@ namespace YYBagProgram.Controllers
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         [Route("MonthlyHot/Edit/{Year}/{Month}/{strBagsId}")]
-        public async Task<IActionResult> Edit(MonthlyHot model, IFormFile imagefiles, string OriImages)
+        public async Task<IActionResult> Edit(MonthlyHot model, IFormFileCollection imagefiles, string OriImages)
         {
             if (ModelState.IsValid)
             {
-
-                if (imagefiles != null)
+                if (imagefiles != null && imagefiles.Count() > 0)
                 {
                     string imgpath = UploadImg(imagefiles);
                     //刪除原本舊的檔案
@@ -150,7 +155,14 @@ namespace YYBagProgram.Controllers
                 }
                 else
                 {
-                    model.img = OriImages;
+                    if (OriImages != null)
+                    {
+                        model.img = OriImages;
+                    }
+                    else
+                    {
+                        model.img = string.Empty;
+                    }
                 }
 
                 try
@@ -168,7 +180,8 @@ namespace YYBagProgram.Controllers
             else
             {
                 ViewData["product"] = await _context.Product.ToListAsync();
-                ViewData["OriImages"] = OriImages;
+                ViewData["monthlyhot"] = await _context.MonthlyHots.ToListAsync();
+                ViewData["OriImages"] = OriImages is null? string.Empty : OriImages;
                 return View(model);
             }
  
@@ -207,28 +220,28 @@ namespace YYBagProgram.Controllers
             var model = await _context.MonthlyHots.Where(row => row.Year == year && row.Month == month && row.strBagsId.Equals(strBagsId)).FirstAsync();
             if (model != null)
             {
-                 _context.MonthlyHots.Remove(model);
+                _context.MonthlyHots.Remove(model);
             }
             await _context.SaveChangesAsync();
             return RedirectToAction("Main", "MonthlyHot");
         }
         #endregion
 
-        private string UploadImg(IFormFile target)
+        private string UploadImg(IFormFileCollection target)
         {
             string targetpath = string.Empty;
-            if (target != null && target.Length > 0)
+            if (target != null && target.Count() > 0)
             {
                 var uploadFolder = Path.Combine(_enviroment.WebRootPath, "upload", "monthlyhot", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
-                string strFileName = Guid.NewGuid().ToString() + "_" + target.FileName;
+                string strFileName = Guid.NewGuid().ToString() + "_" + target[0].FileName;
                 targetpath = Path.Combine(uploadFolder, strFileName);
 
                 using (var fileStream = new FileStream(targetpath, FileMode.Create))
                 {
-                    target.CopyTo(fileStream);
+                    target[0].CopyTo(fileStream);
                 }
             }
             return targetpath;

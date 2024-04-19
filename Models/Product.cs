@@ -53,7 +53,14 @@ namespace YYBagProgram.Models
         public string strMaterial { get; set; }
 
         [Required]
-        [DisplayName("最後更新時間")]
-        public DateTime dateLastUpdateTime { get; set; }
+        [DisplayName("價格")]
+        [Column(TypeName = "int")]
+        public int iPrice { get; set; }
+
+        [Required]
+        [DisplayName("商品照片")]
+        [Column(TypeName = "varchar(max)")]
+        public string strImageUrl { get; set; }
+
     }
 }

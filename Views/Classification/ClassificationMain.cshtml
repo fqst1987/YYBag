@@ -1,0 +1,100 @@
+﻿@model YYBagProgram.Models.CFViewModel;
+
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/ClassificationLayout.min.css" />
+    <link rel="stylesheet" href="~/css/carousel.min.css" />
+</head>
+<div class="main_editor_autoheight">
+    <div class="carousel_area">
+        <div class="carousel">
+            <div class="carousel_container" id="carousel">
+                @{
+                    for(int i = 0; i < Model.MonthlyHots?.Count; i++)
+                    {
+                        int startIndex = Model.MonthlyHots[i].img.IndexOf(@"\upload");
+                        if (startIndex != -1)
+                        {
+                            <img class="carousel_img" src="@Model.MonthlyHots[i].img.Substring(startIndex).Replace("\\", "/")" />
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="carousel_btn_preview" tabindex="-1" id="carousel_btn_preview" onclick="previewimg()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-left" viewBox="0 0 16 16">
+                <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753" />
+            </svg>
+        </div>
+        <div class="carousel_btn_next" tabindex="-1" id="carousel_btn_next" onclick="nextimg()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-right" viewBox="0 0 16 16">
+                <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
+            </svg>
+        </div>
+        <div class="btn_select_img_area">
+            @{
+                for (int i = 0; i < Model.MonthlyHots?.Count; i++)
+                {
+                    <div class="btn_select_img"></div>
+                }
+            }
+        </div>
+    </div>
+    <hr style="border: 2px #B4A29E solid; width: 100%; top: 10px; position: relative" />
+    <div class="classification_main">
+        <div class="classification_area">
+            @{
+                for(int i = 0; i < Model.Classfications?.Count; i++)
+                {
+                    <div class="classfication_item">
+                        <span>@Model.Classfications[i].Name</span>
+                    </div>
+                }
+            }
+        </div>
+        <div class="product_collection">
+            @{
+                for (int i = 0; i < Model.ClassificationDetails?.Count; i++)
+                {
+                    int startIndex = @Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strImageUrl.IndexOf(@"\upload");
+                    string url = @Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strImageUrl.Substring(startIndex).Replace("\\", "/");
+                    <div class="product_main">
+                        @if (startIndex != -1)
+                        {
+                            <div class="product_photo">
+                                <a href="#">
+                                    <img id="product_photo_url" class="product_photo" src="@url" />
+                                </a>
+                            </div>
+                        }
+
+                       
+                        @{
+                            for (int j = 0; j < Model.ProductColors?.Count; j++)
+                            {
+                                <div class="product_color_collection">
+                                    <div class="product_color">
+                                        @Model.ProductColors[j].strColor;
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="product_info">
+                            <div class="product_name_price">
+                                <span>@Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strBagsName</span>
+                                <span>@Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().iPrice</span>
+                            </div>
+                            <div class="btn_addchart">
+                                <img src="/icons/cart4.svg" style="width: 25px; height: 25px" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            }         
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/Carousel.js"></script>
+}

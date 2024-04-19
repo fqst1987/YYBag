@@ -1,9 +1,7 @@
-﻿@model YYBagProgram.Models.MonthlyHot; 
+﻿@model YYBagProgram.Models.MonthlyHotViewModel; 
 
 @{
     ViewData["titlemsg"] = "本月熱銷(新增)";
-    IList<Product> products = ViewData["product"] as IList<Product>;
-    IList<MonthlyHot> monthlyhots = ViewData["monthlyhot"] as IList<MonthlyHot>;
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
@@ -13,33 +11,33 @@
         <form asp-action="Create" asp-controller="MonthlyHot" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form_group">
-                <label asp-for="@Model.Year" class="comm_label"></label>
-                <input asp-for="@Model.Year" class="comm_input" type="number" min="1911" max="2100" value="@Model.Year" id="input_year">
-                <span asp-validation-for="@Model.Year" class="text-danger"></span>
+                <label asp-for="@Model.MonthlyHot.Year" class="comm_label"></label>
+                <input asp-for="@Model.MonthlyHot.Year" class="comm_input" type="number" min="1911" max="2100" value="@Model.MonthlyHot.Year" id="input_year">
+                <span asp-validation-for="@Model.MonthlyHot.Year" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.Month" class="comm_label"></label>
-                <input asp-for="@Model.Month" class="comm_input" type="number" min="1" max="12" value="@Model.Month" id="input_month">
-                <span asp-validation-for="@Model.Month" class="text-danger"></span>
+                <label asp-for="@Model.MonthlyHot.Month" class="comm_label"></label>
+                <input asp-for="@Model.MonthlyHot.Month" class="comm_input" type="number" min="1" max="12" value="@Model.MonthlyHot.Month" id="input_month">
+                <span asp-validation-for="@Model.MonthlyHot.Month" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for="@Model.strBagsId" class="comm_label"></label>
-                <select asp-for="@Model.strBagsId" class="comm_input" id="bagselect">
+                <label asp-for="@Model.MonthlyHot.strBagsId" class="comm_label"></label>
+                <select asp-for="@Model.MonthlyHot.strBagsId" class="comm_input" id="bagselect">
                     <option value="">請選擇商品</option>
-                    @foreach(var item in products)
+                    @foreach(var item in Model.listProduct)
                     {
                         <option value="@item.strBagsId">@item.strBagsName</option>
                     }
                 </select>
-                <span asp-validation-for="@Model.strBagsId" class="text-danger"></span>
+                <span asp-validation-for="@Model.MonthlyHot.strBagsId" class="text-danger"></span>
             </div>
             <div class="form_group">
-                <label asp-for=@Model.img class="comm_label"></label>
+                <label asp-for=@Model.MonthlyHot.img class="comm_label"></label>
                 <label class="btn_new">
                     <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;"/>
                     <div class="comm_fileupload">+</div>
                 </label>
-                <span asp-validation-for="@Model.img" class="text-danger"></span>
+                <span asp-validation-for="@Model.MonthlyHot.img" class="text-danger"></span>
             </div>
             <div id="previewImgs" class="previewiImgs"></div>
             <div class="form_submit">
@@ -65,25 +63,6 @@
                 alert("請選擇商品");
                 return;
             }
-
-            //檢查是否重複
-            var monthlyhot = @Html.Raw(Json.Serialize(monthlyhots));
-            var exists = monthlyhot.some(function (item) {
-                if (item.strBagsId === selectedValue && item.Year == inputValueYear && item.Month == inputValueMonth) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
-            });
-
-            if (exists) {
-                event.preventDefault();
-                alert("此商品已經選擇過。請重新選擇其他商品");
-                return;
-            }
-
-            //檢查是否第一次上傳圖片 如果是 沒有圖片的話 要上傳
         });
     </script>
 }

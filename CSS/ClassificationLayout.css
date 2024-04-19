@@ -1,0 +1,126 @@
+﻿.classification_main{
+    width: 1200px;
+    height:auto;
+    display:flex;
+    position:relative;
+    flex-direction: row;
+    margin : 30px 0 0 0;
+}
+.product_collection {
+    width: 950px;
+    height: auto;
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.classification_main_page {
+    width: 100%;
+    height: auto;
+    background-color: lightgray;
+    margin: 30px 0 0 0;
+}
+
+.classification_area {
+    width: 250px;
+    height: 500px;
+}
+
+.classfication_item {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    position: relative;
+    align-items: center;
+    border: 2px #CAC0B7 solid;
+    background-color: #F6F2F1;
+    font-size: 16px;
+    color: #6E4740;
+    margin: 20px 0 0 0;
+}
+    .classfication_item:hover {
+        border: 3px #E3BCB5 solid;
+        color: #E3BCB5;
+    }
+
+    .classfication_item span {
+        font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+        padding: 0 0 0 20px;
+    }
+
+
+.product_main {
+    width: 300px;
+    height: auto;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: start;
+    margin: 0 15px 0 15px;
+}
+
+.product_color_collection {
+    height: auto;
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.product_photo {
+    width: 100%;
+    height: 350px;
+    margin: 10px 0 10px 0;
+}
+
+.product_color {
+    width: auto;
+    max-width: 55px;
+    min-width: 40px;
+    height: 20px;
+    margin: 5px 5px 0 0;
+    font-size: 14px;
+    border: 1px #BFBFC1 solid;
+    color: #5E5D65;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .product_color:hover {
+        border-color: #CB9B8F;
+        color: #CB9B8F;
+        cursor: pointer;
+    }
+
+.product_info {
+    display: flex;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.product_name_price {
+    color: #5E5D65;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+    .product_name_price span {
+        margin: 0 0 5px 0;
+    }
+
+.btn_addchart {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    right: 10px;
+}
+
+    .btn_addchart img:hover {
+        border: 1px solid #CB9B8F;
+        cursor: pointer;
+    }

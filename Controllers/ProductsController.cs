@@ -118,7 +118,6 @@ namespace YYBagProgram.Controllers
         public async Task<IActionResult> Create(Product product)
         {
             product.strBagsId = GetBagID();
-            product.dateLastUpdateTime = DateTime.Now;
 
             if (ModelState.IsValid)
             {
@@ -157,7 +156,6 @@ namespace YYBagProgram.Controllers
 
             if (ModelState.IsValid)
             {
-                product.dateLastUpdateTime = DateTime.Now;
                 try
                 {
                     _context.Update(product);

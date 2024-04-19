@@ -67,4 +67,8 @@ app.MapControllerRoute(
     name: "GetDataRemain",
     pattern: "{controller=Products}/{action=GetDataRemain}/{strID}/{strColor}/{ProductStatus}");
 
+app.MapControllerRoute(
+    name: "ClassificationMain",
+    pattern: "{controller=Classification}/{action=ClassificationMain}/{strClassificationId}");
+
 app.Run();
