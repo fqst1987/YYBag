@@ -41,6 +41,7 @@
     background-color: #B4A29E;
     border-width: 1px;
     color: white;
+    margin: 0 10px 0 0 ;
 }
 .btn_return {
     height: 28px;
@@ -50,6 +51,7 @@
     background-color: #B4A29E;
     border-width: 1px;
     color: white;
+    margin: 0 10px 0 0;
 }
 .btn_full {
     height: 28px;
@@ -401,3 +403,27 @@
     align-items: start;
 }
 
+/*刪除時的警告*/
+.warring{
+    width: 800px;
+    height: 100px;
+    display:flex;
+    position: relative;
+    flex-direction: column;
+}
+    .warring li {
+        color: red;
+    }
+    .warring span {
+        color: red;
+    }    
+
+.btn_new_return_area{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin: 10px 0 10px 0;
+}

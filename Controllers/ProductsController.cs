@@ -6,6 +6,8 @@ using YYBagProgram.Data;
 using YYBagProgram.Models;
 using YYBagProgram.Comm;
 using System.Data.Common;
+using System;
+using System.Drawing.Printing;
 
 namespace YYBagProgram.Controllers
 {
@@ -13,6 +15,7 @@ namespace YYBagProgram.Controllers
     {
         private readonly YYBagProgramContext? _context;
         private readonly IWebHostEnvironment? _enviroment;
+        private readonly int pageSize = 5;
 
         public ProductsController(YYBagProgramContext context, IWebHostEnvironment enviroment)
         {
@@ -24,9 +27,9 @@ namespace YYBagProgram.Controllers
         //Administer
         [HttpGet]
         //[Authorize(Roles = "Administer")]
+        [Route("Products/ProductsMain/{page}")]
         public async Task<IActionResult> ProductsMain(int page = 1)
         {
-            int pageSize = 10;
             if (_context.Product != null)
             {
                 var products = await _context.Product.ToListAsync();
@@ -120,18 +123,29 @@ namespace YYBagProgram.Controllers
 
         #region 商品 新增 Administer
         [HttpGet]
-        [Route("Products/Create")]
+        [Route("Products/Create/{page}")]
         //[Authorize(Roles = "Administer")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int page)
         {
+
+            if (_context.Product != null)
+            {
+                var products = await _context.Product.ToListAsync();
+                var totalPages = (int)Math.Ceiling((products.Count + 1) / (double)pageSize);
+                if (totalPages > page)
+                {
+                    page = totalPages;
+                }
+            }
+            ViewData["currentPage"] = page;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Products/Create")]
+        [Route("Products/Create/{page}")]
         //[Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Create(Product product, IFormFileCollection imagefiles)
+        public async Task<IActionResult> Create(Product product, IFormFileCollection imagefiles, int currentpage)
         {
             string imgpath = string.Empty;
             product.strBagsId = GetBagID();
@@ -147,7 +161,7 @@ namespace YYBagProgram.Controllers
                     {
                         _context.Add(product);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("ProductsMan", "Products");
+                        return RedirectToAction("ProductsMain", "Products", new { page = currentpage });
                     }
                     catch (DbException ex)
                     {
@@ -157,16 +171,18 @@ namespace YYBagProgram.Controllers
                 else
                     System.IO.File.Delete(imgpath);
             }
+            ViewData["currentPage"] = currentpage;
             return View(product);
         }
         #endregion
 
         #region 商品 編輯 Administer
         [HttpGet]
-        [Route("Products/Edit/{strBagsId}")]
+        [Route("Products/Edit/{strBagsId}/{page}")]
         //[Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Edit(string strBagsId)
+        public async Task<IActionResult> Edit(string strBagsId, int page)
         {
+            ViewData["currentpage"] = page;
             if (strBagsId == null || _context.Product == null)
             {
                 return NotFound();
@@ -182,9 +198,9 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        [Route("Products/Edit/{strBagsId}")]
+        [Route("Products/Edit/{strBagsId}/{page}")]
         //[Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Edit(Product product, IFormFileCollection imagefiles)
+        public async Task<IActionResult> Edit(Product product, IFormFileCollection imagefiles, int page)
         {
             if (imagefiles != null && imagefiles.Count > 0)
             {
@@ -210,8 +226,9 @@ namespace YYBagProgram.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Main", "Products");
+                return RedirectToAction("ProductsMain", "Products", new { page=page});
             }
+            ViewData["currentpage"] = page;
             return View(product);
         }
         #endregion
@@ -220,7 +237,7 @@ namespace YYBagProgram.Controllers
         [HttpGet]
         [Route("Products/Delete/{strBagsId}")]
         //[Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Delete(string strBagsId)
+        public async Task<IActionResult> Delete(string strBagsId, int page)
         {
             if (strBagsId == null || _context.Product == null)
             {
@@ -239,7 +256,7 @@ namespace YYBagProgram.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Products/Delete/{strBagsId}")]
-        public async Task<IActionResult> DeleteConfirmed(string strBagsId)
+        public async Task<IActionResult> DeleteConfirmed(string strBagsId, int page)
         {
          
             if (_context.Product == null)
@@ -272,7 +289,17 @@ namespace YYBagProgram.Controllers
                     _context.Database.ExecuteSqlRawAsync(sql, p1);
                 }
             }
-            
+
+            //刪除分類明細中含有此strBagsId
+            var classifacations = await _context.ClassificationDetail.Where(row => row.strBagsId.Equals(strBagsId)).ToListAsync();
+            if (classifacations != null && classifacations.Count > 0)
+            {
+                SqlParameter p1 = new SqlParameter("@strBagsId", strBagsId);
+                string sql = "DELETE [ClassificationDetail] WHERE strBagsId = @strBagsId";
+
+                _context.Database.ExecuteSqlRawAsync(sql, p1);
+            }
+
             await _context.SaveChangesAsync();
             if (User.IsInRole("Administer"))
             {
@@ -280,7 +307,7 @@ namespace YYBagProgram.Controllers
             }
             else
             {
-                return RedirectToAction("AllProducts", "Products");
+                return RedirectToAction("ProductsMain", "Products", new { page = page});
             }
 
         }

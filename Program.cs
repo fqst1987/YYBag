@@ -60,10 +60,6 @@ app.MapControllerRoute(
     pattern: "{controller=home}/{action=homepage}");
 
 app.MapControllerRoute(
-    name: "ProductsMain",
-    pattern: "{controller=products}/{action=main}/{page}");
-
-app.MapControllerRoute(
     name: "GetData",
     pattern: "{controller=Products}/{action=GetData}/{strID}/{strColor}");
 

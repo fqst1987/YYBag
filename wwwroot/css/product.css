@@ -401,3 +401,12 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
     align-items: start;
 }
 
+/*刪除時的警告*/
+.warring{
+    width: 100%;
+    height: 200px;
+    display:flex;
+    position: relative;
+    flex-direction: column;
+}
+

@@ -33,11 +33,12 @@ namespace YYBagProgram.Controllers
 
         #region 商品顏色 主頁 Administer
         [HttpGet]
-        [Route("ProductColorMain/{strBagsId}")]
-        public async Task<IActionResult> ProductColorMain(string strBagsId)
+        [Route("ProductColorMain/{strBagsId}/{page}")]
+        public async Task<IActionResult> ProductColorMain(string strBagsId, int page)
         {
             ViewData["strProductName"] = _context.Product.Where(row => row.strBagsId.Equals(strBagsId)).FirstOrDefault()?.strBagsName;
             ViewData["strBagsId"] = strBagsId;
+            ViewData["currentpage"] = page;
             return View(await _context.ProductColor.Where(row => row.strBagsId.Equals(strBagsId)).ToListAsync());
         }
         #endregion

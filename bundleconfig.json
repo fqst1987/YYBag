@@ -1,14 +1,26 @@
 [
   {
-    "outputFileName": "wwwroot/css/product.css",
+    "outputFileName": "css/homepage.min.css",
+    "inputFiles": [
+      "css/homepage.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/homepage.min.css",
+    "inputFiles": [
+      "css/homepage.min.css"
+    ]
+  },
+  {
+    "outputFileName": "css/product.min.css",
     "inputFiles": [
       "css/product.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/css/homepage.css",
+    "outputFileName": "wwwroot/css/product.min.css",
     "inputFiles": [
-      "css/homepage.css"
+      "css/product.min.css"
     ]
   },
   {
