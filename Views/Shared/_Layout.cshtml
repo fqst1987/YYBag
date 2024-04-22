@@ -9,7 +9,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/css/homepage.min.css" />
-    <link rel="stylesheet" href="~/css/product.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
@@ -44,7 +43,7 @@
                         else
                         {
                             <span>
-                                <a asp-action="ProductsMain" asp-controller="Products">全部商品</a>
+                                <a asp-action="ProductsMain" asp-controller="Products" asp-route-page="1">全部商品</a>
                             </span>
                         }
                     </li>

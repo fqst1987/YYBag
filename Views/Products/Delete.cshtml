@@ -2,9 +2,11 @@
 
 @{
     ViewData["titlemsg"] = "商品刪除";
+    int currentpage = (int)ViewData["currentPage"];
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <div id="delete_top" class="main_top_column">
@@ -56,6 +58,17 @@
             }
             <span asp-validation-for="strImageUrl" class="text-danger"></span>
         </div>
+        <div class="form_group">
+            <label class="comm_label">注意事項</label>
+            <div class="warring">
+                <span>刪除此商品時會刪除同步刪除下列表格</span>
+                <ul>
+                    <li>商品顏色數量明細表</li>
+                    <li>分類明細中包含此商品的內容</li>
+                </ul>
+            </div>
+        </div>
+
     </div>
     <form asp-action="Delete" asp-controller="Products" method="post">
         <div class="form_submit">
@@ -63,7 +76,7 @@
         </div>
     </form>
     <div class="form_submit">
-        <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "Products", new {Model.strBagsId})'">取消</button>
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("ProductsMain", "Products", new {page=@currentpage})'">取消</button>
     </div>
 </div>
 @section Scripts {

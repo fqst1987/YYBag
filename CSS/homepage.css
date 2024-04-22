@@ -148,40 +148,6 @@ align-self: end;
     grid-template-columns: 1fr 4fr 1fr;
 }
 
-.carousel_inner {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-}
-.carousel_item {
-    padding: 10px 0;
-    display: none;
-}
-.carousel_item_selected {
-    display: block;
-}
-.carousel_nav {
-    width: 100%;
-    padding: 20px 0;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    text-align: center;
-}
-/*.carousel_button {
-    width: 20px;
-    height: 10px;
-    display: inline-block;
-    background: rgb(255, 255, 255, 0.2);
-    border-radius: 25%;
-    margin: 0 5px;
-    cursor: pointer;
-}*/
-/*.carousel_button_selected {
-    color: rgb(255, 255, 255);
-}*/
 
 .footer {
     width: 1200px;
@@ -348,11 +314,11 @@ align-self: end;
     position: relative;
 }
 
-.main_editor_autoheight{
+/*畫面大小*/
+.main_editor_autoheight {
     width: 1200px;
     height: auto;
     display: flex;
-    flex-direction: column;
 }
 
 .main_editor_1600 {
@@ -360,12 +326,17 @@ align-self: end;
     height: 1600px;
     position: relative;
 }
+
 .flex_column_center {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
 }
+.with_background_color_1 {
+    background-color: #F7F0EA;
+}
+/*畫面大小*/
 
 .main_editor_detail {
     width: 1200px;
