@@ -6,6 +6,8 @@ namespace YYBagProgram.Enums
     {
         public enum BagType
         {
+            [Display(Name = "請選擇包款")]
+            None = 0,
             [Display(Name = "後背包")]
             Backpack = 1,
             [Display(Name = "肩背包")]
@@ -22,6 +24,8 @@ namespace YYBagProgram.Enums
             Clutch = 7,
             [Display(Name = "雲朵包")]
             Cloud = 8,
+            [Display(Name = "側背包")]
+            Slide = 9,
             [Display(Name = "其他")]
             Others = 99,
         }
@@ -36,7 +40,7 @@ namespace YYBagProgram.Enums
 
         public enum Color
         {
-            [Display(Name = "沒選擇")]
+            [Display(Name = "請選擇顏色")]
             Default = 0,
             [Display(Name = "米白色")]
             Offwhite = 1,

@@ -30,9 +30,15 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/Carousel.min.js",
+    "outputFileName": "CSS/Pagination.min.css",
     "inputFiles": [
-      "wwwroot/js/Carousel.js"
+      "CSS/Pagination.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Pagination.min.css",
+    "inputFiles": [
+      "CSS/Pagination.min.css"
     ]
   },
   {
@@ -42,9 +48,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/Carousel.js",
+    "outputFileName": "wwwroot/js/Carousel.min.js",
     "inputFiles": [
-      "JS/Carousel.js"
+      "JS/Carousel.min.js"
     ]
   }
 ]

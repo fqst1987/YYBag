@@ -40,10 +40,26 @@
             <label class="comm_label">@Html.DisplayNameFor(model => model.strMaterial)</label>
             <input class="comm_input" value=" @Html.DisplayFor(model => model.strMaterial)" readonly />
         </div>
+        <div class="form_group">
+            <label asp-for="iPrice" class="comm_label"></label>
+            <input asp-for="iPrice" class="comm_input" type="number" min="0" readonly/>
+            <span asp-validation-for="iPrice" class="text-danger"></span>
+        </div>
+        <div class="form_group">
+            <label asp-for=strImageUrl class="comm_label"></label>
+            @{
+                if (Model.strImageUrl.Length > 0)
+                {
+                    int startIndex = Model.strImageUrl.IndexOf(@"\upload");
+                    <img src="@Model.strImageUrl.Substring(startIndex).Replace("\\", "/")" style="width:200px; height: 200px;" />
+                }
+            }
+            <span asp-validation-for="strImageUrl" class="text-danger"></span>
+        </div>
     </div>
     <form asp-action="Delete" asp-controller="Products" method="post">
         <div class="form_submit">
-            <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strBagsId" />
+            <input type="submit" class="btn_full" value="確定刪除" asp-route-strBagsId="@Model.strBagsId" />
         </div>
     </form>
     <div class="form_submit">

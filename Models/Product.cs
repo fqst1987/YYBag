@@ -58,7 +58,7 @@ namespace YYBagProgram.Models
         public int iPrice { get; set; }
 
         [Required]
-        [DisplayName("商品照片")]
+        [DisplayName("縮圖照片")]
         [Column(TypeName = "varchar(max)")]
         public string strImageUrl { get; set; }
 

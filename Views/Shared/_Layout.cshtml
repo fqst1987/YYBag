@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/css/homepage.min.css" />
     <link rel="stylesheet" href="~/css/product.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
@@ -37,19 +38,19 @@
                         @if (User.IsInRole("Administer"))
                         {
                             <span>
-                                <a asp-action="Main" asp-controller="Products">全部商品</a>
+                                <a asp-action="ProductsMain" asp-controller="Products">全部商品</a>
                             </span>
                         }
                         else
                         {
                             <span>
-                                <a asp-action="AllProducts" asp-controller="Products">全部商品</a>
+                                <a asp-action="ProductsMain" asp-controller="Products">全部商品</a>
                             </span>
                         }
                     </li>
                     <li>
                         <span>
-                            <a onclick="">最新活動</a>
+                            <a href="#">最新活動</a>
                         </span>
                     </li>
                 </ul>

@@ -355,10 +355,16 @@ align-self: end;
     flex-direction: column;
 }
 
-.main_editor {
+.main_editor_1600 {
     width: 1200px;
-    height: 1200px;
+    height: 1600px;
     position: relative;
+}
+.flex_column_center {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .main_editor_detail {
@@ -382,6 +388,7 @@ align-self: end;
     display: flex;
     flex-direction: column;
     align-items: start;
+    height: auto;
 }
 
 .main_top_column_mid {

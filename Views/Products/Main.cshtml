@@ -3,12 +3,19 @@
 
 @{
     ViewData["titlemsg"] = "商品總攬(管理者)";
+    //每頁最多的數量
+    var pageSize = 1;
+    //現在頁數
+    var currentPage = ViewData["CurrentPage"] != null ? (int)ViewData["CurrentPage"] : 1;
+    //總共有幾頁
+    var TotalPage = Math.Ceiling(Model.Count() / (double)pageSize);
 }
 <head>
     <title>YYBag - @ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
 </head>
 
-<div class="main_editor">
+<div class="main_editor_1600">
     <p>
        <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "Products")'">
            新增
@@ -38,11 +45,17 @@
                 <th>
                     @Html.DisplayNameFor(model => model.strMaterial)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.iPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.strImageUrl)
+                </th>
                 <th>編輯</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Take(pageSize))
             {
                 <tr>
                     <td>
@@ -67,6 +80,18 @@
                         @Html.DisplayFor(modelItem => item.strMaterial)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.iPrice)
+                    </td>
+                    <td style=" display: flex; justify-content: center">
+                        @{
+                            int startIndex = item.strImageUrl.IndexOf(@"\upload");
+                            if (startIndex != -1)
+                            {
+                                <img style="width:100px; height:100px" src="@item.strImageUrl.Substring(startIndex).Replace("\\", "/")" />
+                            }
+                        }
+                    </td>
+                    <td>
                         <a asp-action="ProductColorMain" asp-controller="ProductsColorDetails" asp-route-strBagsId="@item.strBagsId">編輯商品顏色、圖片</a> |
                         <a asp-action="Edit" asp-route-strBagsId="@item.strBagsId">修改商品內容</a> |
                         <a asp-action="Delete" asp-route-id="@item.strBagsId">刪除</a>
@@ -75,5 +100,45 @@
             }
         </tbody>
     </table>
+    <!--分頁器-->
+    <div class="page_area">
+        <div class="page_area_select">
+            <div class="page_area_pre_head" onclick="Onhead()">
+                <sapn>第一頁</sapn>
+            </div>
+            <div class="page_area_pre" onclick="preview()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" />
+                </svg>
+                <span>上一頁</span>
+            </div>
+        </div>
+        <div class="page_area_number">
+            <div class="page_area_number_container">
+                @{
+                    for (int i = 0; i < @TotalPage; i++)
+                    {
+                        int currentpage = i + 1;
+                        <div class="page_area_number_item">
+                            <a href="#" onclick="changePage(@i)">@currentpage</a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="page_area_select">
+            <div class="page_area_next" onclick="next()">
+                <span>下一頁</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5" />
+                </svg>
+            </div>
+            <div class="page_area_next_end" onclick="end()">
+                <span>最後一頁</span>
+            </div>
+        </div>
+    </div>
 </div>
-
+@section Scripts {
+    <script src="~/js/Pagination.min.js"></script>
+}

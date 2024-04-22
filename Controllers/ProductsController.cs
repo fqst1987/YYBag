@@ -4,28 +4,44 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
+using YYBagProgram.Comm;
+using System.Data.Common;
 
 namespace YYBagProgram.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly YYBagProgramContext _context;
+        private readonly YYBagProgramContext? _context;
+        private readonly IWebHostEnvironment? _enviroment;
 
-        public ProductsController(YYBagProgramContext context)
+        public ProductsController(YYBagProgramContext context, IWebHostEnvironment enviroment)
         {
             _context = context;
+            _enviroment = enviroment;
         }
 
         #region 商品 主頁 Administer 
         //Administer
         [HttpGet]
-        [Route("Products/Main")]
         //[Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Main()
+        public async Task<IActionResult> ProductsMain(int page = 1)
         {
-              return _context.Product != null ? 
-                          View(await _context.Product.ToListAsync()) :
-                          Problem("Entity set 'YYBagProgramContext.Product'  is null.");
+            int pageSize = 10;
+            if (_context.Product != null)
+            {
+                var products = await _context.Product.ToListAsync();
+                var totalPages = (int)Math.Ceiling(products.Count / (double)pageSize);
+                var paginatedProducts = products.Skip((page - 1) * pageSize).Take(pageSize);
+
+                ViewData["TotalPages"] = totalPages;
+                ViewData["CurrentPage"] = page;
+
+                return View(paginatedProducts);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
         #endregion
 
@@ -105,7 +121,7 @@ namespace YYBagProgram.Controllers
         #region 商品 新增 Administer
         [HttpGet]
         [Route("Products/Create")]
-        [Authorize(Roles = "Administer")]
+        //[Authorize(Roles = "Administer")]
         public IActionResult Create()
         {
             return View();
@@ -114,25 +130,41 @@ namespace YYBagProgram.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Products/Create")]
-        [Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Create(Product product)
+        //[Authorize(Roles = "Administer")]
+        public async Task<IActionResult> Create(Product product, IFormFileCollection imagefiles)
         {
+            string imgpath = string.Empty;
             product.strBagsId = GetBagID();
 
-            if (ModelState.IsValid)
+            if (imagefiles != null && imagefiles.Count > 0)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Main));
-            }
+                imgpath = Methods.UploadImg(_enviroment, imagefiles);
+                product.strImageUrl = imgpath;
 
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Add(product);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("ProductsMan", "Products");
+                    }
+                    catch (DbException ex)
+                    {
+                        return Content(ex.ToString());
+                    }
+                }
+                else
+                    System.IO.File.Delete(imgpath);
+            }
             return View(product);
         }
         #endregion
 
         #region 商品 編輯 Administer
         [HttpGet]
-        [Route("Edit/{strBagsId}")]
+        [Route("Products/Edit/{strBagsId}")]
+        //[Authorize(Roles = "Administer")]
         public async Task<IActionResult> Edit(string strBagsId)
         {
             if (strBagsId == null || _context.Product == null)
@@ -150,9 +182,14 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        [Route("Edit/{strBagsId}")]
-        public async Task<IActionResult> Edit(Product product)
+        [Route("Products/Edit/{strBagsId}")]
+        //[Authorize(Roles = "Administer")]
+        public async Task<IActionResult> Edit(Product product, IFormFileCollection imagefiles)
         {
+            if (imagefiles != null && imagefiles.Count > 0)
+            {
+                product.strImageUrl = Methods.UploadImg(_enviroment, imagefiles, product.strImageUrl);
+            }
 
             if (ModelState.IsValid)
             {
@@ -181,16 +218,16 @@ namespace YYBagProgram.Controllers
 
         #region 商品 刪除 Administer
         [HttpGet]
-        [Route("Delete/{id}")]
-        [Authorize(Roles = "Administer")]
-        public async Task<IActionResult> Delete(string? id)
+        [Route("Products/Delete/{strBagsId}")]
+        //[Authorize(Roles = "Administer")]
+        public async Task<IActionResult> Delete(string strBagsId)
         {
-            if (id == null || _context.Product == null)
+            if (strBagsId == null || _context.Product == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product.FirstOrDefaultAsync(m => m.strBagsId == id);
+            var product = await _context.Product.FirstOrDefaultAsync(m => m.strBagsId == strBagsId);
             if (product == null)
             {
                 return NotFound();
@@ -201,7 +238,7 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("Delete/{id}")]
+        [Route("Products/Delete/{strBagsId}")]
         public async Task<IActionResult> DeleteConfirmed(string strBagsId)
         {
          

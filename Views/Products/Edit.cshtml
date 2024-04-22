@@ -8,19 +8,19 @@
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
 </head>
-<div class="main_editor">
+<div class="main_editor_1600">
     <div id="edit_down" class="main_top_column">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-controller="Products" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="strBagsId" value="@Model.strBagsId" />
             <div class="form_group">
                 <label asp-for="strBagsName" class="comm_label"></label>
-                <input asp-for="strBagsName" class="comm_input" />
+                <input asp-for="strBagsName" class="comm_input" readonly />
                 <span asp-validation-for="strBagsName" class="text-danger"></span>
             </div>
             <div class="form_group">
                 <label asp-for="BagType" class="comm_label"></label>
-                <select asp-for="BagType" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.BagType>()"></select>
+                <select asp-for="BagType" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.BagType>()" id="select"></select>
                 <span asp-validation-for="BagType" class="text-danger"></span>
             </div>
             <div class="form_group">
@@ -52,6 +52,30 @@
                 <label asp-for="strMaterial" class="comm_label"></label>
                 <input asp-for="strMaterial" class="comm_input" />
                 <span asp-validation-for="strMaterial" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for="iPrice" class="comm_label"></label>
+                <input asp-for="iPrice" class="comm_input" type="number" min="0" />
+                <span asp-validation-for="iPrice" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=strImageUrl class="comm_label"></label>
+                <input asp-for="strImageUrl" type="hidden" class="comm_input" value="@Model.strImageUrl" id="strImageUrl" />
+                <label class="btn_new">
+                    <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <div class="comm_fileupload">+</div>
+                </label>
+                <span asp-validation-for="strImageUrl" class="text-danger"></span>
+            </div>
+            <div id="previewImgs" class="previewiImgs">
+                @{
+                    if (Model.strImageUrl.Length > 0)
+                    {
+                        int startIndex = Model.strImageUrl.IndexOf(@"\upload");
+                        <span>原圖</span>
+                        <img src="@Model.strImageUrl.Substring(startIndex).Replace("\\", "/")" style="width:200px; height: 200px;" />
+                    }
+                }
             </div>
             <div class="form_submit">
                 <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
@@ -97,5 +121,29 @@
                 console.error('Oops, something went wrong!');
                 console.error(error);
             });
+
+        var selectitem = document.getElementById("select");
+        selectitem.disabled = true;
+
+        $('#imagefiles').on('change', function (e) {
+            const files = document.getElementById('imagefiles').files;
+            const span = document.createElement('span')
+            span.innerHTML = "新圖";
+            document.getElementById('previewImgs').appendChild(span);
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img')
+                    img.src = e.target.result;
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.padding = '0 10px 0 0';
+                    document.getElementById('previewImgs').appendChild(img);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        });
+
     </script>
 }

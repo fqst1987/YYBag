@@ -7,9 +7,9 @@
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
 </head>
-<div class="main_editor">
-    <div class="main_top_column" id="create_down">
-        <form asp-action="Create" method="post">
+<div class="main_editor_1600">
+    <div class="main_top_column" id="create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for=strBagsId value="temp"/>
             <div class="form_group">
@@ -19,7 +19,7 @@
             </div>
             <div class="form_group">
                 <label asp-for="BagType" class="comm_label"></label>
-                <select asp-for="BagType" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.BagType>()"></select>
+                <select asp-for="BagType" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.BagType>()" id="select"></select>
                 <span asp-validation-for="BagType" class="text-danger"></span>
             </div>
             <div class="form_group">
@@ -52,6 +52,21 @@
                 <input asp-for="strMaterial" class="comm_input" />
                 <span asp-validation-for="strMaterial" class="text-danger"></span>
             </div>
+            <div class="form_group">
+                <label asp-for="iPrice" class="comm_label"></label>
+                <input asp-for="iPrice" class="comm_input" type="number" min="0" />
+                <span asp-validation-for="iPrice" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=strImageUrl class="comm_label"></label>
+                <input asp-for="strImageUrl" type="hidden" class="comm_input" value="temp" id="strImageUrl" />
+                <label class="btn_new">
+                    <input type="file" accept="image/*" name="imagefiles" id="imagefiles" style="display:none;" />
+                    <div class="comm_fileupload">+</div>
+                </label>
+                <span asp-validation-for="strImageUrl" class="text-danger"></span>
+            </div>
+            <div id="previewImgs" class="previewiImgs"></div>
             <div class="form_submit">
                 <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
             </div>
@@ -95,6 +110,39 @@
                 console.error('Oops, something went wrong!');
                 console.error(error);
             });
+
+        $('#imagefiles').on('change', function (e) {
+            const files = document.getElementById('imagefiles').files;
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img')
+                    img.src = e.target.result;
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.style.padding = '0 10px 0 0';
+                    document.getElementById('previewImgs').appendChild(img);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        });
+
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            var selectedValue = document.getElementById("select").value;
+
+            //若沒選擇東西
+            if (!selectedValue || selectedValue == 0) {
+                event.preventDefault();
+                alert("請選擇包款");
+                return;
+            }
+
+            const files = document.getElementById('imagefiles').files;
+            if (files.length == 0) {
+                document.getElementById("strImageUrl").value = "";
+            }
+        });
     </script>
 }
 

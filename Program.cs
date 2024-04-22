@@ -57,7 +57,11 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=homepage}/{id?}");
+    pattern: "{controller=home}/{action=homepage}");
+
+app.MapControllerRoute(
+    name: "ProductsMain",
+    pattern: "{controller=products}/{action=main}/{page}");
 
 app.MapControllerRoute(
     name: "GetData",
