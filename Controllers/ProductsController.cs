@@ -183,8 +183,7 @@ namespace YYBagProgram.Controllers
         //[Authorize(Roles = "Administer")]
         public async Task<IActionResult> Edit(string strBagsId, int page)
         {
-            ViewData["currentpage"] = page;
-            if (strBagsId == null || _context.Product == null)
+            if (strBagsId == null || _context?.Product == null)
             {
                 return NotFound();
             }
@@ -194,6 +193,7 @@ namespace YYBagProgram.Controllers
             {
                 return NotFound();
             }
+            ViewData["currentpage"] = page;
             return View(product);
         }
 
@@ -237,7 +237,7 @@ namespace YYBagProgram.Controllers
 
         #region 商品 刪除 Administer
         [HttpGet]
-        [Route("Products/Delete/{strBagsId}")]
+        [Route("Products/Delete/{strBagsId}/{page}")]
         //[Authorize(Roles = "Administer")]
         public async Task<IActionResult> Delete(string strBagsId, int page)
         {
@@ -251,13 +251,13 @@ namespace YYBagProgram.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["currentpage"] = page;
             return View(product);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("Products/Delete/{strBagsId}")]
+        [Route("Products/Delete/{strBagsId}/{page}")]
         public async Task<IActionResult> DeleteConfirmed(string strBagsId, int page)
         {
          

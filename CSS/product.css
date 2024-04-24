@@ -430,3 +430,10 @@
     align-items: center;
     margin: 10px 0 10px 0;
 }
+.img_select_radio{
+    width: auto;
+    height: auto;
+    display: flex;
+    position: relative;
+    flex-direction:row;
+}

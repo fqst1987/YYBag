@@ -52,8 +52,12 @@
             @{
                 if (Model.strImageUrl.Length > 0)
                 {
-                    int startIndex = Model.strImageUrl.IndexOf(@"\upload");
-                    <img src="@Model.strImageUrl.Substring(startIndex).Replace("\\", "/")" style="width:200px; height: 200px;" />
+                    string[] urls = Model.strImageUrl.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var url in urls)
+                    {
+                        int startIndex = Model.strImageUrl.IndexOf(@"\upload");
+                        <img src="@Model.strImageUrl.Substring(startIndex).Replace("\\", "/")" style="width:100px; height: 100px;" />
+                    }              
                 }
             }
             <span asp-validation-for="strImageUrl" class="text-danger"></span>
@@ -71,6 +75,7 @@
 
     </div>
     <form asp-action="Delete" asp-controller="Products" method="post">
+        <input type="hidden" value="@currentpage" name="page"/>
         <div class="form_submit">
             <input type="submit" class="btn_full" value="確定刪除" asp-route-strBagsId="@Model.strBagsId" />
         </div>
