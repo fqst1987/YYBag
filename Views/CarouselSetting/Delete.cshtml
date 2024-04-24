@@ -1,0 +1,30 @@
+﻿@model YYBagProgram.Models.CarouselSetting;
+
+@{
+    ViewData["titlemsg"] = "輪播設定(刪除)";
+    int currentpage = (int)ViewData["currentpage"];
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
+</head>
+<div class="main_editor">
+    <form asp-action="Delete" method="post">
+        <div id="delete_top" class="main_top_column">
+            <div class="form_group">
+                <label class="comm_label">@Html.DisplayNameFor(model => model.strBagsId)</label>
+                <input class="comm_input" value="@Html.DisplayFor(model => model.strBagsId)" readonly></input>
+            </div>
+            <div class="form_group">
+                <label class="comm_label">預覽圖片</label>
+                <img style="width:100px; height:100px" src="@Model.imgurl" />
+            </div>
+        </div>
+        <div class="form_submit">
+            <input type="submit" class="btn_full" value="確定刪除" asp-route-strBagsId="@Model.strBagsId" asp-route-page="@currentpage"/>
+        </div>
+    </form>
+    <div class="form_submit">
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "CarouselSetting", new {page = currentpage})'">取消</button>
+    </div>
+</div>

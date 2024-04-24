@@ -55,9 +55,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=home}/{action=homepage}");
 
 app.MapControllerRoute(
     name: "GetData",
@@ -68,7 +65,15 @@ app.MapControllerRoute(
     pattern: "{controller=Products}/{action=GetDataRemain}/{strID}/{strColor}/{ProductStatus}");
 
 app.MapControllerRoute(
+    name: "GetImgUrl",
+    pattern: "{controller=CarouselSetting}/{action=GetImgUrl}/{strBagsId}");
+
+app.MapControllerRoute(
     name: "ClassificationMain",
     pattern: "{controller=Classification}/{action=ClassificationMain}/{strClassificationId}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=home}/{action=homepage}");
 
 app.Run();

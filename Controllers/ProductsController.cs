@@ -15,7 +15,7 @@ namespace YYBagProgram.Controllers
     {
         private readonly YYBagProgramContext? _context;
         private readonly IWebHostEnvironment? _enviroment;
-        private readonly int pageSize = 5;
+        private readonly int pageSize = 10;
 
         public ProductsController(YYBagProgramContext context, IWebHostEnvironment enviroment)
         {

@@ -94,13 +94,13 @@ namespace YYBagProgram.Controllers
                 }
                 vm.ProductsColorDetails = listProductColorDetails;
             }
-            //找當月主打
-            if (_context.MonthlyHots != null)
-            {
-                int iyear = DateTime.Now.Year;
-                int imonth = DateTime.Now.Month;
-                vm.MonthlyHots = await _context.MonthlyHots.Where(row => row.Year == iyear && row.Month == imonth).ToListAsync();
-            }
+            ////找當月主打
+            //if (_context.MonthlyHots != null)
+            //{
+            //    int iyear = DateTime.Now.Year;
+            //    int imonth = DateTime.Now.Month;
+            //    vm.MonthlyHots = await _context.MonthlyHots.Where(row => row.Year == iyear && row.Month == imonth).ToListAsync();
+            //}
 
 
             return View(vm);

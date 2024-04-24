@@ -1,0 +1,148 @@
+﻿@model YYBagProgram.Models.CarouselSetting;
+
+@{
+    ViewData["titlemsg"] = "輪播設定(新增)";
+    IList<Product> products = ViewData["products"] as IList<Product> ?? new List<Product>();
+    IList<CarouselSetting> carouselsettings = ViewData["carouselsetting"] as IList<CarouselSetting> ?? new List<CarouselSetting>();
+    int currentpage = (int)ViewData["currentpage"];
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
+</head>
+<div class="main_editor_1600">
+    <div class="main_top_column" id="create">
+        <form asp-action="Create" asp-controller="CarouselSetting" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="page" value="@currentpage" />
+            <div class="form_group">
+                <label asp-for="strBagsId" class="comm_label"></label>
+                <select asp-for="strBagsId" class="comm_input" id="bagselect">
+                    <option value="">請選擇商品</option>
+                    @foreach (var item in products)
+                    {
+                        <option value="@item.strBagsId">@item.strBagsName</option>
+                    }
+                </select>
+                <span asp-validation-for="strBagsId" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label asp-for=imgurl class="comm_label"></label>
+                <input asp-for=imgurl type="hidden" class="comm_input" value="" id="Images" />
+                <div style="width:800px; height:auto; display:flex; flex-wrap:wrap; flex-direction:row" id="create_imgselect">
+                </div>
+            </div>
+            <div class="form_submit">
+                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
+            </div>
+        </form>
+        <div class="form_submit">
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "MonthlyHot")'">取消</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById("bagselect").addEventListener("change", () => {
+            var selectedValue = document.getElementById("bagselect").value;
+            if (selectedValue) {
+                fetchData(selectedValue);
+            }
+        });
+
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            selectedValue = document.getElementById("bagselect").value;
+
+            //若沒選擇東西
+            if (!selectedValue) {
+                event.preventDefault();
+                alert("請選擇商品");
+                return;
+            }
+
+            var items = @Html.Raw(Json.Serialize(carouselsettings));
+
+            var exists = items.some(function (item) {
+                return (item.strBagsId == selectedValue);
+            });
+
+            if (exists) {
+                event.preventDefault();
+                alert("此商品狀態已經選過。請重新選擇其他");
+                return;
+            }
+
+            // 檢查是否有選擇圖像
+            var selectedImage = document.querySelector('input[name="selectedImage"]:checked');
+            if (!selectedImage) {
+                event.preventDefault();
+                alert("請選擇一個圖像");
+                return;
+            }
+
+            // 獲取選擇的圖像的src
+            var selectedImageSrc = selectedImage.getAttribute("data-src");
+
+            document.getElementById("Images").value = selectedImageSrc;
+        });
+
+        function GetImgUrl(strbagsid) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        resolve(data);
+                    }
+                };
+                var url = '/CarouselSetting/GetImgUrl/' + strbagsid;
+                xhr.open('GET', url, true);
+                xhr.send();
+            });
+        }
+
+        async function fetchData(strbagsid) {
+            try {
+                var data = await GetImgUrl(strbagsid);
+
+                createElement(data);
+            }
+            catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function createElement(data) {
+             var create_imgselect = document.getElementById("create_imgselect");
+            create_imgselect.innerHTML = ''; // Clear previous images
+
+            var imgurls = data.strImageUrl.split(";").filter(Boolean);
+
+            imgurls.forEach(function (url) {
+                var startIndex = url.indexOf("\\upload");
+
+                if (startIndex !== -1) {
+                    var div = document.createElement('div');
+                    div.classList.add('img_select_radio');
+
+                    var input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'selectedImage';
+                    input.classList.add('imageRadio');
+                    input.dataset.src = url.substring(startIndex);
+
+                    var img = document.createElement('img');
+                    img.src = url.substring(startIndex).replace("\\", "/");
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+
+                    div.appendChild(input);
+                    div.appendChild(img);
+
+                    create_imgselect.appendChild(div);
+                }
+            });
+        }
+    </script>
+}
