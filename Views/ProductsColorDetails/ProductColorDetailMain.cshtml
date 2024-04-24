@@ -74,17 +74,7 @@
                             @Html.DisplayFor(modelItem => item.ProductStatus)
                         </td>
                         <td style=" display: flex; justify-content: center">
-                            @{
-                                string[] imgurls = item.Images.Split(";", StringSplitOptions.RemoveEmptyEntries);
-                                foreach (var imgurl in imgurls)
-                                {
-                                    int startIndex = imgurl.IndexOf(@"\upload");
-                                    if (startIndex != -1)
-                                    {
-                                        <img style="width:80px; height:80px" src="@imgurl.Substring(startIndex).Replace("\\", "/")" />
-                                    }
-                                }
-                            }
+                            <img style="width:80px; height:80px" src="@item.Images" />
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.isOnline)

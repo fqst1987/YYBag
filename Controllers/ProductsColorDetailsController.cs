@@ -16,6 +16,7 @@ using YYBagProgram.Comm;
 using YYBagProgram.Data;
 using YYBagProgram.Enums;
 using YYBagProgram.Models;
+using static YYBagProgram.Enums.AllEnums;
 
 namespace YYBagProgram.Controllers
 {
@@ -161,16 +162,25 @@ namespace YYBagProgram.Controllers
             productsColorDetail.strID = strID;
             productsColorDetail.strColor = strColor;
             productsColorDetail.Images = string.Empty;
-            //找總共進了多少個iTotal
-            //找ProductColorDetail裡剩幾個
-            //找賣出了幾個
+
+            string strBagsId = string.Empty;
+            string imgurls = string.Empty;
+            //照片選項
+            if (_context?.Product != null)
+            {
+                strBagsId = await _context.ProductColor.Where(row => row.strID.Equals(strID)).Select(row => row.strBagsId).FirstOrDefaultAsync() ?? string.Empty;
+                imgurls = await _context.Product.Where(row => row.strBagsId.Equals(strBagsId)).Select(row => row.strImageUrl).FirstOrDefaultAsync() ?? string.Empty;
+            }
+            ViewData["imgurls"] = imgurls;
 
             ViewData["currentpage"] = page;
 
-            if(_context.ProductsColorDetail != null)
+            if(_context?.ProductsColorDetail != null)
             {
                 ViewData["productcolordetail"] = await _context.ProductsColorDetail.Where(row => row.strColor.Equals(strColor) && row.strID.Equals(strID)).ToListAsync();
             }
+
+
             return View(productsColorDetail);
         }
 
@@ -203,12 +213,24 @@ namespace YYBagProgram.Controllers
 
                 return RedirectToAction("ProductColorDetailMain", "ProductsColorDetails", new { productsColorDetail.strID, page });
             }
-            ViewData["currentpage"] = page;
-            if (_context.ProductsColorDetail != null)
+            else
             {
-                ViewData["productcolordetail"] = await _context.ProductsColorDetail.Where(row => row.strColor.Equals(productsColorDetail.strColor) && row.strID.Equals(productsColorDetail.strID)).ToListAsync();
+                string strBagsId = string.Empty;
+                string imgurls = string.Empty;
+                //照片選項
+                if (_context?.Product != null)
+                {
+                    strBagsId = await _context.ProductColor.Where(row => row.strID.Equals(productsColorDetail.strID)).Select(row => row.strBagsId).FirstOrDefaultAsync() ?? string.Empty;
+                    imgurls = await _context.Product.Where(row => row.strBagsId.Equals(strBagsId)).Select(row => row.strImageUrl).FirstOrDefaultAsync() ?? string.Empty;
+                }
+                ViewData["imgurls"] = imgurls;
+                ViewData["currentpage"] = page;
+                if (_context.ProductsColorDetail != null)
+                {
+                    ViewData["productcolordetail"] = await _context.ProductsColorDetail.Where(row => row.strColor.Equals(productsColorDetail.strColor) && row.strID.Equals(productsColorDetail.strID)).ToListAsync();
+                }
+                return View(productsColorDetail);
             }
-            return View(productsColorDetail);
         }
         #endregion
 
@@ -217,6 +239,15 @@ namespace YYBagProgram.Controllers
         [Route("Edit/{strID}/{strColor}/{iProductStatus}/{page}")]
         public async Task<IActionResult> Edit(string strID, string strColor, int iProductStatus, int page)
         {
+            string strBagsId = string.Empty;
+            string imgurls = string.Empty;
+            //照片選項
+            if (_context?.Product != null)
+            {
+                strBagsId = await _context.ProductColor.Where(row => row.strID.Equals(strID)).Select(row => row.strBagsId).FirstOrDefaultAsync() ?? string.Empty;
+                imgurls = await _context.Product.Where(row => row.strBagsId.Equals(strBagsId)).Select(row => row.strImageUrl).FirstOrDefaultAsync() ?? string.Empty;
+            }
+
             if (strID == null || _context.ProductsColorDetail == null )
             {
                 return NotFound();
@@ -225,7 +256,7 @@ namespace YYBagProgram.Controllers
             var productsColorDetail = await _context.ProductsColorDetail
             .Where(row => row.strID.Equals(strID) && row.strColor.Equals(strColor) && (int)row.ProductStatus == iProductStatus).FirstOrDefaultAsync();
             ViewData["productcolordetail"] = productsColorDetail;
-
+            ViewData["imgurls"] = imgurls;
             ViewData["currentpage"] = page;
 
             return View(productsColorDetail);
@@ -277,8 +308,23 @@ WHERE strId = @strID AND strColor = @strColor AND ProductStatus = @iProductStatu
 
                 return RedirectToAction("ProductColorDetailMain", "ProductsColorDetails", new { model.strID, page});
             }
-            ViewData["currentpage"] = page;
-            return View(model);
+            else
+            {
+                string strBagsId = string.Empty;
+                string imgurls = string.Empty;
+                //照片選項
+                if (_context?.Product != null)
+                {
+                    strBagsId = await _context.ProductColor.Where(row => row.strID.Equals(model.strID)).Select(row => row.strBagsId).FirstOrDefaultAsync() ?? string.Empty;
+                    imgurls = await _context.Product.Where(row => row.strBagsId.Equals(strBagsId)).Select(row => row.strImageUrl).FirstOrDefaultAsync() ?? string.Empty;
+                }
+                var productsColorDetail = await _context.ProductsColorDetail
+           .Where(row => row.strID.Equals(model.strID) && row.strColor.Equals(model.strColor) && (int)row.ProductStatus == (int)model.ProductStatus).FirstOrDefaultAsync();
+                ViewData["productcolordetail"] = productsColorDetail;
+                ViewData["currentpage"] = page;
+                ViewData["imgurls"] = imgurls;
+                return View(model);
+            }
         }
         #endregion
 

@@ -3,6 +3,7 @@
 @{
     ViewData["titlemsg"] = "商品顏色數量明細(新增)";
     int currentpage = (int)ViewData["currentpage"];
+    string imgurls = ViewData["imgurls"].ToString();
     IList<ProductsColorDetail> productsColorDetails = ViewData["productcolordetail"] as IList<ProductsColorDetail>;
 }
 <head>
@@ -56,14 +57,25 @@
             </div>
             <div class="form_group">
                 <label asp-for=Images class="comm_label"></label>
-                <input asp-for="Images" type="hidden" class="comm_input" value="temp" id="Images" />
-                <label class="btn_new">
-                    <input type="file" accept="image/*" multiple="multiple" name="imagefiles" id="imagefiles" style="display:none;" />
-                    <div class="comm_fileupload">+</div>
-                </label>
+                <input asp-for="Images" type="hidden" class="comm_input" value="" id="Images" />
+                <div style="width:800px; height:auto; display:flex; flex-wrap:wrap; flex-direction:row">
+                    @{
+                        string[] urls = imgurls.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var url in urls)
+                        {
+                            int startIndex = url.IndexOf(@"\upload");
+                            <div class="img_select_radio">
+                                <input type="radio" name="selectedImage" class="imageRadio" data-src="@url.Substring(startIndex).Replace("\\", "/")" />
+                                @if (startIndex != -1)
+                                {
+                                    <img style="width:100px; height:100px" src="@url.Substring(startIndex).Replace("\\", "/")" />
+                                }
+                            </div>
+                        }
+                    }
+                </div>
                 <span asp-validation-for="Images" class="text-danger"></span>
             </div>
-            <div id="previewImgs" class="previewiImgs"></div>
             <div class="form_submit">
                 <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
             </div>
@@ -94,6 +106,19 @@
         });
 
         document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            // 檢查是否有選擇圖像
+            var selectedImage = document.querySelector('input[name="selectedImage"]:checked');
+            if (!selectedImage) {
+                event.preventDefault();
+                alert("請選擇一個圖像");
+                return;
+            }
+
+            // 獲取選擇的圖像的src
+            var selectedImageSrc = selectedImage.getAttribute("data-src");
+
+            document.getElementById("Images").value = selectedImageSrc;
 
             var selectedValue = document.getElementById("select").value;
 

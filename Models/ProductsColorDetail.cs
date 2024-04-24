@@ -31,7 +31,7 @@ namespace YYBagProgram.Models
         [Column(TypeName = "int")]
         public int iPrice { get; set; }
 
-        [DisplayName("上傳圖片")]
+        [DisplayName("選擇縮圖")]
         [Column(TypeName = "varchar(max)")]
         [Required]
         public string Images {  get; set; }

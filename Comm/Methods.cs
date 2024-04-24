@@ -81,6 +81,8 @@ namespace YYBagProgram.Comm
         public static string UploadImg(IWebHostEnvironment enviroment, IFormFileCollection target, string folderName, string oriImageUrl)
         {
             string targetpath = string.Empty;
+            string strImageURLs = string.Empty;
+            List<string> listImgFileName = new List<string>();
             if (target != null && target.Count() > 0)
             {
                 var uploadFolder = Path.Combine(enviroment.WebRootPath, "upload", folderName, DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
@@ -102,7 +104,10 @@ namespace YYBagProgram.Comm
                     {
                         file.CopyTo(fileStream);
                     }
+                    listImgFileName.Add(targetpath);
                 }
+                strImageURLs = String.Join(";", listImgFileName);
+                targetpath = strImageURLs.Trim();
             }
             else
             {
