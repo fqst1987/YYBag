@@ -51,12 +51,14 @@ namespace YYBagProgram.Comm
             return true;
         }
 
-        public static string UploadImg(IWebHostEnvironment enviroment, IFormFileCollection target)
+        public static string UploadImg(IWebHostEnvironment enviroment, IFormFileCollection target, string folderName)
         {
             string targetpath = string.Empty;
+            string strImageURLs = string.Empty;
+            List<string> listImgFileName = new List<string>();
             if (target != null && target.Count() > 0)
             {
-                var uploadFolder = Path.Combine(enviroment.WebRootPath, "upload", "monthlyhot", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
+                var uploadFolder = Path.Combine(enviroment.WebRootPath, "upload", folderName, DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
@@ -68,22 +70,29 @@ namespace YYBagProgram.Comm
                     {
                         file.CopyTo(fileStream);
                     }
-                }                   
+                    listImgFileName.Add(targetpath);
+                    
+                }
+                strImageURLs = String.Join(";", listImgFileName);
             }
-            return targetpath;
+            return strImageURLs;
         }
 
-        public static string UploadImg(IWebHostEnvironment enviroment, IFormFileCollection target, string oriImageUrl)
+        public static string UploadImg(IWebHostEnvironment enviroment, IFormFileCollection target, string folderName, string oriImageUrl)
         {
             string targetpath = string.Empty;
             if (target != null && target.Count() > 0)
             {
-                var uploadFolder = Path.Combine(enviroment.WebRootPath, "upload", "monthlyhot", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
+                var uploadFolder = Path.Combine(enviroment.WebRootPath, "upload", folderName, DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("D2"));
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
                 //刪除舊的
-                File.Delete(oriImageUrl);
+                string[] strOriimgurls = oriImageUrl.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                foreach( var stroriimgurl in strOriimgurls)
+                {
+                    File.Delete(stroriimgurl);
+                }
 
                 foreach (var file in target)
                 {

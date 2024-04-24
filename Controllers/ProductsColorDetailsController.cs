@@ -12,12 +12,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
+using YYBagProgram.Comm;
 using YYBagProgram.Data;
 using YYBagProgram.Enums;
 using YYBagProgram.Models;
 
 namespace YYBagProgram.Controllers
 {
+    //ProductsColorDetails
     [Route("ProductsColorDetails")]
     //[Authorize(Roles = "Administer")]
     public class ProductsColorDetailsController : Controller
@@ -45,17 +47,22 @@ namespace YYBagProgram.Controllers
 
         #region 商品顏色 新增 Administer
         [HttpGet]
-        [Route("ProductColorCreate/{strBagsId}")]
-        public IActionResult ProductColorCreate(string strBagsId)
+        [Route("ProductColorCreate/{strBagsId}/{page}")]
+        public async Task<IActionResult> ProductColorCreate(string strBagsId, int page)
         {
             ViewData["strBagsId"] = strBagsId ?? string.Empty;
+            ViewData["currentpage"] = page;
+            if (_context.ProductColor != null)
+            {
+                ViewData["productcolors"] = await _context.ProductColor.ToListAsync();
+            }
             return View();
         }
 
         [HttpPost, ActionName("ProductColorCreate")]
         [ValidateAntiForgeryToken]
-        [Route("ProductColorCreate/{strBagsId}")]
-        public async Task<IActionResult> ProductColorCreate(ProductColor productColor)
+        [Route("ProductColorCreate/{strBagsId}/{page}")]
+        public async Task<IActionResult> ProductColorCreate(ProductColor productColor, int page, string strBagsId)
         {
             productColor.strID = GetProductsColorNumber(productColor.strBagsId);
             if (ModelState.IsValid)
@@ -63,16 +70,19 @@ namespace YYBagProgram.Controllers
                 _context.ProductColor.Add(productColor);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("ProductColorMain", "ProductsColorDetails", new { strBagsId = productColor.strBagsId });
+                return RedirectToAction("ProductColorMain", "ProductsColorDetails", new { strBagsId = productColor.strBagsId, page = page });
             }
+
+            ViewData["strBagsId"] = strBagsId ?? string.Empty;
+            ViewData["currentpage"] = page;
             return View(productColor);
         }
         #endregion
 
         #region 商品顏色 刪除 Administer
         [HttpGet]
-        [Route("DeleteMain/{strID}")]
-        public async Task<IActionResult> DeleteMain(string strID)
+        [Route("DeleteMain/{strID}/{page}")]
+        public async Task<IActionResult> DeleteMain(string strID, int page)
         {
 
             if (!_context.ProductColor.Any(row => row.strID.Equals(strID)) || strID == null)
@@ -86,6 +96,8 @@ namespace YYBagProgram.Controllers
             ProductColorViewModel productColorViewModel = new ProductColorViewModel();
             productColorViewModel.ProductColor = productColor;
             productColorViewModel.ProductsColorDetail = productsColorDetail;
+
+            ViewData["currentpage"] = page;
 
             return View(productColorViewModel);
         }
@@ -123,14 +135,15 @@ namespace YYBagProgram.Controllers
 
         #region 商品顏色數量 主頁 Administer
         [HttpGet]
-        [Route("Main/{strID}")]
-        public async Task<IActionResult> Main(string strID)
+        [Route("ProductColorDetailMain/{strID}/{page}")]
+        public async Task<IActionResult> ProductColorDetailMain(string strID, int page)
         {
             if (strID.Length > 0)
             {
                 ProductColor proudctcolor = await _context.ProductColor.Where(row => row.strID.Equals(strID)).FirstOrDefaultAsync() ?? new ProductColor();
                 ViewData["proudctcolor"] = proudctcolor;
             }
+            ViewData["currentpage"] = page;
 
             return _context.ProductsColorDetail != null ?
                         View(await _context.ProductsColorDetail.Where(row => row.strID.Equals(strID)).ToListAsync()) :
@@ -141,8 +154,8 @@ namespace YYBagProgram.Controllers
 
         #region 商品顏色數量 新增 Administer
         [HttpGet]
-        [Route("Create/{strID}/{strColor}")]
-        public IActionResult Create(string strColor, string strID)
+        [Route("Create/{strID}/{strColor}/{page}")]
+        public async Task<IActionResult> Create(string strColor, string strID, int page)
         {
             ProductsColorDetail productsColorDetail = new ProductsColorDetail();
             productsColorDetail.strID = strID;
@@ -151,20 +164,34 @@ namespace YYBagProgram.Controllers
             //找總共進了多少個iTotal
             //找ProductColorDetail裡剩幾個
             //找賣出了幾個
+
+            ViewData["currentpage"] = page;
+
+            if(_context.ProductsColorDetail != null)
+            {
+                ViewData["productcolordetail"] = await _context.ProductsColorDetail.Where(row => row.strColor.Equals(strColor) && row.strID.Equals(strID)).ToListAsync();
+            }
             return View(productsColorDetail);
         }
 
 
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        [Route("Create/{strID}/{strColor}")]
-        public async Task<IActionResult> Create(ProductsColorDetail productsColorDetail, IFormFileCollection imagefiles)
+        [Route("Create/{strID}/{strColor}/{page}")]
+        public async Task<IActionResult> Create(ProductsColorDetail productsColorDetail, IFormFileCollection imagefiles, int page)
         {
+            string imgpath = string.Empty;
+            string strFolderName = "bagimgs";
+            if (imagefiles != null && imagefiles.Count > 0)
+            {
+                imgpath = Methods.UploadImg(_enviroment, imagefiles, strFolderName);
+                productsColorDetail.Images = imgpath;
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    productsColorDetail.Images = GetImagesURL(imagefiles);
                     _context.Add(productsColorDetail);
                     await _context.SaveChangesAsync();
                 }
@@ -174,7 +201,12 @@ namespace YYBagProgram.Controllers
                 }
 
 
-                return RedirectToAction("Main", "ProductsColorDetails", new { strID = productsColorDetail.strID });
+                return RedirectToAction("ProductColorDetailMain", "ProductsColorDetails", new { productsColorDetail.strID, page });
+            }
+            ViewData["currentpage"] = page;
+            if (_context.ProductsColorDetail != null)
+            {
+                ViewData["productcolordetail"] = await _context.ProductsColorDetail.Where(row => row.strColor.Equals(productsColorDetail.strColor) && row.strID.Equals(productsColorDetail.strID)).ToListAsync();
             }
             return View(productsColorDetail);
         }
@@ -182,8 +214,8 @@ namespace YYBagProgram.Controllers
 
         #region 商品顏色數量 編輯 Administer
         [HttpGet]
-        [Route("Edit/{strID}/{strColor}/{iProductStatus}")]
-        public async Task<IActionResult> Edit(string strID, string strColor, int iProductStatus)
+        [Route("Edit/{strID}/{strColor}/{iProductStatus}/{page}")]
+        public async Task<IActionResult> Edit(string strID, string strColor, int iProductStatus, int page)
         {
             if (strID == null || _context.ProductsColorDetail == null )
             {
@@ -191,62 +223,69 @@ namespace YYBagProgram.Controllers
             }
 
             var productsColorDetail = await _context.ProductsColorDetail
-                .Where(row => row.strID.Equals(strID) && row.strColor.Equals(strColor) && (int)row.ProductStatus == iProductStatus).FirstOrDefaultAsync();
+            .Where(row => row.strID.Equals(strID) && row.strColor.Equals(strColor) && (int)row.ProductStatus == iProductStatus).FirstOrDefaultAsync();
+            ViewData["productcolordetail"] = productsColorDetail;
 
-            if (productsColorDetail == null)
-            {
-                productsColorDetail.Images = string.Empty;
-                return NotFound();
-            }
+            ViewData["currentpage"] = page;
 
-            PrdosuctsColorDetailViewModel vm = new PrdosuctsColorDetailViewModel();
-            vm.productsColorDetail = productsColorDetail;
-            vm.OriImages = productsColorDetail.Images;
-
-            return View(vm);
+            return View(productsColorDetail);
         }
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        [Route("Edit/{strID}/{strColor}/{iProductStatus}")]
-        public async Task<IActionResult> Edit(PrdosuctsColorDetailViewModel vm, IFormFileCollection imagefiles)
+        [Route("Edit/{strID}/{strColor}/{iProductStatus}/{page}")]
+        public async Task<IActionResult> Edit(ProductsColorDetail model, IFormFileCollection imagefiles, int page)
         {
-            ProductsColorDetail productsColorDetail = new ProductsColorDetail();
+
+            string imgpath = string.Empty;
+            string strFolderName = "bagimgs";
+            if (imagefiles != null && imagefiles.Count > 0)
+            {
+                imgpath = Methods.UploadImg(_enviroment, imagefiles, strFolderName, model.Images);
+                model.Images = imgpath;
+            }
 
             if (ModelState.IsValid)
-            {
-
-                productsColorDetail = vm.productsColorDetail;
-                
-                //如果有上傳 就用舊的
-                if (imagefiles != null && imagefiles.Any())
-                {
-                    productsColorDetail.Images = GetImagesURL(imagefiles);
-                }
-                else
-                {
-                    productsColorDetail.Images = vm.OriImages;                }
-
+            {          
                 try
                 {
-                    _context.Update(productsColorDetail);
+                    SqlParameter[] sqlParameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@strID", model.strID),
+                        new SqlParameter("@strColor", model.strColor),
+                        new SqlParameter("@iProductStatus", (int)model.ProductStatus),
+                        new SqlParameter("@iTotal", model.iTotal),
+                        new SqlParameter("@iRemain", model.iRemain),
+                        new SqlParameter("@iPrice", model.iPrice),
+                        new SqlParameter("@Images", model.Images),
+                        new SqlParameter("@iDeliveryDays", model.iDeliveryDays),
+                        new SqlParameter("@isOnline", model.isOnline)
+                    };
+
+                    string sql = @"
+UPDATE ProductsColorDetail 
+SET iTotal = @iTotal, iRemain = @iRemain, iPrice = @iPrice, Images = @Images, iDeliveryDays = @iDeliveryDays, isOnline = @isOnline 
+WHERE strId = @strID AND strColor = @strColor AND ProductStatus = @iProductStatus";
+                    await _context.Database.ExecuteSqlRawAsync(sql, sqlParameters);
+
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    throw;
+                    return Content(ex.Message);
                 }
 
-                return RedirectToAction("Main", "ProductsColorDetails", new { id = productsColorDetail.strID});
+                return RedirectToAction("ProductColorDetailMain", "ProductsColorDetails", new { model.strID, page});
             }
-            return View(vm);
+            ViewData["currentpage"] = page;
+            return View(model);
         }
         #endregion
 
         #region 商品顏色數量 刪除 Administer
         [HttpGet]
-        [Route("Delete/{strID}/{strColor}/{ProductStatus}")]
-        public async Task<IActionResult> Delete(string strID, string strColor, AllEnums.ProductStatus ProductStatus)
+        [Route("Delete/{strID}/{strColor}/{ProductStatus}/{page}")]
+        public async Task<IActionResult> Delete(string strID, string strColor, AllEnums.ProductStatus ProductStatus, int page)
         {
             if (strID == null || _context.ProductsColorDetail == null)
             {
@@ -262,14 +301,15 @@ namespace YYBagProgram.Controllers
             {
                 return NotFound();
             }
+            ViewData["currentpage"] = page;
 
             return View(productsColorDetail);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("Delete/{strID}/{strColor}/{ProductStatus}")]
-        public async Task<IActionResult> DeleteConfirmed(string strID, string strColor, AllEnums.ProductStatus ProductStatus)
+        [Route("Delete/{strID}/{strColor}/{ProductStatus}/{page}")]
+        public async Task<IActionResult> DeleteConfirmed(string strID, string strColor, AllEnums.ProductStatus ProductStatus, int page)
         {
             if (_context.ProductsColorDetail == null)
             {
@@ -284,29 +324,10 @@ namespace YYBagProgram.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction("Main", "ProductsColorDetails", new { strID = strID});
+            return RedirectToAction("ProductColorDetailMain", "ProductsColorDetails", new {strID, page});
         }
         #endregion
 
-
-        private string GetImagesURL(IFormFileCollection imagefiles)
-        {
-            List<string> listImgFileName = new List<string>();
-            string strImageURLs = string.Empty;
-            if (imagefiles != null && imagefiles.Count > 0)
-            {
-                if (ValidateFile(imagefiles))
-                {
-                    foreach (IFormFile file in imagefiles)
-                    {
-                        listImgFileName.Add(file.FileName);
-
-                    }
-                    strImageURLs = String.Join(";", listImgFileName);
-                }
-            }
-            return strImageURLs;
-        }
 
         private string GetProductsColorNumber(string id)
         {
@@ -328,27 +349,6 @@ namespace YYBagProgram.Controllers
             }
 
             return result;
-        }
-
-        private bool ValidateFile(IFormFileCollection files)
-        {
-            foreach (IFormFile file in files)
-            {
-                if (file.Length < 1024 * 1024 && file.ContentType.StartsWith("image/"))
-                    continue;
-                else
-                    return false;
-            }
-            return true;
-        }
-
-        private string SaveImage(IFormFile file)
-        {
-            string filePath = Path.Combine(_enviroment.ContentRootPath, @"wwwroot\images\bagimages");
-            string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Path.GetExtension(file.FileName);
-            string fileFullPath = Path.Combine(filePath, fileName);
-
-            return fileFullPath;
         }
     }
 }

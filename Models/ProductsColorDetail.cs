@@ -31,10 +31,10 @@ namespace YYBagProgram.Models
         [Column(TypeName = "int")]
         public int iPrice { get; set; }
 
-        //多張圖片位置用";"區隔
         [DisplayName("上傳圖片")]
         [Column(TypeName = "varchar(max)")]
-        public string? Images {  get; set; }
+        [Required]
+        public string Images {  get; set; }
 
         [DisplayName("出貨天數")]
         [Column(TypeName = "int")]

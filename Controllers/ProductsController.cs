@@ -148,11 +148,12 @@ namespace YYBagProgram.Controllers
         public async Task<IActionResult> Create(Product product, IFormFileCollection imagefiles, int currentpage)
         {
             string imgpath = string.Empty;
+            string strFolderName = "bagimgs";
             product.strBagsId = GetBagID();
 
             if (imagefiles != null && imagefiles.Count > 0)
             {
-                imgpath = Methods.UploadImg(_enviroment, imagefiles);
+                imgpath = Methods.UploadImg(_enviroment, imagefiles, strFolderName);
                 product.strImageUrl = imgpath;
 
                 if (ModelState.IsValid)
@@ -202,9 +203,10 @@ namespace YYBagProgram.Controllers
         //[Authorize(Roles = "Administer")]
         public async Task<IActionResult> Edit(Product product, IFormFileCollection imagefiles, int page)
         {
+            string strFolderName = "bagimgs";
             if (imagefiles != null && imagefiles.Count > 0)
             {
-                product.strImageUrl = Methods.UploadImg(_enviroment, imagefiles, product.strImageUrl);
+                product.strImageUrl = Methods.UploadImg(_enviroment, imagefiles, strFolderName, product.strImageUrl);
             }
 
             if (ModelState.IsValid)
@@ -223,7 +225,7 @@ namespace YYBagProgram.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Content(ex.Message);
                     }
                 }
                 return RedirectToAction("ProductsMain", "Products", new { page=page});

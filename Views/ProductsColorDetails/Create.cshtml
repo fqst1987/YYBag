@@ -1,16 +1,21 @@
 ﻿@model YYBagProgram.Models.ProductsColorDetail
 @using YYBagProgram.Enums;
 @{
-    ViewData["titlemsg"] = "新增商品顏色數量頁面(管理者)";
+    ViewData["titlemsg"] = "商品顏色數量明細(新增)";
+    int currentpage = (int)ViewData["currentpage"];
+    IList<ProductsColorDetail> productsColorDetails = ViewData["productcolordetail"] as IList<ProductsColorDetail>;
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <div class="main_top_column" id="create_top">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form asp-action="Create" asp-controller="ProductsColorDetails" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="strID" value="@Model.strID" />
+            <input type="hidden" name="page" value="@currentpage" />
             <div class="form_group">
                 <label asp-for="strColor" class="comm_label"></label>
                 <input asp-for="strColor" class="comm_input" readonly/ value="@Model.strColor">
@@ -18,31 +23,40 @@
             </div>
             <div class="form_group">
                 <label asp-for="iTotal" class="comm_label"></label>
-                <input asp-for="iTotal" class="comm_input" type="number" step="1" value="@Model.iTotal"/>
+                <input asp-for="iTotal" class="comm_input" type="number" step="1" min="0" value="@Model.iTotal"/>
                 <span asp-validation-for="iTotal" class="text-danger"></span>
             </div>
             <div class="form_group">
                 <label asp-for="iRemain" class="comm_label"></label>
-                <input asp-for="iRemain" class="comm_input" type="number" step="1"/>
+                <input asp-for="iRemain" class="comm_input" type="number" step="1" min="0"/>
                 <span asp-validation-for="iRemain" class="text-danger"></span>
             </div>
             <div class="form_group">
                 <label asp-for="iPrice" class="comm_label"></label>
-                <input asp-for="iPrice" class="comm_input" type="number" step="1" />
+                <input asp-for="iPrice" class="comm_input" type="number" step="1" min="0"/>
                 <span asp-validation-for="iPrice" class="text-danger"></span>
             </div>
             <div class="form_group">
                 <label asp-for="iDeliveryDays" class="comm_label"></label>
-                <input asp-for="iDeliveryDays" class="comm_input" type="number" step="1" />
+                <input asp-for="iDeliveryDays" class="comm_input" type="number" step="1" min="0"/>
                 <span asp-validation-for="iDeliveryDays" class="text-danger"></span>
             </div>
             <div class="form_group">
                 <label asp-for="ProductStatus" class="comm_label"></label>
-                <select asp-for="ProductStatus" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.ProductStatus>()"></select>
+                <select asp-for="ProductStatus" class="comm_dropdown" asp-items="Html.GetEnumSelectList<AllEnums.ProductStatus>()" id="select"></select>
                 <span asp-validation-for="iDeliveryDays" class="text-danger"></span>
             </div>
             <div class="form_group">
+                <label asp-for="isOnline" class="comm_label"></label>
+                <input asp-for="isOnline" type="radio" value="true" id="isOnlineTrue" />
+                <label for="isOnlineTrue">是</label>
+                <input asp-for="isOnline" type="radio" value="false" id="isOnlineFalse" />
+                <label for="isOnlineFalse">否</label>
+                <span asp-validation-for="isOnline" class="text-danger"></span>
+            </div>
+            <div class="form_group">
                 <label asp-for=Images class="comm_label"></label>
+                <input asp-for="Images" type="hidden" class="comm_input" value="temp" id="Images" />
                 <label class="btn_new">
                     <input type="file" accept="image/*" multiple="multiple" name="imagefiles" id="imagefiles" style="display:none;" />
                     <div class="comm_fileupload">+</div>
@@ -55,7 +69,7 @@
             </div>
         </form>
         <div class="form_submit">
-            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new { id = Model.strID} )'">取消</button>
+            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("ProductColorDetailMain", "ProductsColorDetails", new { strID = Model.strID, page=currentpage} )'">取消</button>
         </div>
     </div>
 </div>
@@ -70,12 +84,34 @@
                 reader.onload = function (e) {
                     const img = document.createElement('img')
                     img.src = e.target.result;
-                    img.style.width = '200px';
-                    img.style.height = '200px';
+                    img.style.width = '100px';
+                    img.style.height = '100px';
                     img.style.padding = '0 10px 0 0';
                     document.getElementById('previewImgs').appendChild(img);
                 };
                 reader.readAsDataURL(files[i]);
+            }
+        });
+
+        document.getElementById("btn_sunmit").addEventListener("click", function (event) {
+
+            var selectedValue = document.getElementById("select").value;
+
+            var items = @Html.Raw(Json.Serialize(productsColorDetails));
+
+            var exists = items.some(function (item) {
+                return (item.productStatus == selectedValue);
+            });
+
+            if (exists) {
+                event.preventDefault();
+                alert("此商品狀態已經選過。請重新選擇其他");
+                return;
+            }
+
+            const files = document.getElementById('imagefiles').files;
+            if (files.length == 0) {
+                document.getElementById("Images").value = "";
             }
         });
     </script>

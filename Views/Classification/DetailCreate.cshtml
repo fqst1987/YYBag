@@ -49,7 +49,7 @@
 
             var classificationDetails = @Html.Raw(Json.Serialize(classificationDetails));
             var exists = classificationDetails.some(function (item) {
-                return item.strBagsId === selectedValue;
+                return item.strBagsId == selectedValue;
             });
 
             if (exists) {

@@ -3,17 +3,20 @@
 
 @{
     ViewData["titlemsg"] = "編輯商品顏色、數量";
+    int currentpage = (int)ViewData["currentpage"];
     ProductColor proudctcolor = ViewData["proudctcolor"] as ProductColor;
 }
 
 <head>
     <title>YYBag - @ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
-    <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "ProductsColorDetails", new { strID = proudctcolor?.strID, strColor = proudctcolor?.strColor})'">
+    <button type="button" class="btn_new" onclick="location.href='@Url.Action("Create", "ProductsColorDetails", new { strID = proudctcolor?.strID, strColor = proudctcolor?.strColor, page=currentpage})'">
         新增
     </button>
-    <button type="button" class="btn_cancel" onclick="location.href='@Url.Action("ProductColorMain", "ProductsColorDetails", new { strBagsId = proudctcolor?.strBagsId})'">
+    <button type="button" class="btn_cancel" onclick="location.href='@Url.Action("ProductColorMain", "ProductsColorDetails", new { strBagsId = proudctcolor?.strBagsId, page=currentpage})'">
         返回
     </button>
     <hr />
@@ -40,7 +43,7 @@
                         @Html.DisplayNameFor(model => model.ProductStatus)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Images)
+                        照片預覽
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.isOnline)
@@ -70,26 +73,40 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.ProductStatus)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Images)
+                        <td style=" display: flex; justify-content: center">
+                            @{
+                                string[] imgurls = item.Images.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                                foreach (var imgurl in imgurls)
+                                {
+                                    int startIndex = imgurl.IndexOf(@"\upload");
+                                    if (startIndex != -1)
+                                    {
+                                        <img style="width:80px; height:80px" src="@imgurl.Substring(startIndex).Replace("\\", "/")" />
+                                    }
+                                }
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.isOnline)
                         </td>
                         <td>
                             <a asp-action="Edit" asp-controller="ProductsColorDetails" 
-                                asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-iProductStatus ="@((int)item.ProductStatus)">
+                                asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-iProductStatus ="@((int)item.ProductStatus)" asp-route-page="@currentpage">
                                 修改
                             </a> |
-                            <a asp-action="Delete" asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-ProductStatus="@item.ProductStatus" >刪除</a> |
+                            <a asp-action="Delete" asp-controller="ProductsColorDetails" asp-route-strID="@item.strID" asp-route-strColor="@item.strColor" asp-route-ProductStatus="@item.ProductStatus" asp-route-page="@currentpage">刪除</a> |
                             <a asp-action="Details" asp-controller="Products" asp-route-strBagsId="@proudctcolor.strBagsId">預覽商品</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
-    
+    </div>  
 </div>
+@section Scripts{
+    <script>
+
+    </script>
+}
 
 

@@ -1,10 +1,13 @@
 ﻿@model YYBagProgram.Models.ProductsColorDetail
 
 @{
-    ViewData["titlemsg"] = "商品顏色數量刪除";
+    ViewData["titlemsg"] = "商品顏色數量明細(刪除)";
+    int currentpage = (int)ViewData["currentpage"];
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <div id="delete_top" class="main_top_column">
@@ -29,22 +32,34 @@
             <input class="comm_input" value=" @Html.DisplayFor(model => model.iDeliveryDays)" readonly />
         </div>
         <div class="form_group">
-            <label class="comm_label">@Html.DisplayNameFor(model => model.Images)</label>
-            <input class="comm_input" value=" @Html.DisplayFor(model => model.Images)" readonly />
-        </div>
-        <div class="form_group">
             <label class="comm_label">@Html.DisplayNameFor(model => model.ProductStatus)</label>
             <input class="comm_input" value=" @Html.DisplayFor(model => model.ProductStatus)" readonly />
+        </div>
+        <div class="form_group">
+            <label asp-for=Images class="comm_label"></label>
+            @{
+                if (Model.Images.Length > 0)
+                {
+                    string[] urls = Model.Images.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var url in urls)
+                    {
+                        int startIndex = url.IndexOf(@"\upload");
+                        <img src="@url.Substring(startIndex).Replace("\\", "/")" style="width:100px; height: 100px;" />
+                    }
+                }
+            }
+            <span asp-validation-for="Images" class="text-danger"></span>
         </div>
         <form asp-action="Delete" method="post">
             <input type="hidden" asp-for="strID" />
             <input type="hidden" asp-for="strColor"/>
+            <input type="hidden" name="page" value="@currentpage" />
             <div class="form_submit">
-                <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strID" asp-route-strColor="@Model.strColor" asp-route-ProductStatus="@Model.ProductStatus" />
+                <input type="submit" class="btn_full" value="確定刪除" asp-route-strID="@Model.strID" asp-route-strColor="@Model.strColor" asp-route-ProductStatus="@Model.ProductStatus" asp-route-page="@currentpage" />
             </div>      
         </form>
         <div class="form_submit">
-            <button type="button" class="btn_full" onclick="location.href='@Url.Action("Main", "ProductsColorDetails", new {Model.strID})'">取消</button>
+            <button type="button" class="btn_full" onclick="location.href='@Url.Action("ProductColorDetailMain", "ProductsColorDetails", new {Model.strID, currentpage})'">取消</button>
         </div>
     </div>
 </div>

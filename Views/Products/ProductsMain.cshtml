@@ -84,14 +84,14 @@
                             int startIndex = item.strImageUrl.IndexOf(@"\upload");
                             if (startIndex != -1)
                             {
-                                                        <img style="width:100px; height:100px" src="@item.strImageUrl.Substring(startIndex).Replace("\\", "/")" />
+                                <img style="width:100px; height:100px" src="@item.strImageUrl.Substring(startIndex).Replace("\\", "/")" />
                             }
                         }
                     </td>
                     <td>
                         <a asp-action="ProductColorMain" asp-controller="ProductsColorDetails" asp-route-strBagsId="@item.strBagsId" asp-route-page="@currentPage">編輯商品顏色、圖片</a> |
-                        <a asp-action="Edit" asp-route-strBagsId="@item.strBagsId" asp-route-page="@currentPage">修改商品內容</a> |
-                        <a asp-action="Delete" asp-route-strBagsId="@item.strBagsId">刪除</a>
+                        <a asp-action="Edit" asp-controller="ProductsColorDetails" asp-route-strBagsId="@item.strBagsId" asp-route-page="@currentPage">修改商品內容</a> |
+                        <a asp-action="Delete" asp-controller="ProductsColorDetails" asp-route-strBagsId="@item.strBagsId">刪除</a>
                     </td>
                 </tr>
             }
