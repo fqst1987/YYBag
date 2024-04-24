@@ -9,21 +9,9 @@
     List<ProductsColorDetail> productscolordetail = Model.ProductColorsDetail.ToList();
     string strBagType = EnumHelper<AllEnums.BagType>.GetDisplayValue(product.BagType);
     //找不重複的照片檔案
-    List<string> urls = new List<string>();
-    foreach (var p in productscolordetail)
-    {
-        if (p.Images != null)
-        {
-            string[] urlstemp;
-            urlstemp = p.Images.Split(";", StringSplitOptions.RemoveEmptyEntries);
-            foreach (string urltemp in urlstemp)
-            {
-                urls.Add(urltemp);
-            }
-        }
-    }
-    urls = urls.Distinct().ToList();
+    string[] urls = product.strImageUrl.Split(";", StringSplitOptions.RemoveEmptyEntries);
     int uplimit = 5;
+    int oriPrice = product.iPrice;
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
@@ -41,15 +29,22 @@
                 @*small product image show*@
                 <div class="product_detail_photo_bottom">
                     @{
-                        for (int i = 0; i < urls.Count; i++)
+                        for (int i = 0; i < urls.Length; i++)
                         {
+                            int startIndex = urls[i].IndexOf(@"\upload");
                             if (i >= uplimit)
                             {
-                                <img class="product_detail_img_95 none_display" src="~/images/bagimages/@urls[i]" />
+                                if (startIndex != -1)
+                                {
+                                        <img class="product_detail_img_95 none_display" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
+                                }
                             }
                             else
                             {
-                                <img class="product_detail_img_95" src="~/images/bagimages/@urls[i]" />
+                                if (startIndex != -1)
+                                {
+                                        <img class="product_detail_img_95" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
+                                }
                             }
                         }
                     }
@@ -67,6 +62,7 @@
             </div>
             <div class="product_detail_select">
                 <sapn class="product_detail_select_productname">@product.strBagsName</sapn>
+                <span style="display: none" id="oriprice">@oriPrice</span>
                 <span class="product_detail_select_price"></span>
                 <div class="product_detail_color">
                     <h3 class="product_h3">顏色</h3>
@@ -75,13 +71,13 @@
                             foreach (var obj in productcolor)
                             {
                                 //get color
-                                string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                                string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images;
 
                                 //generate btn_productcolor
-                                <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
-                                    <img src="~/images/bagimages/@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
-                                    <spam>@obj.strColor</spam>
-                                </div>
+                                    <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
+                                        <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
+                                        <spam>@obj.strColor</spam>
+                                    </div>
                             }
                         }
                     </div>
@@ -95,32 +91,32 @@
                             @{
                                 if (!productscolordetail.Any(row => (int)row.ProductStatus == 1))
                                 {
-                                    <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
-                                        <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                        <span>現貨</span>
-                                    </div>
+                                        <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
+                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>現貨</span>
+                                        </div>
                                 }
                                 else
                                 {
-                                    <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
-                                        <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                        <span>現貨</span>
-                                    </div>
+                                        <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
+                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>現貨</span>
+                                        </div>
                                 }
 
                                 if (!productscolordetail.Any(row => (int)row.ProductStatus == 2))
                                 {
-                                    <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
-                                        <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                        <span>預購</span>
-                                    </div>
+                                        <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
+                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>預購</span>
+                                        </div>
                                 }
                                 else
                                 {
-                                    <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
-                                        <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                        <span>預購</span>
-                                    </div>
+                                        <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
+                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>預購</span>
+                                        </div>
                                 }
                             }
                         </div>
@@ -133,7 +129,7 @@
                             <button class="btn_quantity" aria-label="Decrease" id="btn_quantity_decrease">
                                 <img src="~/icons/dash-lg.svg" style="width: 15px; height: 15px" />
                             </button>
-                            <input type="number" id="productuplimit" class="comm_input_30" value="1" type="text" role="spinbutton" min="1" data-upper_limit="10" />
+                            <input type="number" id="productuplimit" class="comm_input_30" value="1" role="spinbutton" min="1" data-upper_limit="10" />
                             <button class="btn_quantity" aria-label="Increase" id="btn_quantity_increase">
                                 <img src="~/icons/plus-lg.svg" style="width: 15px; height: 15px" />
                             </button>
@@ -310,7 +306,19 @@
             var remain = data[0].iRemain;
             var price = data[0].iPrice;
             var deliverydays = data[0].iDeliveryDays;
-            document.querySelector(".product_detail_select_price").innerHTML = "$" + price;
+            var oripriceElement = document.getElementById("oriprice");
+            var oriprice = parseInt(oripriceElement.innerHTML);
+            if (price == oriprice) {
+                oripriceElement.style.display = 'none';
+                document.querySelector(".product_detail_select_price").innerHTML = "$" + price;
+            }
+            else{
+                oripriceElement.style.display = '';
+                oripriceElement.style.color = '#BFBFC1';
+                oripriceElement.style.textDecoration = 'line-through';
+                oripriceElement.innerHTML = '$' + oriprice;
+                document.querySelector(".product_detail_select_price").innerHTML = "$" + price;
+            }
             document.getElementById("span_remain").innerHTML = "剩餘數量為" + remain + "個";
             document.getElementById("productuplimit").dataset.upper_limit = remain;
             startindex = 1;
