@@ -1,22 +1,26 @@
 ﻿@model YYBagProgram.Models.CFViewModel;
+@{
+    int totalpages = (int)(ViewData["totalpages"] ?? 1);
+    int currentpage = (int)(ViewData["currentpage"] ?? 1);
+    string id = ViewData["id"]?.ToString() ?? string.Empty;
+}
 
 <head>
     <title>YYBag - @ViewData["titlemsg"]</title>
     <link rel="stylesheet" href="~/css/ClassificationLayout.min.css" />
     <link rel="stylesheet" href="~/css/carousel.min.css" />
+    <link rel="stylesheet" href="~/css/product.min.css" />
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
 </head>
+
 <div class="main_editor_autoheight">
     <div class="carousel_area">
         <div class="carousel">
             <div class="carousel_container" id="carousel">
                 @{
-                    for(int i = 0; i < Model.MonthlyHots?.Count; i++)
+                    for(int i = 0; i < Model.CarouselSettings?.Count; i++)
                     {
-                        int startIndex = Model.MonthlyHots[i].img.IndexOf(@"\upload");
-                        if (startIndex != -1)
-                        {
-                            <img class="carousel_img" src="@Model.MonthlyHots[i].img.Substring(startIndex).Replace("\\", "/")" />
-                        }
+                        <img class="carousel_img" src="@Model.CarouselSettings[i].imgurl" />
                     }
                 }
             </div>
@@ -33,7 +37,7 @@
         </div>
         <div class="btn_select_img_area">
             @{
-                for (int i = 0; i < Model.MonthlyHots?.Count; i++)
+                for (int i = 0; i < Model.CarouselSettings?.Count; i++)
                 {
                     <div class="btn_select_img"></div>
                 }
@@ -44,46 +48,45 @@
     <div class="classification_main">
         <div class="classification_area">
             @{
-                for(int i = 0; i < Model.Classfications?.Count; i++)
+                for (int i = 0; i < Model.Classfications?.Count; i++)
                 {
                     <div class="classfication_item">
                         <span>@Model.Classfications[i].Name</span>
                     </div>
                 }
             }
-        </div>
+        </div>       
         <div class="product_collection">
             @{
                 for (int i = 0; i < Model.ClassificationDetails?.Count; i++)
                 {
-                    int startIndex = @Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strImageUrl.IndexOf(@"\upload");
-                    string url = @Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strImageUrl.Substring(startIndex).Replace("\\", "/");
+                    string strBagsId = Model.ClassificationDetails[i].strBagsId;
+                    string strBagsName = Model.Products?.Where(row => row.strBagsId.Equals(strBagsId)).FirstOrDefault()?.strBagsName ?? string.Empty;
+                    int iPrice = Model.Products?.Where(row => row.strBagsId.Equals(strBagsId)).FirstOrDefault()?.iPrice ?? 0;
+                    string strBagsImgUrls = Model.Products?.Where(row => row.strBagsId.Equals(strBagsId)).Select(row => row.strImageUrl).FirstOrDefault() ?? string.Empty;
+                    string urltemp = strBagsImgUrls.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                    string url = urltemp.Substring(urltemp.IndexOf(@"\upload")).Replace(@"\", "/");
                     <div class="product_main">
-                        @if (startIndex != -1)
-                        {
-                            <div class="product_photo">
-                                <a href="#">
-                                    <img id="product_photo_url" class="product_photo" src="@url" />
-                                </a>
-                            </div>
-                        }
+                        <div class="product_photo">
+                            <a href="#">
+                                <img id="product_photo_url" class="product_photo" src="@url" />
+                            </a>
+                        </div>
+                        <div class="product_color_collection">
+                            @{
+                                for (int j = 0; j < Model.ProductColors?.Where(row => row.strBagsId.Equals(strBagsId)).ToList()?.Count; j++)
+                                {
 
-                       
-                        @{
-                            for (int j = 0; j < Model.ProductColors?.Count; j++)
-                            {
-                                <div class="product_color_collection">
                                     <div class="product_color">
-                                        @Model.ProductColors[j].strColor;
+                                        @Model.ProductColors[j].strColor
                                     </div>
-                                </div>
+                                }
                             }
-                        }
-
+                        </div>
                         <div class="product_info">
                             <div class="product_name_price">
-                                <span>@Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().strBagsName</span>
-                                <span>@Model.Products.Where(row => row.strBagsId.Equals(Model.ClassificationDetails[i].strBagsId)).FirstOrDefault().iPrice</span>
+                                <span>@strBagsName</span>
+                                <span>@iPrice</span>
                             </div>
                             <div class="btn_addchart">
                                 <img src="/icons/cart4.svg" style="width: 25px; height: 25px" />
@@ -91,10 +94,83 @@
                         </div>
                     </div>
                 }
-            }         
+            }
+        </div>
+    </div>
+    <!--分頁器-->
+    <div class="page_area">
+        <div class="page_area_select">
+            <div class="page_area_pre_head" onclick="Onhead()">
+                <sapn>第一頁</sapn>
+            </div>
+            <div class="page_area_pre" onclick="preview(@currentpage-1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" />
+                </svg>
+                <span>上一頁</span>
+            </div>
+        </div>
+        <div class="page_area_number">
+            <div class="page_area_number_container">
+                @{
+                    for (int i = 0; i < totalpages; i++)
+                    {
+                        int currentPage = i + 1;
+                        <div class="page_area_number_item">
+                            <a href="#" onclick="changePage(@currentpage)">@currentpage</a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="page_area_select">
+            <div class="page_area_next" onclick="next(@currentpage+1)">
+                <span>下一頁</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5" />
+                </svg>
+            </div>
+            <div class="page_area_next_end" onclick="end()">
+                <span>最後一頁</span>
+            </div>
         </div>
     </div>
 </div>
 @section Scripts {
-    <script src="~/js/Carousel.js"></script>
+    <script src="~/js/Carousel.min.js"></script>
+    <script>
+        var numberElements = document.querySelectorAll(".page_area_number_item");
+        var currentpageindex = @currentpage-1;
+        var totaglpages = @totalpages;
+        var id = @id;
+
+        window.onload = () => {
+            numberElements[currentpageindex].classList.add("item_selected");
+        }
+
+        function next(page) {
+            if (page <= totaglpages) {
+                changePage(page);
+            }
+        }
+
+        function preview(page) {
+            if (page >= 1) {
+                changePage(page);
+            }
+        }
+
+        function changePage(page) {
+            window.location.href = '/Classification/ClassificationMain/' + id + '/' + page;
+        }
+
+        function end(page) {
+            page = totaglpages;
+            changePage(page)
+        }
+        function Onhead(page) {
+            page = 1;
+            changePage(page)
+        }
+    </script>
 }

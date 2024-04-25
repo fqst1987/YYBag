@@ -2,9 +2,11 @@
 
 @{
     ViewData["titlemsg"] = "自訂分類明細(刪除)";
+    int currentpage = (int)(ViewData["currentpage"] ?? 1);
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <div id="delete_top" class="main_top_column">
@@ -17,13 +19,13 @@
             <input class="comm_input" value=" @Html.DisplayFor(model => model.strBagsId)" readonly />
         </div>
     </div>
-    <form asp-action="DetailDelete" asp-controller="Classification" asp-route-id="@Model.Id" asp-route-strBagsId="@Model.strBagsId" method="post">
+    <form asp-action="DetailDelete" asp-controller="Classification" asp-route-id="@Model.Id" asp-route-strBagsId="@Model.strBagsId" asp-route-page="@currentpage" method="post">
         <div class="form_submit">
             <input type="submit" class="btn_full" value="確定刪除" />
         </div>
     </form>
     <div class="form_submit">
-        <button type="button" class="btn_full" onclick="location.href='@Url.Action("DetailMain", "Classification", new { id = Model.Id})'">取消</button>
+        <button type="button" class="btn_full" onclick="location.href='@Url.Action("DetailMain", "Classification", new { id = Model.Id, page = currentpage})'">取消</button>
     </div>
 </div>
 @section Scripts {

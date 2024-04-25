@@ -13,7 +13,7 @@
         public IList<ProductColor>? ProductColors { get; set; }
 
         //下面兩個都會出現在每個畫面
-        public IList<CarouselSetting>? MonthlyHots { get; set; }
+        public IList<CarouselSetting>? CarouselSettings { get; set; }
 
         public IList<Classification>? Classfications { get; set; }
     }

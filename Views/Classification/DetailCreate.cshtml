@@ -2,17 +2,20 @@
 
 @{
     ViewData["titlemsg"] = "自訂分類(新增)";
-    IList<Product> products = ViewData["products"] as IList<Product>;
-    IList<ClassificationDetail> classificationDetails = ViewData["classificationdetail"] as IList<ClassificationDetail>;
+    int currentpage = (int)(ViewData["currentpage"] ?? 1);
+    IList<Product> products = ViewData["products"] as IList<Product> ?? new List<Product>();
+    IList<ClassificationDetail> classificationDetails = ViewData["classificationdetail"] as IList<ClassificationDetail> ?? new List<ClassificationDetail>();
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <div class="main_top_column" id="create_down">
         <form asp-action="DetailCreate" asp-controller="Classification" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for=Id value="@Model.Id" />
+            <input type="hidden" name="page" value="@currentpage" />
             <div class="form_group">
                 <label asp-for="strBagsId" class="comm_label"></label>
                 <select asp-for="strBagsId" class="comm_input" id="bagselect">
@@ -23,6 +26,11 @@
                     }
                 </select>
                 <span asp-validation-for="strBagsId" class="text-danger"></span>
+            </div>
+            <div class="form_group">
+                <label class="comm_label">預覽商品</label>
+                <div style="width:800px; height:auto; display:flex; flex-wrap:wrap; flex-direction:row" id="create_imgselect">
+                </div>
             </div>
             <div class="form_submit">
                 <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
@@ -36,6 +44,64 @@
 </div>
 @section Scripts {
     <script>
+        document.getElementById("bagselect").addEventListener("change", () => {
+            var selectedValue = document.getElementById("bagselect").value;
+            if (selectedValue) {
+                fetchData(selectedValue);
+            }
+        });
+
+        async function fetchData(strbagsid) {
+            try {
+                var data = await GetImgUrl(strbagsid);
+
+                createElement(data);
+            }
+            catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function GetImgUrl(strbagsid) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        resolve(data);
+                    }
+                };
+                var url = '/Classification/GetImgUrl/' + strbagsid;
+                xhr.open('GET', url, true);
+                xhr.send();
+            });
+        }
+
+        function createElement(data) {
+            var create_imgselect = document.getElementById("create_imgselect");
+            create_imgselect.innerHTML = ''; // Clear previous images
+
+            var imgurls = data.strImageUrl.split(";").filter(Boolean);
+
+            imgurls.forEach(function (url) {
+                var startIndex = url.indexOf("\\upload");
+
+                if (startIndex !== -1) {
+                    var div = document.createElement('div');
+                    div.classList.add('img_select_radio');
+
+                    var img = document.createElement('img');
+                    img.src = url.substring(startIndex).replace("\\", "/");
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+
+                    div.appendChild(img);
+
+                    create_imgselect.appendChild(div);
+                }
+            });
+        }
+
         document.getElementById("btn_sunmit").addEventListener("click", function (event) {
 
             var selectedValue = document.getElementById("bagselect").value;

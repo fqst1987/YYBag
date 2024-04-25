@@ -3,17 +3,21 @@
 
 @{
     ViewData["titlemsg"] = "自訂分類明細(首頁)";
-    IList<Product> products = ViewData["products"] as IList<Product>;
+    int currentpage = (int)(ViewData["currentpage"] ?? 1);
+    string classificationName = ViewData["classificationName"]?.ToString() ?? string.Empty;
+    string id = ViewData["id"]?.ToString() ?? string.Empty;
+    IList<Product> products = ViewData["products"] as IList<Product> ?? new List<Product>();
 }
 <head>
     <title>YYBag - @ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 <div class="main_editor">
     <p>
-        <button type="button" class="btn_new" onclick="location.href='@Url.Action("DetailCreate", "Classification", new {id = ViewData["id"].ToString()})'">
+        <button type="button" class="btn_new" onclick="location.href='@Url.Action("DetailCreate", "Classification", new {id = id, page = currentpage})'">
             新增
         </button>
-        <button type="button" class="btn_new" onclick="location.href='@Url.Action("Main", "Classification")'">
+        <button type="button" class="btn_new" onclick="location.href='@Url.Action("Main", "Classification", new {page = currentpage})'">
             返回
         </button>
     </p>
@@ -25,6 +29,9 @@
                 </th>
                 <th>
                     商品名稱
+                </th>
+                <th>
+                    照片預覽
                 </th>
                 <th>編輯</th>
             </tr>
@@ -43,7 +50,22 @@
                         @Html.DisplayFor(modelItem => productName)
                     </td>
                     <td>
-                        <a asp-action="DetailDelete" asp-asp-controller="Classification" asp-route-id="@item.Id" asp-route-strBagsId="@item.strBagsId">刪除</a>
+                        @{
+                            var strImgUrls = products.Where(o => o.strBagsId.Equals(item.strBagsId)).Select(o => o.strImageUrl).FirstOrDefault();
+                            var urls = strImgUrls.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var url in urls)
+                            {
+                                int startIndex = url.IndexOf(@"\upload");
+                                if (startIndex != -1)
+                                {
+                                    <img style="width:80px; height:80px" src="@url.Substring(startIndex).Replace(" \\", "/" )" />
+                                }
+                            }
+
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="DetailDelete" asp-asp-controller="Classification" asp-route-id="@item.Id" asp-route-strBagsId="@item.strBagsId" asp-route-page="@currentpage">刪除</a>
                     </td>
                 </tr>
             }

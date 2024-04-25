@@ -319,6 +319,8 @@ align-self: end;
     width: 1200px;
     height: auto;
     display: flex;
+    position: relative;
+    flex-direction:column;
 }
 
 .main_editor_1600 {

@@ -4,7 +4,8 @@
     display: flex;
     position: relative;
     justify-content: center;
-    background-color: #BFBFC1;
+    align-items: center;
+    background-color: #E2E2E2;
 }
 .carousel {
     height: auto;

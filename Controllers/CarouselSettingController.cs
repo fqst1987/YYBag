@@ -99,7 +99,9 @@ namespace YYBagProgram.Controllers
                 return View(model);
             }
         }
+        #endregion
 
+        #region 編輯
         [HttpGet]
         [Route("CarouselSetting/Edit/{strBagsId}/{page}")]
         public async Task<IActionResult> Edit(string strBagsId, int page)
@@ -139,7 +141,9 @@ namespace YYBagProgram.Controllers
                 return View(model);
             }
         }
+        #endregion
 
+        #region 刪除
         [HttpGet]
         [Route("CarouselSetting/Delete/{strBagsId}/{page}")]
         public async Task<IActionResult> Delete(string strBagsId, int page)
@@ -173,6 +177,7 @@ namespace YYBagProgram.Controllers
                 return View(model);
             }
         }
+        #endregion
 
         [HttpGet]
         public async Task<JsonResult> GetImgUrl(string strbagsid)
@@ -186,7 +191,5 @@ namespace YYBagProgram.Controllers
 
             return Json( new { strImageUrl = result });
         }
-        #endregion
-
     }
 }

@@ -6,12 +6,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/homepage.min.css",
-    "inputFiles": [
-      "css/homepage.min.css"
-    ]
-  },
-  {
     "outputFileName": "css/product.min.css",
     "inputFiles": [
       "css/product.css"
@@ -42,6 +36,12 @@
     ]
   },
   {
+    "outputFileName": "CSS/carousel.min.css",
+    "inputFiles": [
+      "CSS/carousel.css"
+    ]
+  },
+  {
     "outputFileName": "CSS/Pagination.min.css",
     "inputFiles": [
       "CSS/Pagination.css"
@@ -63,6 +63,12 @@
     "outputFileName": "wwwroot/js/Carousel.min.js",
     "inputFiles": [
       "JS/Carousel.min.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/homepage.min.css",
+    "inputFiles": [
+      "wwwroot/css/homepage.css"
     ]
   }
 ]

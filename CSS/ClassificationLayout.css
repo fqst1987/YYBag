@@ -36,7 +36,7 @@
     background-color: #F6F2F1;
     font-size: 16px;
     color: #6E4740;
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
 }
     .classfication_item:hover {
         border: 3px #E3BCB5 solid;
@@ -56,7 +56,7 @@
     position: relative;
     flex-direction: column;
     align-items: start;
-    margin: 0 15px 0 15px;
+    margin: 0 0 0 15px;
 }
 
 .product_color_collection {
@@ -100,15 +100,11 @@
 
 .product_name_price {
     color: #5E5D65;
-    font-size: 14px;
+    font-size: 16px;
     display: flex;
     flex-direction: column;
     width: 100%;
 }
-
-    .product_name_price span {
-        margin: 0 0 5px 0;
-    }
 
 .btn_addchart {
     width: 40px;

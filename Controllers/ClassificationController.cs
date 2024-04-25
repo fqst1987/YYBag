@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using System.Drawing.Printing;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
 
@@ -14,7 +15,8 @@ namespace YYBagProgram.Controllers
     {
         private readonly YYBagProgramContext _context;
         private readonly IWebHostEnvironment _environment;
-
+        private readonly ILogger _logger;
+ 
         public ClassificationController(YYBagProgramContext context, IWebHostEnvironment environment)
         {
             _context = context;
@@ -23,33 +25,58 @@ namespace YYBagProgram.Controllers
 
         #region 自訂分類 主頁
         [HttpGet]
-        public async Task<IActionResult> Main()
+        [Route("Classification/Main/{page}")]
+        public async Task<IActionResult> Main(int page)
         {
-            return _context.Classification != null ?
-                        View(await _context.Classification.ToListAsync()) :
-                        Problem("Entity set 'YYBagProgramContext.Classification'  is null.");
+            int pageSize = 10;
+            if (_context.Classification != null)
+            {
+                var classifications = await _context.Classification.ToListAsync();
+                var totalPages = (int)Math.Ceiling(classifications.Count / (double)pageSize);
+                var paginatedProducts = classifications.Skip((page - 1) * pageSize).Take(pageSize);
+
+                ViewData["TotalPages"] = totalPages;
+                ViewData["CurrentPage"] = page;
+
+                return View(paginatedProducts);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> ClassificationMain(string strClassificationId)
+        [Route("Classification/ClassificationMain/{Id}/{page}")]
+        public async Task<IActionResult> ClassificationMain(string Id, int page)
         {
+            int pageSize = 3;
+            ViewData["id"] = Id;
+
             CFViewModel vm = new CFViewModel();
             List<string> listBagsId = new List<string>();
             List<string> liststrID = new List<string>();
 
             //找到分類
-            if (_context.Classification != null && strClassificationId != null)
+            if (_context.Classification != null && Id != null)
             {
                 vm.Classfications = await _context.Classification.ToListAsync();
-                vm.Classification = await _context.Classification.Where(row => row.Id.Equals(strClassificationId)).FirstOrDefaultAsync();
+                vm.Classification = await _context.Classification.Where(row => row.Id.Equals(Id)).FirstOrDefaultAsync();
                 ViewData["titlemsg"] = vm.Classification?.Name;
             }
             //找到分類明細
             if (_context.ClassificationDetail != null)
             {
-                vm.ClassificationDetails = await _context.ClassificationDetail.Where(row => row.Id.Equals(strClassificationId)).ToListAsync();
+                vm.ClassificationDetails = await _context.ClassificationDetail.Where(row => row.Id.Equals(Id)).ToListAsync();
                 //找到分類明細中的商品項目
-                listBagsId = vm.ClassificationDetails.Select(row => row.strBagsId).Distinct().ToList();             
+                listBagsId = vm.ClassificationDetails.Select(row => row.strBagsId).Distinct().ToList();
+                //看會有幾頁
+                var totalPages = (int)Math.Ceiling(listBagsId.Count / (double)pageSize);
+                var paginatedProducts = listBagsId.Skip((page - 1) * pageSize).Take(pageSize);
+
+                ViewData["totalpages"] = totalPages;
+                ViewData["currentpage"] = page;
+
             }
             //找到商品主檔
             if (_context.Product != null)
@@ -94,13 +121,11 @@ namespace YYBagProgram.Controllers
                 }
                 vm.ProductsColorDetails = listProductColorDetails;
             }
-            ////找當月主打
-            //if (_context.MonthlyHots != null)
-            //{
-            //    int iyear = DateTime.Now.Year;
-            //    int imonth = DateTime.Now.Month;
-            //    vm.MonthlyHots = await _context.MonthlyHots.Where(row => row.Year == iyear && row.Month == imonth).ToListAsync();
-            //}
+            //找輪播設定
+            if (_context.CarouselSetting != null)
+            {
+                vm.CarouselSettings = await _context.CarouselSetting.ToListAsync();
+            }
 
 
             return View(vm);
@@ -109,14 +134,18 @@ namespace YYBagProgram.Controllers
 
         #region 自訂分類 新增
         [HttpGet]
-        public IActionResult Create()
+        [Route("Classification/Create/{page}")]
+        public async Task<IActionResult> Create(int page)
         {
+            ViewData["currentpage"] = page;
+            ViewData["classifications"] = await _context.Classification.ToListAsync();
             return View();
         }
 
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Classification model)
+        [Route("Classification/Create/{page}")]
+        public async Task<IActionResult> Create(Classification model, int page)
         {
 
             model.Id = GetCFId();
@@ -124,33 +153,42 @@ namespace YYBagProgram.Controllers
             {
                 _context.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Main));
+                return RedirectToAction("Main", "Classification", new { page});
             }
-
-            return View(model);
+            else
+            {
+                ViewData["currentpage"] = page;
+                return View(model);
+            }
         }
         #endregion
 
         #region 自訂分類 編輯
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        [Route("Classification/Edit/{page}/{id}")]
+        public async Task<IActionResult> Edit(string id, int page)
         {
             if (id == null || _context.Classification == null)
             {
                 return NotFound();
             }
 
+            ViewData["classifications"] = await _context.Classification.ToListAsync();
+
             var model = await _context.Classification.FindAsync(id);
             if (model == null)
             {
                 return NotFound();
             }
+
+            ViewData["currentpage"] = page;
             return View(model);
         }
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Classification model)
+        [Route("Classification/Edit/{page}/{id}")]
+        public async Task<IActionResult> Edit(Classification model, int page)
         {
 
             if (ModelState.IsValid)
@@ -169,18 +207,24 @@ namespace YYBagProgram.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Content(ex.Message);
                     }
                 }
-                return RedirectToAction("Main", "Products");
+                return RedirectToAction("Main", "Classification", new { page});
             }
-            return View(model);
+            else
+            {
+                ViewData["classifications"] = await _context.Classification.ToListAsync();
+                ViewData["currentpage"] = page;
+                return View(model);
+            }
         }
         #endregion
 
         #region 自訂分類 刪除
         [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+        [Route("Classification/Delete/{page}/{id}")]
+        public async Task<IActionResult> Delete(string id, int page)
         {
             if (id == null || _context.Classification == null)
             {
@@ -188,6 +232,7 @@ namespace YYBagProgram.Controllers
             }
 
             var model = await _context.Classification.FirstOrDefaultAsync(m => m.Id == id);
+            ViewData["currentpage"] = page;
             if (model == null)
             {
                 return NotFound();
@@ -198,7 +243,8 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [Route("Classification/Delete/{page}/{id}")]
+        public async Task<IActionResult> DeleteConfirmed(string id, int page)
         {
 
             if (_context.Classification == null)
@@ -222,18 +268,23 @@ namespace YYBagProgram.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Main", "Classification");
+            return RedirectToAction("Main", "Classification", new { page });
 
         }
         #endregion
 
         #region 自訂分類明細 主頁
         [HttpGet]
-        [Route("Classification/DetailMain/{id}")]
-        public async Task<IActionResult> DetailMain(string id)
+        [Route("Classification/DetailMain/{page}/{id}")]
+        public async Task<IActionResult> DetailMain(string id, int page)
         {
-            ViewData["products"] = await _context.Product.ToListAsync();
+            if (_context.Product != null)
+            {
+                ViewData["products"] = await _context.Product.ToListAsync();
+            }
+
             ViewData["id"] = id;
+            ViewData["currentpage"] = page;
             if (_context.ClassificationDetail != null)
             {
                 if (await _context.Classification.FindAsync(id) != null)
@@ -252,11 +303,21 @@ namespace YYBagProgram.Controllers
 
         #region 自訂分類明細 新增
         [HttpGet]
-        //[[Route("Classification/DetailCreate/{id}")]
-        public async Task<IActionResult> DetailCreate(string id)
+        [Route("Classification/DetailCreate/{page}/{id}")]
+        public async Task<IActionResult> DetailCreate(string id, int page)
         {
-            ViewData["products"] = await _context.Product.ToListAsync();
-            ViewData["classificationdetail"] = await _context.ClassificationDetail.ToListAsync();
+            if (_context.Product != null)
+            {
+                ViewData["products"] = await _context.Product.ToListAsync();
+            }
+
+            if(_context.ClassificationDetail != null)
+            {
+                ViewData["classificationdetail"] = await _context.ClassificationDetail.ToListAsync();
+            }
+
+            ViewData["currentpage"] = page;
+            
             ClassificationDetail model = new ClassificationDetail();
             model.Id = id;
             
@@ -265,31 +326,38 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("DetailCreate")]
         [ValidateAntiForgeryToken]
-        //[[Route("Classification/DetailCreate/{id}")]
-        public async Task<IActionResult> DetailCreate(ClassificationDetail model)
+        [Route("Classification/DetailCreate/{page}/{id}")]
+        public async Task<IActionResult> DetailCreate(ClassificationDetail model, int page)
         {
             if (ModelState.IsValid)
             {           
                 _context.ClassificationDetail.Add(model);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("DetailMain", "Classification", new { id = model.Id });
+                return RedirectToAction("DetailMain", "Classification", new { id = model.Id, page = page });
             }
-            ViewData["products"] = await _context.Product.ToListAsync();
-            ViewData["classificationdetail"] = await _context.ClassificationDetail.ToListAsync();
-            return View(model);
+            else
+            {
+                ViewData["products"] = await _context.Product.ToListAsync();
+                ViewData["classificationdetail"] = await _context.ClassificationDetail.ToListAsync();
+                ViewData["currentpage"] = page;
+                return View(model);
+            }
         }
         #endregion
 
         #region 自訂分類明細 刪除
         [HttpGet]
-        [Route("Classification/DetailDelete/{id}/{strBagsId}")]
-        public async Task<IActionResult> DetailDelete(string id, string strBagsId)
+        [Route("Classification/DetailDelete/{page}/{id}/{strBagsId}")]
+        public async Task<IActionResult> DetailDelete(string id, string strBagsId, int page)
         {
             if(id == null || strBagsId == null)
             {
                 return NotFound(); 
             }
+
+            ViewData["currentpage"] = page;
+
             var model = await _context.ClassificationDetail.FindAsync(id, strBagsId);
 
             return View(model);
@@ -297,8 +365,8 @@ namespace YYBagProgram.Controllers
 
         [HttpPost, ActionName("DetailDelete")]
         [ValidateAntiForgeryToken]
-        [Route("Classification/DetailDelete/{id}/{strBagsId}")]
-        public async Task<IActionResult> DetailDeleteConfirmed(string id, string strBagsId)
+        [Route("Classification/DetailDelete/{page}/{id}/{strBagsId}")]
+        public async Task<IActionResult> DetailDeleteConfirmed(string id, string strBagsId, int page)
         {
             if (_context.ClassificationDetail == null)
             {
@@ -313,7 +381,7 @@ namespace YYBagProgram.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("DetailMain", "Classification", new { id});
+            return RedirectToAction("DetailMain", "Classification", new { id, page});
 
         }
         #endregion
@@ -344,9 +412,24 @@ namespace YYBagProgram.Controllers
 
             return result;
         }
+
         private bool ClassificationExists(string id)
         {
             return (_context.Classification?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        [HttpGet]
+        //[Route("Classification/GetImgUrl/{strBagsId}")]
+        public async Task<JsonResult> GetImgUrl(string strbagsid)
+        {
+            string result = string.Empty;
+
+            if (_context.Product != null)
+            {
+                result = await _context.Product.Where(row => row.strBagsId.Equals(strbagsid)).Select(row => row.strImageUrl).FirstOrDefaultAsync() ?? string.Empty;
+            }
+
+            return Json(new { strImageUrl = result });
         }
 
     }
