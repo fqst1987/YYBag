@@ -4,11 +4,12 @@ body {
 
 .menu_wrapper {
     background: #B4A29E;
-    height: 100px;
+    height: auto;
     width: 100%;
     display: flex;
     position: relative;
     justify-content: center;
+    min-height: 100px;
 }
 
 .container {
@@ -151,7 +152,7 @@ align-self: end;
 
 .footer {
     width: 1200px;
-    height: 100px;
+    height: 200px;
     background: #B4A29E;
     display: flex;
     position: relative;
@@ -199,7 +200,7 @@ align-self: end;
 }
 
 .form_group {
-    padding: 3px 0 3px 0;
+    margin: 2em 0;
     display: flex;
 }
 
@@ -282,16 +283,6 @@ align-self: end;
     border-width: 1px;
 }
 
-
-.div_login {
-    background: white;
-    margin: 0 10px;
-    width: 400px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-}
-
 .lb_login {
     font-size: 24px;
     position: relative;
@@ -362,14 +353,6 @@ align-self: end;
     flex-direction: column;
     align-items: start;
     height: auto;
-}
-
-.main_top_column_mid {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .form_previewimgs{

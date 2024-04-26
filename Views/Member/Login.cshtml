@@ -1,13 +1,16 @@
-﻿@model YYBagProgram.Models.LoginPostViewModel;
+﻿@model YYBagProgram.Models.ViewModel.LoginPostViewModel;
 @{
     ViewData["titlemsg"] = "登入";
+    string google_client_id = ViewData["google_client_id"]?.ToString() ?? string.Empty;
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-<div class="main_editor">
-    <div id="client_login_top" class="main_top_row">
+<div class="main_editor_950">
+    <div id="client_login_top" class="main_row_mid">
         <div class="div_login_ad">
             <img src="https://fakeimg.pl/500x400/">
         </div>
@@ -16,18 +19,18 @@
                 <sapn>登入</sapn>
             </div>
             <div class="div_login_1">
-                <form asp-action="Login" asp-controller="Member" method="post">
+                <form asp-action="Login" asp-controller="Member" method="post" id="form">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form_group" id="client_login">
-                        <div style="margin: 10px 20px">
-                            <input class="comm_input_320" type="number" asp-for="strMemberGuid" placeholder="請輸入註冊之電話號碼" />
-                            <span asp-validation-for="strMemberGuid" class="text-danger"></span>
+                        <div style="margin: 10px 20px; display:flex; flex-direction:column;" >
+                            <input class="comm_input_320" type="number" asp-for="strMemberGuid" placeholder="請輸入註冊之電話號碼/Email" id="input_phone"/>
+                            <span asp-validation-for="strMemberGuid" class="text-danger" id="span_phone"></span>
                         </div>
                     </div>
                     <div class="form_group" id="client_login_password">
                         <div style="margin: 10px 20px">
-                            <input class="comm_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" />
-                            <span asp-validation-for="strMemberPassWord" class="text-danger"></span>
+                            <input class="comm_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" id="input_password"/>
+                            <span asp-validation-for="strMemberPassWord" class="text-danger" id="span_passowrd"></span>
                         </div>
                     </div>
                     <div class="from_group">
@@ -40,15 +43,71 @@
                     <a asp-action="Register" asp-controller="Member" class="a_register">註冊</a>
                     <a asp-action="ReSetPassword" asp-controller="Member" class="a_resetpassword">忘記密碼</a>
                 </div>
-                <hr />
+                <hr style="border:1px #B5BAC0 solid; position:relative; top: 20px;" />
+                <div class="external_login_area">
+                    <div style="margin: 15px 20px;">
+                        <div id="g_id_onload"
+                             data-client_id=@google_client_id
+                             data-login_uri="https://localhost:7215/Member/ValidGoogleLogin"
+                             data-auto_prompt="false">
+                        </div>
+                        <div class="g_id_signin"
+                             data-type="standard"
+                             data-size="large"
+                             data-theme="outline"
+                             data-text="sign_in_with"
+                             data-shape="rectangular"
+                             data-logo_alignment="left">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-
 </div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        var btn_submitElement = document.getElementById("btn_sunmit");
+        btn_submitElement.addEventListener("click", (event) => {
+
+            var input_phoneElement = document.getElementById("input_phone");
+            var input_passwordElement = document.getElementById("input_password");
+
+            if (input_phoneElement.value.length == 0) {
+                document.getElementById("span_phone").innerHTML = "請輸入電話號碼/Email";
+                event.preventDefault();
+                return;
+            }
+
+            if (input_passwordElement.value.length == 0) {
+                document.getElementById("span_passowrd").innerHTML = "請輸入密碼";
+                event.preventDefault();
+                return;
+            }
+
+            isexistmember(input_phoneElement.value, input_passwordElement.value, function (data) {
+                if (data === "True") {
+                    document.getElementById("form").submit();
+                } else {
+                    document.getElementById("span_passowrd").innerHTML = "帳號或密碼錯誤";
+                    input_passwordElement.innerHTML = "";
+                }
+            });
+            
+
+        });
+        /*取得是否有這個會員*/
+        function isexistmember(account, password) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = xhr.responseText;
+                    callback(data);
+                }
+            }
+            var url = '/Member/CheckMember/' + account + '/' + password;
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+    </script>
 }

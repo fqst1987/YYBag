@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System.Reflection;
-using System.Security.Claims;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
 using Microsoft.AspNetCore.Authorization;
+using Google.Apis.Auth;
 
 namespace YYBagProgram.Controllers
 {
@@ -17,11 +14,15 @@ namespace YYBagProgram.Controllers
     {
         private readonly YYBagProgramContext _context;
         private readonly IWebHostEnvironment _enviroment;
+        private readonly IConfiguration _configuration;
+        private readonly MemberSerivce _memberserivce;
 
-        public MemberController(YYBagProgramContext context, IWebHostEnvironment enviroment)
+        public MemberController(YYBagProgramContext context, IWebHostEnvironment enviroment, IConfiguration configuration, MemberSerivce memberserivce)
         {
             _context = context;
             _enviroment = enviroment;
+            _configuration = configuration;
+            _memberserivce = memberserivce;
         }
 
         #region 會員中心
@@ -56,66 +57,106 @@ namespace YYBagProgram.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            string id = _configuration["GoogleApiClientId"];
+            ViewData["google_client_id"] = id;
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginPostViewModel loginPost)
+        public bool CheckMember(string account, string password)
         {
+            bool result = false;
 
-            string strPhone = loginPost.strMemberGuid;
-            string strPassword = loginPost.strMemberPassWord;
-            string strHashPassword = PasswordHasher.HashPassword(strPassword);
-            bool isPasswordCorrect = PasswordHasher.VerifyHashedPassword(strPassword, strHashPassword);
-            /*
-              確認身分是否正確
-              錯誤時顯示查無此註冊手機或密碼錯誤
-              正確的時候進入上一個畫面
-            */
-
-            if (!string.IsNullOrEmpty(strPhone))
+            if (_context.Member != null && _context.Member.Any())
             {
-                if (_context.Member.Any(row => row.strMemberPhone.Equals(strPhone)) && isPasswordCorrect)
+                var member = _context.Member.FirstOrDefault(m => m.strMemberEmail.Equals(account) || m.strMemberPhone.Equals(account));
+
+                if (member != null)
                 {
-                    var varCollection = _context.Member.Where(row => row.strMemberPhone.Equals(strPhone)).FirstOrDefault();
-                    string strMemberID = varCollection.strMemberId;
-                    string strMemberName = varCollection.strMemberName;
-                    string strMemberEmail = varCollection.strMemberEmail;
-                    string strMemberPhone = varCollection.strMemberPhone;
+                    string strHashPassword = MemberSerivce.HashPassword(password);
+                    bool isPasswordCorrect = MemberSerivce.VerifyHashedPassword(password, strHashPassword);
 
-                    var claims = new List<Claim>
+                    if (isPasswordCorrect)
                     {
-                        new Claim (ClaimTypes.Name, strMemberID),
-                        new Claim (ClaimTypes.Email, strMemberEmail),
-                        new Claim (ClaimTypes.MobilePhone, strPhone),
-                        new Claim ("FullName", strMemberName)
-                    };
-
-                    //如果是系統管理者
-                    if (strMemberPhone.Equals("0932513822"))
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, "Administer"));
+                        result = true;
                     }
-                    else
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, "Client"));
-                    }
+                }                   
+            }
+            return result;
+        }
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+        //google登入
+        public IActionResult ValidGoogleLogin()
+        {
+            string? formCredential = Request.Form["credential"]; //回傳憑證
+            string? formToken = Request.Form["g_csrf_token"]; //回傳令牌
+            string? cookiesToken = Request.Cookies["g_csrf_token"]; //Cookie 令牌
 
-                    //成功後轉跳至首頁
-                    return RedirectToAction("HomePage", "Home");
+            // 驗證 Google Token
+            GoogleJsonWebSignature.Payload? payload = VerifyGoogleToken(formCredential, formToken, cookiesToken).Result;
+            if (payload == null)
+            {
+                // 驗證失敗
+                ViewData["Msg"] = "驗證 Google 授權失敗";
+            }
+            else
+            {
+                //驗證成功，取使用者資訊內容
+                ViewData["Msg"] = "驗證 Google 授權成功" + "<br>";
+                ViewData["Msg"] += "Email:" + payload.Email + "<br>";
+                ViewData["Msg"] += "Name:" + payload.Name + "<br>";
+                ViewData["Msg"] += "Picture:" + payload.Picture;
+            }
+
+            return RedirectToAction("HomePage", "Home");
+        }
+        private async Task<GoogleJsonWebSignature.Payload?> VerifyGoogleToken(string? formCredential, string? formToken, string? cookiesToken)
+        {
+            // 檢查空值
+            if (formCredential == null || formToken == null && cookiesToken == null)
+            {
+                return null;
+            }
+
+            GoogleJsonWebSignature.Payload? payload;
+            try
+            {
+                // 驗證 token
+                if (formToken != cookiesToken)
+                {
+                    return null;
+                }
+
+                // 驗證憑證
+                IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+                string GoogleApiClientId = Config.GetSection("GoogleApiClientId").Value;
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { GoogleApiClientId }
+                };
+                payload = await GoogleJsonWebSignature.ValidateAsync(formCredential, settings);
+                if (!payload.Issuer.Equals("accounts.google.com") && !payload.Issuer.Equals("https://accounts.google.com"))
+                {
+                    return null;
+                }
+                if (payload.ExpirationTimeSeconds == null)
+                {
+                    return null;
                 }
                 else
                 {
-                    //失敗的話跳出視窗並回原登入頁面
-                    return RedirectToAction("ShowPopup", "Errors");
+                    DateTime now = DateTime.Now.ToUniversalTime();
+                    DateTime expiration = DateTimeOffset.FromUnixTimeSeconds((long)payload.ExpirationTimeSeconds).DateTime;
+                    if (now > expiration)
+                    {
+                        return null;
+                    }
                 }
             }
-            
-            return View();
+            catch
+            {
+                return null;
+            }
+            return payload;
         }
         #endregion
 
@@ -128,78 +169,63 @@ namespace YYBagProgram.Controllers
         }
         #endregion
 
+        #region 未登入
         public IActionResult NoLogin()
         {
             return RedirectToAction("Login", "Member");
         }
+        #endregion
 
         #region 註冊
         [HttpGet]
-        public IActionResult Register() 
+        public async Task<IActionResult> Register() 
         {
-            //建立一個新的member
-            Members member = new Members();
-            member.dateBirthday = DateTime.Now;
-
-            //給一個當年度最新的id
-            string strNow = DateTime.Now.ToString("yyyyMM");
-
-            bool isExist = _context.Member.Any(row => row.strMemberId.Substring(0, 6) == strNow);
-            if (!isExist)
-            {
-                member.strMemberId = strNow + "0001";
-            }
-            else
-            {
-                var aaa = _context.Member.Where(row => row.strMemberId.Substring(0, 6).Equals(strNow)).ToList();
-                var bbb = aaa.Max(row => row.strMemberId.Substring(6, 4));
-                var ccc = (int.Parse(bbb) + 1).ToString("D4");
-                member.strMemberId = strNow + ccc;
-            }
-
-            return View(member);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("strMemberId,strMemberPassWord,strMemberName,strMemberPhone,strMemberEmail,dateBirthday")] Members member)
+        public async Task<IActionResult> Register(Members member)
         {
-            //檢查此手機號碼是否已經註冊過
-            string strPhone = member.strMemberPhone;
-
-            if (CheckPhoneNumberExist(strPhone)) 
+            if (_memberserivce.isAccountRegister(member.strMemberPhone ?? string.Empty, member.strMemberEmail))
             {
-                return RedirectToAction("ShowPoopup", "Error");
+                ModelState.AddModelError("strMemberEmail", "此信箱/手機已被註冊");
+                return View(member);
             }
-
-            var password = member.strMemberPassWord;
-
-            //取的password的hash值
-            var hashpassword = PasswordHasher.HashPassword(password);
-
-            //將取得的hash值寫入member中
-            member.strMemberPassWord = hashpassword;
 
             if (ModelState.IsValid)
             {
+                //給一個當年度最新的id
+                string strNow = DateTime.Now.ToString("yyyyMM");
+
+                bool isExist = _context.Member.Any(row => row.strMemberId.Substring(0, 6) == strNow);
+                if (!isExist)
+                {
+                    member.strMemberId = strNow + "0001";
+                }
+                else
+                {
+                    var aaa = _context.Member.Where(row => row.strMemberId.Substring(0, 6).Equals(strNow)).ToList();
+                    var bbb = aaa.Max(row => row.strMemberId.Substring(6, 4));
+                    var ccc = (int.Parse(bbb) + 1).ToString("D4");
+                    member.strMemberId = strNow + ccc;
+                }
+
+                //取得密碼的hash值
+                var password = member.strMemberPassWord ?? string.Empty;
+                var hashpassword = MemberSerivce.HashPassword(password);
+                member.strMemberPassWord = hashpassword;
+
                 _context.Add(member);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Login", "Member");
-
+                return RedirectToAction("Home", "Hompage");
             }
             else
             {
-                // 有錯誤，跳出警示畫面
-                return View("Error");
+                return View(member);
             }
-
         }
         #endregion
-
-        private bool CheckPhoneNumberExist(string strPhone)
-        {
-            return _context.Member.Any(row => row.strMemberPhone == strPhone);
-        }
 
     }
 }

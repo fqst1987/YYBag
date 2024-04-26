@@ -12,9 +12,10 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7215/;http://localhost:5268;",
+      "applicationUrl": "https://localhost:7215/;",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GoogleApiClientId": "326544106141-m9dqfr5444392jkefmps57bvdb5v09me.apps.googleusercontent.com"
       }
     },
     "IIS Express": {

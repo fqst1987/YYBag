@@ -1,53 +1,89 @@
-﻿@model YYBagProgram.Models.Members
-
+﻿@model YYBagProgram.Models.Members;
 @{
-    ViewData["titlemsg"] = "建立新會員";
+    ViewData["titlemsg"] = "註冊會員";
 }
-
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<div class="main_editor">
-    <div class="main_top_column_mid" id="register_up">
-        <form asp-action="Register" asp-controller="Member" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="strMemberId" />
-            <div class="form_group">
-                <label asp-for="strMemberName" class="comm_label"></label>
-                <input asp-for="strMemberName" class="comm_input_320" placeholder="請填寫真實姓名" />
-                <span asp-validation-for="strMemberName" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="dateBirthday" class="comm_label"></label>
-                <input type="date" asp-for="dateBirthday" class="comm_input_320" />
-                <span asp-validation-for="dateBirthday" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberPassWord" class="comm_label"></label>
-                <input type="password" asp-for="strMemberPassWord" class="comm_input_320" placeholder="密碼最長20個英數字元" />
-                <span asp-validation-for="strMemberPassWord" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberPhone" class="comm_label"></label>
-                <input type="number" asp-for="strMemberPhone" class="comm_input_320" />
-                <span asp-validation-for="strMemberPhone" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberEmail" class="comm_label"></label>
-                <input asp-for="strMemberEmail" class="comm_input_320" />
-                <span asp-validation-for="strMemberEmail" class="text-danger"></span>
-            </div>
-            <div class="form_submit">
-                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
-            </div>
-        </form>
-        <div style="position: relative; left:50px">
-            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Login", "Home")'">取消</button>
+
+<div class="main_editor_950">
+    <div id="client_login_top" class="main_row_mid">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x500/">
+        </div>
+        <div class="div_login">
+            <span class="member_span_1">註冊會員</span>
+            <form asp-action="Register" asp-controller="Member" method="post" id="form">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="strMemberId" type="hidden" value="temp" />
+                <div class="member_input_area">
+                    <input asp-for="strMemberEmail" class="member_input_320" placeholder="請輸入Email(必要)" id="input_email" />
+                    <span asp-validation-for="strMemberEmail" class="span_danger" id="span_email"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="password" asp-for="strMemberPassWord" class="member_input_320" placeholder="password 密碼最少6位(必要)" id="input_password_1" />
+                    <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_password_1"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="password" class="member_input_320" placeholder="password 再輸入一次(必要)" id="input_password_2" />
+                    <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_password_2"></span>
+                </div>
+                <div class="member_input_area">
+                    <input asp-for="strMemberName" class="member_input_320" placeholder="請填寫姓名" />
+                    <span asp-validation-for="strMemberName" class="text-danger"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="date" asp-for="dateBirthday" class="member_input_320" placeholder="選擇生日日期" value="" />
+                    <span asp-validation-for="dateBirthday" class="text-danger"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="number" asp-for="strMemberPhone" class="member_input_320" placeholder="請輸入手機" />
+                    <span asp-validation-for="strMemberPhone" class="text-danger"></span>
+                </div>
+                <input type="submit" value="註冊會員" class="btn_full" id="btn_sunmit" />
+            </form>
         </div>
     </div>
 </div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        var btn_submitElement = document.getElementById("btn_sunmit");
+     
+        btn_submitElement.addEventListener("click", (event) => {
+
+            //先刪除全部danger
+            document.querySelectorAll(".span_danger").forEach(element => {
+                element.innerHTML = "";
+            })
+
+            //email是否有填
+            var input_emailElement = document.getElementById("input_email");
+            if (input_emailElement.value.length == 0) {
+                document.getElementById("span_email").innerHTML = "請輸入email";
+                event.preventDefault();
+                return;
+            }
+            
+            //檢查是否密碼是否有六位
+            var input_passwordElement1 = document.getElementById("input_password_1");
+            console.log(input_passwordElement1.value);
+            if (input_passwordElement1.value.length == 0 || input_passwordElement1.value.length < 6) {
+                document.getElementById("span_password_1").innerHTML = "密碼格式不正確";
+                event.preventDefault();
+                return;
+            }
+
+            var input_passwordElement2 = document.getElementById("input_password_2");
+            console.log(input_passwordElement2.value);
+            event.preventDefault();
+            if (input_passwordElement1.value != input_passwordElement2.value) {
+                document.getElementById("span_password_2").innerHTML = "兩次密碼輸入不相同";
+                event.preventDefault();
+                return;
+            }
+        });
+
+    </script>
 }

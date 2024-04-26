@@ -23,6 +23,7 @@ namespace YYBagProgram.Data
             modelBuilder.Entity<CarouselSetting>().HasKey(p => new { p.strBagsId });
             modelBuilder.Entity<Classification>().HasKey(p => new { p.Id });
             modelBuilder.Entity<ClassificationDetail>().HasKey(p => new { p.Id, p.strBagsId });
+            modelBuilder.Entity<Members>().HasKey(p => new { p.strMemberEmail });
         }
 
 

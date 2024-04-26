@@ -1,4 +1,4 @@
-﻿namespace YYBagProgram.Models
+﻿namespace YYBagProgram.Models.ViewModel
 {
     public class CFViewModel
     {

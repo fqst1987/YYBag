@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Security.Policy;
+using YYBagProgram;
 using YYBagProgram.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +15,7 @@ builder.Services.AddControllersWithViews();
 
 //用戶驗證操作機制註冊DI(在controller範圍外使用方式)
 builder.Services.AddHttpContextAccessor();
+
 
 //自訂用戶登入資訊操作註冊DI
 //builder.Services.AddScoped<>();
@@ -69,7 +68,11 @@ app.MapControllerRoute(
     pattern: "{controller=CarouselSetting}/{action=GetImgUrl}/{strBagsId}");
 
 app.MapControllerRoute(
+    name: "CheckMember",
+    pattern: "{controller=Member}/{action=CheckMember}/{account}/{password}");
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=homepage}");
+    pattern: "{controller=home}/{action=index}");
 
 app.Run();
