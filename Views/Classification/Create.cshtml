@@ -17,7 +17,7 @@
             <input type="hidden" asp-for=Id value="temp" />
             <div class="form_group">
                 <label asp-for="Name" class="comm_label"></label>
-                <input asp-for="Name" class="comm_input" />
+                <input asp-for="Name" class="comm_input" id="input_name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form_submit">
@@ -32,6 +32,8 @@
 </div>
 @section Scripts {
     <script>
+        var items = @Html.Raw(Json.Serialize(classifications));
+
         document.getElementById("btn_sunmit").addEventListener("click", function (event) {
 
             selectedValue = document.getElementById("input_name").value;
@@ -43,10 +45,8 @@
                 return;
             }
 
-            var items = @Html.Raw(Json.Serialize(classifications));
-
             var exists = items.some(function (item) {
-                return (item.Name == selectedValue);
+                return (item.name == selectedValue);
             });
 
             if (exists) {

@@ -158,6 +158,7 @@ namespace YYBagProgram.Controllers
             else
             {
                 ViewData["currentpage"] = page;
+                ViewData["classifications"] = await _context.Classification.ToListAsync();
                 return View(model);
             }
         }

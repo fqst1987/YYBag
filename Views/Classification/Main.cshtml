@@ -46,7 +46,7 @@
                         <a asp-action="Edit" asp-controller="Classification" asp-route-id="@item.Id" asp-route-page="@currentpage">
                             編輯 |
                         </a>
-                        <a asp-action="Delete" asp-controller="Classification" asp-route-id="@item.Id">
+                        <a asp-action="Delete" asp-controller="Classification" asp-route-id="@item.Id" asp-route-page="@currentpage">
                             刪除
                         </a>
                     </td>
