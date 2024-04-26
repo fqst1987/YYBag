@@ -7,17 +7,17 @@ namespace YYBagProgram.Models
     [DisplayName("會員")]
     public class Members
     {
-        [DisplayName("會員編號")]
+        [DisplayName("會員帳號")]
         [Required]
         [Column(TypeName = "varchar(10)")]
         public string strMemberId { get; set; } = string.Empty;
 
-        [DisplayName("會員密碼")]
+        [DisplayName("密碼")]
         [Required]
         [Column(TypeName = "varchar(max)")]
         public string strMemberPassWord { get; set; } = string.Empty;
 
-        [DisplayName("會員名稱")]
+        [DisplayName("姓名")]
         [Required]
         [Column(TypeName = "nvarchar(10)")]
         public string strMemberName { get; set; } = string.Empty;

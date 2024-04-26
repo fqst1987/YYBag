@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
 
-namespace YYBagProgram.Models
+namespace YYBagProgram.Models.ViewModel
 {
     public class ErrorViewModel : PageModel
     {
@@ -18,7 +18,7 @@ namespace YYBagProgram.Models
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
 
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            
+
             if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
             {
                 ExceptionMessage = "This file was not found";

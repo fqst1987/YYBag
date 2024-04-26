@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace YYBagProgram.Models
+namespace YYBagProgram.Models.ViewModel
 {
     public class ProductDetailViewModel
     {

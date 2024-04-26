@@ -9,6 +9,7 @@ using System.Security.Claims;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
 using Microsoft.AspNetCore.Authorization;
+using YYBagProgram.Models.ViewModel;
 
 namespace YYBagProgram.Controllers
 {
