@@ -75,5 +75,19 @@ namespace YYBagProgram.Enums
             [Display(Name = "退貨")]
             Return = 8,
         }
+
+        //public enum MemberStatus
+        //{
+        //    [Display(Name = "未登入")]
+        //    NoLogin = 0,
+        //    [Display(Name = "已登入")]
+        //    Login = 1,
+        //    [Display(Name = "未驗證")]
+        //    NoReview = 2,
+        //    [Display(Name = "重設密碼token過期")]
+        //    ResetPasswordTokenExpire = 3,
+        //    [Display(Name = "驗證帳戶token過期")]
+        //    ReviewTokenExpire = 4,
+        //}
     }
 }

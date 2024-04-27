@@ -1,31 +1,110 @@
 ﻿@{
-    ViewData["titlemsg"] = "";
+    ViewData["titlemsg"] = "會員中心";
 }
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
-        <link rel="stylesheet" href="~/css/MemberCenter.min.css" />
+    <link rel="stylesheet" href="~/css/member.min.css" />
 </head>
-<div class="main_editor_900">
-    <div class="membercenterlist">
-        <div class="memberlogo">
-            <img src="https://fakeimg.pl/50x50/">
-            <span>ryan7616</span>
+<div class="main_editor_950">
+    <div class="membercenter_client_list flex_direction_column align_item_center">
+        <div class="memberlogo align_item_center">
+            <img src="https://fakeimg.pl/40x40/">
+            <span class="member_span_3">ryan7616</span>
         </div>
-        <hr style="width: 200px; border: 1px #DBE2EC solid;" />
-        <div class="memberlistblock">
+        <hr style="width: 100%; border: 1px #DBE2EC solid;" />
+        <div class="memberlistblock_h align_item_center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B7493" class="bi bi-person-plus" viewBox="0 0 16 16">
                 <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
             </svg>
-            <a class="membercenter_a a_none" href="#">我的帳戶</a>
+            <a class="a_membercenter_h" href="#" id="myinfo">我的帳戶</a>
         </div>
         <div class="memberlistblock">
+            <div style="width:30px; height:30px"></div>
+            <a class="a_membercenter" href="#" id="info">個人資料</a>
+        </div>
+        <div class="memberlistblock">
+            <div style="width:30px; height:30px"></div>
+            <a class="a_membercenter" href="#" id="address">收件地址</a>
+        </div>
+        <div class="memberlistblock">
+            <div style="width:30px; height:30px"></div>
+            <a class="a_membercenter" href="#" id="changepassword">更改密碼</a>
+        </div>
+        <div class="memberlistblock_h align_item_center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B7493" class="bi bi-card-checklist" viewBox="0 0 16 16">
                 <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z" />
                 <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0" />
             </svg>
-            <a class="membercenter_a a_none" href="#">購買清單</a>
+            <a class="a_membercenter_h" href="#" id="shoplist">購買清單</a>
         </div>
     </div>
-    @await Html.PartialAsync("_Memberinfo");
+    <div class="membercenter_client_edit flex_direction_column">
+        <div class="memberinfo_1 align_item_center">
+            <h2>個人資料</h2>
+        </div>
+        <hr style="width: 90%; border: 1px #DBE2EC solid;" />
+        <div class="memberinfo_2 flex_direction_column">
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">會員帳號</label>
+                <input class="member_input" value="ryan7616" readonly>
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">姓名</label>
+                <input class="member_input" value="ryan7616" readonly>
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">密碼</label>
+                <input class="member_input" value="ryan7616" type="password" id="password" readonly />
+                <input type="checkbox" id="showPasswordCheckbox">
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">手機</label>
+                <input class="member_input" value="0932513822" type="number" />
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">Email</label>
+                <input class="member_input" value="ryan7616" readonly />
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label">生日</label>
+                <input type="date" style="width: 160px;">
+            </div>
+            <div class="membercenter_client_edit_list_block">
+                <label class="member_label"></label>
+                <button class="btn_comfirm">儲存</button>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            //顯示密碼
+            $('#showPasswordCheckbox').change(function () {
+                var passwordField = $('#password');
+                var fieldType = passwordField.attr('type');
+                if (fieldType === 'password') {
+                    passwordField.attr('type', 'text');
+                } else {
+                    passwordField.attr('type', 'password');
+                }
+            });
+
+            //彈出
+            $(document).ready(function () {
+                if ($(window).width() <= 768) {
+                    $('.memberlistblock_h').click(function () {
+
+                        const parentBlock = $(this).parent();
+
+                        const listBlock = parentBlock.find('.memberlistblock');
+
+                        listBlock.slideToggle('600');
+                    });
+                }
+            });
+        });
+    </script>
+}

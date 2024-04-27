@@ -12,53 +12,41 @@
 <div class="main_editor_950">
     <div id="client_login_top" class="main_row_mid">
         <div class="div_login_ad">
-            <img src="https://fakeimg.pl/500x400/">
+            <img src="https://fakeimg.pl/500x500/">
         </div>
         <div class="div_login">
-            <div class="lb_login">
-                <sapn>登入</sapn>
-            </div>
-            <div class="div_login_1">
-                <form asp-action="Login" asp-controller="Member" method="post" id="form">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form_group" id="client_login">
-                        <div style="margin: 10px 20px; display:flex; flex-direction:column;" >
-                            <input class="comm_input_320" type="number" asp-for="strMemberGuid" placeholder="請輸入註冊之電話號碼/Email" id="input_phone"/>
-                            <span asp-validation-for="strMemberGuid" class="text-danger" id="span_phone"></span>
-                        </div>
-                    </div>
-                    <div class="form_group" id="client_login_password">
-                        <div style="margin: 10px 20px">
-                            <input class="comm_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" id="input_password"/>
-                            <span asp-validation-for="strMemberPassWord" class="text-danger" id="span_passowrd"></span>
-                        </div>
-                    </div>
-                    <div class="from_group">
-                        <div style="margin: 10px 20px">
-                            <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
-                        </div>
-                    </div>
-                </form>
-                <div id="forget_password" class="div_item_right">
-                    <a asp-action="Register" asp-controller="Member" class="a_register">註冊</a>
-                    <a asp-action="ReSetPassword" asp-controller="Member" class="a_resetpassword">忘記密碼</a>
+            <sapn class="member_span_1"> 登入</sapn>
+            <form asp-action="Login" asp-controller="Member" method="post" id="form">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="member_input_area" id="client_login">
+                    <input class="member_input_320" type="text" asp-for="strMemberGuid" placeholder="請輸入註冊之Email" id="input_email" />
+                    <span asp-validation-for="strMemberGuid" class="span_danger" id="span_email"></span>
                 </div>
-                <hr style="border:1px #B5BAC0 solid; position:relative; top: 20px;" />
-                <div class="external_login_area">
-                    <div style="margin: 15px 20px;">
-                        <div id="g_id_onload"
-                             data-client_id=@google_client_id
-                             data-login_uri="https://localhost:7215/Member/ValidGoogleLogin"
-                             data-auto_prompt="false">
-                        </div>
-                        <div class="g_id_signin"
-                             data-type="standard"
-                             data-size="large"
-                             data-theme="outline"
-                             data-text="sign_in_with"
-                             data-shape="rectangular"
-                             data-logo_alignment="left">
-                        </div>
+                <div class="member_input_area" id="client_login_password">
+                    <input class="member_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" id="input_password" />
+                    <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_passowrd"></span>
+                </div>
+                <input type="button" value="送出" class="member_btn_full" id="btn_sunmit" />
+            </form>
+            <div id="forget_password" class="forget_password">
+                <a asp-action="Register" asp-controller="Member" class="a_register">註冊</a>
+                <a asp-action="ForgetPassword" asp-controller="Member" class="a_resetpassword">忘記密碼</a>
+            </div>
+            <hr style="border:1px #B5BAC0 solid; position:relative; width:80%;" />
+            <div class="external_login_area">
+                <div style="margin: 15px 20px;">
+                    <div id="g_id_onload"
+                         data-client_id=@google_client_id
+                         data-login_uri="https://localhost:7215/Member/ValidGoogleLogin"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-size="large"
+                         data-theme="outline"
+                         data-text="sign_in_with"
+                         data-shape="rectangular"
+                         data-logo_alignment="left">
                     </div>
                 </div>
             </div>
@@ -67,47 +55,108 @@
 </div>
 @section Scripts {
     <script>
-        var btn_submitElement = document.getElementById("btn_sunmit");
-        btn_submitElement.addEventListener("click", (event) => {
+        $(document).ready(function () {
 
-            var input_phoneElement = document.getElementById("input_phone");
-            var input_passwordElement = document.getElementById("input_password");
-
-            if (input_phoneElement.value.length == 0) {
-                document.getElementById("span_phone").innerHTML = "請輸入電話號碼/Email";
-                event.preventDefault();
-                return;
+            function getToken() {
+                var token = '@Html.AntiForgeryToken()'
+                token = $(token).val();
+                return token;
             }
 
-            if (input_passwordElement.value.length == 0) {
-                document.getElementById("span_passowrd").innerHTML = "請輸入密碼";
-                event.preventDefault();
-                return;
+            //如果有錯誤訊息再這邊顯示
+            var errorMessage = '@ViewBag.ErrorMessage';
+            if (errorMessage !== "") {
+                alert(errorMessage);
             }
 
-            isexistmember(input_phoneElement.value, input_passwordElement.value, function (data) {
-                if (data === "True") {
-                    document.getElementById("form").submit();
-                } else {
-                    document.getElementById("span_passowrd").innerHTML = "帳號或密碼錯誤";
-                    input_passwordElement.innerHTML = "";
+            //會員的帳號密碼是否正確
+            function isexistmember(email, password, callback) {
+                var postData = {
+                    email: email,
+                    password: password
+                };
+                $.ajax({
+                    url: 'CheckMember/',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                });
+            }
+
+            /*會員的帳號是否被啟用*/
+            function ismemberenable(email, callback) {
+                var postData = {
+                    email: email,
+                };
+                $.ajax({
+                    url: 'CheckMemberEnable/',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                });
+            }
+
+            $('#btn_sunmit').click(function (event) {
+
+                //先刪除全部danger
+                $('.span_danger').each(function () {
+                    $(this).html("");
+                })
+
+                //檢查email是否有填入
+                if ($('#input_email').val().length == 0) {
+                    $('#span_email').html("請輸入Email");
+                    event.preventDefault();
+                    return;
                 }
-            });
-            
 
-        });
-        /*取得是否有這個會員*/
-        function isexistmember(account, password) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    var data = xhr.responseText;
-                    callback(data);
+                //檢查密碼是否填入
+                if ($('#input_password').val().length == 0) {
+                    $('#span_passowrd').html("請輸入密碼");
+                    event.preventDefault();
+                    return;
                 }
-            }
-            var url = '/Member/CheckMember/' + account + '/' + password;
-            xhr.open('GET', url, true);
-            xhr.send();
-        }
+
+                //檢查帳號密碼是否正確
+                isexistmember($('#input_email').val(), $('#input_password').val(), function (response) {
+                    if (!response) {
+                        $('#span_passowrd').html("帳號或密碼錯誤");
+                        event.preventDefault();
+                        return;
+                    }
+                    else{
+                        //檢查會員是否有驗證
+                        ismemberenable($('#input_email').val(), function (response) {
+                            if (!response) {
+                                alert("此信箱尚未驗證");
+                                event.preventDefault();                               
+                                window.location = '@Url.Action("EnableMember", "Member")';
+                            }
+                            else {
+                                $('#form').submit();
+                            }
+                        })
+                    }
+                });
+            })
+        })
     </script>
 }

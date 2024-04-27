@@ -1,9 +1,16 @@
-﻿input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+﻿/*dom*/
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
+a {
+    text-decoration: none;
+    font-family: "Microsoft JhengHei";
+}
+
 input {
+    color: #797979;
     border: none;
     outline: none;
     border-bottom: 1px #A7BEC6 solid;
@@ -14,294 +21,41 @@ input {
         font-size: 14px;
     }
 
-.main_editor_950 {
-    width: 1200px;
-    height: auto;
-    min-height: 950px;
-    position: relative;
-    background-color: #F6F2F1;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.div_login {
-    width: 400px;
-    height: 500px;
-    background-color: white;
+div {
     display: flex;
     position: relative;
-    flex-direction: column;
-    margin: 2em 0 0 0;
-    justify-content: center;
-    align-items: center;
 }
 
-.member_span_1 {
-    font-size: 18px;
-    color: #A7BEC6;
-    margin: 0 0 1em 0;
+label {
+    color: #797979;
 }
+/*dom*/
 
-.div_login_ad {
-    margin: 2em 0 0 0;
-}
-
-div_login_ad img {
-    width: 500px;
-    height: 400px;
-}
-
-/*btn*/
-.member_btn_full {
-    height: 28px;
-    width: 326px;
-    position: relative;
-    font-size: 14px;
-    background-color: #B4A29E;
-    border-width: 1px;
-    color: white;
-    margin: 2em 0 0 0;
-    
-}
-
-    .member_btn_full:hover {
-        background-color: #96827f;
-        cursor: pointer;
-    }
-
-.member_input_area {
-    width: 300px;
+/*comm_use*/
+.memberlistblock, .memberlistblock_h {
+    width: 100%;
     height: 40px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    justify-content: center;
-    margin: 10px 0 0 0;
+    /*background-color: #F6E1DC;*/
 }
 
-.member_input_320 {
-    width: 320px;
-    height: 24px;
-    font-family: Microsoft JhengHei;
-    padding: 1em;
-}
-
-.span_danger {
-    font-size: 12px;
-    color: red;
-    padding: 0 0 0 18px;
-}
-
-/*external_login*/
-.external_login_area {
-    width: 100%;
-    height: 80px;
-    display: flex;
-    position: relative;
-    flex-direction: row;
-}
-
-.google {
-    background: white;
-    margin: 10px;
-}
-
-.external_login_icon {
-    width: 60px;
-    height: 60px;
-    background-color: none;
-    margin: 10px;
-}
-
-.main_column_mid {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.main_row_mid {
-    width: auto;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.main_column_start {
-    width: 100%;
-    height: auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    margin: 30px 20px;
-}
-
-.membercenterlist {
-    width: 250px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    margin: 10px 20px;
-    position: relative;
-}
-
-.membercenteredit {
-    width: 1250px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 10px 20px;
-    background-color: white;
-}
-
-.memberlogo {
-    width: 100%;
-    height: 80px;
-    margin: 15px 5px;
-    display: flex;
-    flex-direction: row;
-}
-
-    .memberlogo img {
-        display: flex;
-        position: relative;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        top: 15px;
-    }
-
-    .memberlogo span {
-        position: relative;
-        display: flex;
-        width: 100%;
-        height: auto;
-        font-size: 14px;
-        color: #5E5D65;
-        padding: 0 0 0 15px;
-        align-items: center;
-    }
-
-.memberlistblock {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-    margin: 5px;
-    padding: 0 0 0 10px;
-}
-
-    .memberlistblock svg {
-        position: relative;
-        top: 12px;
-    }
-
-.membercenter_a {
-    width: 100%;
-    height: auto;
-    display: flex;
-    padding: 5px 0 0 20px;
+.member_label {
     font-size: 14px;
-    color: #5E5D65;
-    font-family: 'Microsoft JhengHei', '微軟正黑體';
-    align-items: center;
+    font-family: "Microsoft JhengHei";
+    margin: 0 1em 0 0;
+    width: 60px;
+    text-align: end;
 }
 
-    .membercenter_a:hover {
-        color: #E3BCB5;
-        cursor: pointer;
-    }
-
-.a_none {
-    text-decoration: none;
+.member_input {
+    text-align: center;
+    font-size: 14px;
+    font-family: "Microsoft JhengHei";
 }
-
-.div_none {
-    display: none;
-}
-
-.memberinfo_1 {
-    width: 100%;
-    height: 20%;
-    margin: 16px 30px;
-    display: flex;
-    position: relative;
-    ;
-    flex-direction: column;
-}
-
-    .memberinfo_1 h2 {
-        margin: 5px 0;
-        color: #5E5D65;
-    }
-
-    .memberinfo_1 h4 {
-        margin: 5px 0;
-        color: #5E5D65;
-    }
-
-.memberinfo_2 {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-    min-height: 80%;
-    margin: 20px 30px;
-}
-
-.member_form_type_1 {
-    display: flex;
-    position: relative;
-    flex-direction: row;
-    width: 100%;
-    height: 30px;
-    align-items: center;
-    margin: 20px 0 20px 0;
-}
-
-.left {
-    width: 120px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    justify-content: end;
-    padding: 0 10px 0 0;
-}
-
-    .left label {
-        font-size: 16px;
-        color: #5E5D65;
-    }
-
-.right {
-    width: 250px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    justify-content: start;
-    padding: 0 0 0 10px;
-}
-
-    .right input {
-        font-size: 18px;
-        color: #5E5D65;
-        border: 1px #DFDFDF solid;
-    }
 
 .btn_comfirm {
-    width: 80px;
-    height: 40px;
-    background-color: #CB9B8F;
+    width: 60px;
+    height: 35px;
+    background-color: #B4A29E;
     color: white;
     border: 2px #F4F4F4 solid;
     font-size: 14px;
@@ -310,3 +64,236 @@ div_login_ad img {
     .btn_comfirm:hover {
         cursor: pointer;
     }
+
+.a_membercenter_h, .a_membercenter {
+    width: 100%;
+    height: auto;
+    display: flex;
+    padding: 0 0 0 1em;
+    font-size: 14px;
+    color: #797979;
+    align-items: center;
+}
+
+    .a_membercenter_h:hover, .a_membercenter:hover {
+        color: #E3BCB5;
+        cursor: pointer;
+    }
+
+
+/*comm_use*/
+
+/*center_main(cluding login register forgetpassword comfirmemail)*/
+.main_editor_950 {
+    width: 1200px;
+    height: auto;
+    min-height: 950px;
+    background-color: #F6F2F1;
+}
+
+.main_editor_1200 {
+    width: 1200px;
+    height: auto;
+    min-height: 1200px;
+    position: relative;
+    background-color: #F6F2F1;
+}
+
+.main_column_start {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    align-items: start;
+    margin: 30px 20px;
+}
+/*center_main*/
+
+/*computer*/
+/*member_center_administer*/
+.membercenter_administer_main {
+    width: 100%;
+    height: auto;
+    margin: 30px 0 0 0;
+}
+
+.membercenter_block {
+    width: 320px;
+    height: 400px;
+    background-color: #F5F4F0;
+    border: 2px #BFCAC2 solid;
+    margin: 0 2% 3% 0;
+}
+
+.member_span_1 {
+    font-size: 28px;
+    color: #797979;
+    padding: 1em 0 0 1em;
+}
+
+.member_span_2 {
+    font-size: 18px;
+    color: #797979;
+    padding: 0 0 0 1em;
+}
+
+.member_span_3 {
+    font-size: 16px;
+    color: #797979;
+    padding: 0 0 0 1em;
+}
+/*member_center_administer*/
+
+/*member_center_client*/
+.membercenter_client_list {
+    width: 25%;
+    height: auto;
+    padding: 1em;
+}
+
+.memberlogo {
+    width: 100%;
+    height: 80px;
+}
+
+    .memberlogo img {
+        border-radius: 50%;
+    }
+
+.membercenter_client_edit {
+    width: 75%;
+    height: auto;
+    margin: 10px 20px;
+    background-color: white;
+}
+
+.memberinfo_1 {
+    width: 100%;
+    height: 60px;
+}
+
+    .memberinfo_1 h2 {
+        display: flex;
+        align-items: center;
+        font-family: "Microsoft JhengHei";
+        color: #797979;
+        margin: 0 0 0 2em;
+    }
+
+.memberinfo_2 {
+    width: 100%;
+    height: auto;
+    margin: 1em 0 0 0;
+}
+
+.membercenter_client_edit_list_block {
+    height: 30px;
+    align-items: center;
+    margin: 1em 0 1em 3em;
+}
+
+#showPasswordCheckbox {
+    font-size: 8px;
+}
+/*member_center_client*/
+
+/*style change*/
+.div_none {
+    display: none;
+}
+
+.flex_just_center {
+    justify-content: center;
+}
+
+.flex_just_start {
+    justify-content: start;
+}
+
+.flex_direction_row {
+    flex-direction: row;
+}
+
+.flex_direction_column {
+    flex-direction: column;
+}
+
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
+.align_item_center {
+    align-items: center;
+    ;
+}
+
+.no_padding {
+    padding: 0;
+}
+
+.no_margin {
+    margin: 0;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.transform_x {
+    transform: translateX(-25%);
+}
+
+.border_underlint {
+    border-bottom: 1px #BFCAC2 solid;
+}
+
+.selected {
+    color: #E3BCB5;
+}
+/*style change*/
+/*computer*/
+
+/*media*/
+@media (max-width: 768px) {
+    .main_editor_950 {
+        width: 100%;
+    }
+
+    .member_span_1 {
+        padding: 1em 0 0 0;
+    }
+
+    .membercenter_block {
+        margin: 0 0 2em;
+        height: auto;
+    }
+
+    .memberlistblock {
+        display: none;
+    }
+
+    .member_span_2:active {
+        text-decoration: underline;
+    }
+
+    .membercenter_client_edit {
+        width: 100%;
+        margin: 0;
+    }
+
+    .member_span_3 {
+        padding: 0;
+    }
+
+    .membercenter_client_edit_list_block {
+        margin: 0;
+    }
+
+    .btn_comfirm {
+        width: 35px;
+        height: 20px;
+        font-size: 10px;
+        padding: 0;
+        border: none;
+    }
+}
+/*media*/

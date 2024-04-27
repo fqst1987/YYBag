@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["titlemsg"] = "信箱認證";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<div class="main_editor_950">
+    <div id="client_login_top" class="main_row_mid">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x500/">
+        </div>
+        <div class="div_login">
+            <span class="member_span_1">信箱認證</span>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            alert("信箱認證完畢，請開心購物吧!");
+            window.location.href = '/home/index';
+        })
+    </script>
+}

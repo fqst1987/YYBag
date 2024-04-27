@@ -1,0 +1,68 @@
+﻿@model YYBagProgram.Models.ViewModel.ResetPasswordViewModel
+
+@{
+    ViewData["titlemsg"] = "重設密碼";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+</head>
+<div class="main_editor_950">
+    <div id="client_login_top" class="main_row_mid">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x500/">
+        </div>
+        <div class="div_login">
+            <span class="member_span_1">重設密碼</span>
+            <form asp-action="ResetPwd" asp-controller="Member" method="post" id="form">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Email" value="@Model.Email" />
+                <div class="member_input_area">
+                    <input type="password" asp-for="Password" class="member_input_320" placeholder="password 密碼最少6位(必要)" id="input_password_1" />
+                    <span asp-validation-for="Password" class="span_danger" id="span_password_1"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="password" asp-for="ConfirmPassword"  class="member_input_320" placeholder="password 再輸入一次(必要)" id="input_password_2" />
+                    <span class="span_danger" asp-validation-for="ConfirmPassword" id="span_password_2"></span>
+                </div>
+                <input type="submit" value="確認送出" class="member_btn_full" id="btn_sunmit" />
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var errorMsg = '@Html.Raw(ViewData["ErrorMsg"])';
+
+            if (errorMsg != '') {
+                alert(errorMsg);
+                // 解析驗證碼失敗，導回登入頁面
+                window.location = '@Url.Action("Login", "Member")';
+            }
+         
+            $('#btn_sunmit').click(function (event) {
+
+                //先刪除全部danger
+                $(".span_danger").each(function () {
+                    $(this).html("");
+                });
+
+               //檢查是否密碼是否有六位
+                if ($('#input_password_1').val().length < 6) {
+                    $('#span_password_1').html("密碼格式不正確");
+                    event.preventDefault();
+                    return;
+                }
+
+                if ($('#input_password_1').val() != $('#input_password_2').val()) {
+                    $('#span_password_2').html("兩次密碼輸入不相同");
+                    event.preventDefault();
+                    return;
+                }
+            })
+
+        });
+
+    </script>
+}

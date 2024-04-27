@@ -19,7 +19,7 @@ namespace YYBagProgram.Models
 
         [DisplayName("姓名")]
         [Required]
-        [Column(TypeName = "nvarchar(10)")]
+        [Column(TypeName = "nvarchar(30)")]
         public string strMemberName { get; set; } = string.Empty;
 
         [DisplayName("手機")]
@@ -34,6 +34,16 @@ namespace YYBagProgram.Models
         [DisplayName("生日")]
         [Column(TypeName = "date")]
         public DateTime? dateBirthday { get; set; }
+
+        [DisplayName("是否已審核")]
+        [Column(TypeName = "bit")]
+        [Required]
+        public bool isReview { get; set; } = false;
+
+        [DisplayName("是否為Google帳戶註冊")]
+        [Column(TypeName = "bit")]
+        [Required]
+        public bool isGoogleAccount { get; set; } = false;
 
     }
 }

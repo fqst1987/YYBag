@@ -18,7 +18,9 @@
             <form asp-action="Register" asp-controller="Member" method="post" id="form">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="strMemberId" type="hidden" value="temp" />
-                <div class="member_input_area">
+                <input asp-for="isReview" type="hidden" value="false" />
+                <input asp-for="isGoogleAccount" type="hidden" value="false" />
+                <div class="member_input_area"> 
                     <input asp-for="strMemberEmail" class="member_input_320" placeholder="請輸入Email(必要)" id="input_email" />
                     <span asp-validation-for="strMemberEmail" class="span_danger" id="span_email"></span>
                 </div>
@@ -31,56 +33,147 @@
                     <span class="span_danger" id="span_password_2"></span>
                 </div>
                 <div class="member_input_area">
-                    <input asp-for="strMemberName" class="member_input_320" placeholder="請填寫姓名" />
-                    <span asp-validation-for="strMemberName" class="text-danger"></span>
+                    <input asp-for="strMemberName" class="member_input_320" placeholder="請填寫姓名" id="input_name"/>
+                    <span asp-validation-for="strMemberName" class="span_danger" id="span_name"></span>
                 </div>
                 <div class="member_input_area">
                     <input type="date" asp-for="dateBirthday" class="member_input_320" placeholder="選擇生日日期" value="" />
-                    <span asp-validation-for="dateBirthday" class="text-danger"></span>
+                    <span asp-validation-for="dateBirthday" class="span_dange"></span>
                 </div>
                 <div class="member_input_area">
                     <input type="number" asp-for="strMemberPhone" class="member_input_320" placeholder="請輸入手機" />
-                    <span asp-validation-for="strMemberPhone" class="text-danger"></span>
+                    <span asp-validation-for="strMemberPhone" class="span_dange"></span>
                 </div>
-                <input type="submit" value="註冊會員" class="member_btn_full" id="btn_sunmit" />
+                <input type="button" value="註冊會員" class="member_btn_full" id="btn_sunmit" />
             </form>
+            <div id="member_login" style="position: relative; margin: 10px 0 0 0 ">
+                <a asp-action="Login" asp-controller="Member" class="a_login">登入會員</a>
+            </div>
         </div>
     </div>
 </div>
 @section Scripts {
     <script>
-        var btn_submitElement = document.getElementById("btn_sunmit");
-     
-        btn_submitElement.addEventListener("click", (event) => {
+        $(document).ready(function () {
 
-            //先刪除全部danger
-            document.querySelectorAll(".span_danger").forEach(element => {
-                element.innerHTML = "";
-            })
-
-            //email是否有填
-            var input_emailElement = document.getElementById("input_email");
-            if (input_emailElement.value.length == 0) {
-                document.getElementById("span_email").innerHTML = "請輸入email";
-                event.preventDefault();
-                return;
-            }
-            
-            //檢查是否密碼是否有六位
-            var input_passwordElement1 = document.getElementById("input_password_1");
-            if (input_passwordElement1.value.length == 0 || input_passwordElement1.value.length < 6) {
-                document.getElementById("span_password_1").innerHTML = "密碼格式不正確";
-                event.preventDefault();
-                return;
+            function getToken() {
+                var token = '@Html.AntiForgeryToken()'
+                token = $(token).val();
+                return token;
             }
 
-            var input_passwordElement2 = document.getElementById("input_password_2");
-            if (input_passwordElement1.value != input_passwordElement2.value) {
-                document.getElementById("span_password_2").innerHTML = "兩次密碼輸入不相同";
-                event.preventDefault();
-                return;
+            //驗證帳號是否正確
+            function CheckEmail(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue
+                };
+                $.ajax({
+                    url: 'CheckMemberEmail/',
+                    method: 'POST',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                })
             }
-        });
 
+            // 寄送驗證碼
+            function sendMailToken(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue,
+                };
+                $.ajax({
+                    url: 'sendMailTokenForReview/',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        if (!response.token || !response.expirationTime) {
+                            callback(false);
+                        }
+                        else {
+                            callback(true);
+                        }
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                });
+            }
+
+            $('#btn_sunmit').click(function (event) {
+
+                var inputvalue = $('#input_email').val().trim();
+
+                //先刪除全部danger
+                $('.span_danger').each(function () {
+                    $(this).html("");
+                })
+
+                //email是否有填
+                if ($('#input_email').val().length == 0) {
+                    $('#span_email').html("請輸入email");
+                    $('#input_email').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查是否密碼是否有六位
+                if ($('#input_password_1').val().length < 6) {
+                    $('#span_password_1').html("密碼格式不正確")
+                    $('#input_password_1').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查輸入兩次是否相同
+                if ($('#input_password_1').val() != $('#input_password_2').val()) {
+                    $('#span_password_2').html("兩次密碼輸入不相同");
+                    event.preventDefault();
+                    return;
+                }
+
+                //姓名是否有填
+                if ($('#input_name').val().length == 0) {
+                    $('#span_name').html("請輸入姓名");
+                    $('#input_name').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查此email是否有註冊
+                CheckEmail(inputvalue, function (response) {
+                    if (response) {
+                        $('#span_email').html("此email已經被註冊過了，請換一個email");
+                        $('#input_email').focus();
+                        event.preventDefault();
+                        return;
+                    }
+
+                    //寄送驗證信
+                    sendMailToken(inputvalue, function (response) {
+                        if (!response) {
+                            $('#span_email').html("發生錯誤，請稍後再試");
+                            $('#input_email').focus();
+                            event.preventDefault();
+                            return;
+                        }
+                        else {
+                            alert("請至信箱重設密碼");
+                            $('#form').submit();
+                        }
+                    });
+                });
+            });
+        })
     </script>
 }

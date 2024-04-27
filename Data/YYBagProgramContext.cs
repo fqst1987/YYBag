@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using YYBagProgram.Models;
+using YYBagProgram.Models.Token;
 
 namespace YYBagProgram.Data
 {
@@ -25,6 +26,7 @@ namespace YYBagProgram.Data
             modelBuilder.Entity<ClassificationDetail>().HasKey(p => new { p.Id, p.strBagsId });
             modelBuilder.Entity<Members>().HasKey(p => new { p.strMemberEmail });
             modelBuilder.Entity<MemberRole>().HasKey(p => new { p.MemberId });
+            modelBuilder.Entity<Tokens>().HasKey(p => new { p.Token });
         }
 
 
@@ -47,5 +49,7 @@ namespace YYBagProgram.Data
         public DbSet<ClassificationDetail> ClassificationDetail { get; set; }
 
         public DbSet<MemberRole> MemberRole { get; set; }
+
+        public DbSet<Tokens> Tokens { get; set; }
     }
 }

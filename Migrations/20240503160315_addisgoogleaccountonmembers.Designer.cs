@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YYBagProgram.Data;
 
@@ -11,9 +12,10 @@ using YYBagProgram.Data;
 namespace YYBagProgram.Migrations
 {
     [DbContext(typeof(YYBagProgramContext))]
-    partial class YYBagProgramContextModelSnapshot : ModelSnapshot
+    [Migration("20240503160315_addisgoogleaccountonmembers")]
+    partial class addisgoogleaccountonmembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +100,7 @@ namespace YYBagProgram.Migrations
 
                     b.Property<string>("strMemberName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("strMemberPassWord")
                         .IsRequired()
@@ -258,19 +260,6 @@ namespace YYBagProgram.Migrations
                     b.HasKey("strID", "strColor", "ProductStatus");
 
                     b.ToTable("ProductsColorDetail");
-                });
-
-            modelBuilder.Entity("YYBagProgram.Models.Token.Tokens", b =>
-                {
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("date");
-
-                    b.HasKey("Token");
-
-                    b.ToTable("Tokens");
                 });
 #pragma warning restore 612, 618
         }

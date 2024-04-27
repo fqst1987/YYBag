@@ -1,0 +1,127 @@
+﻿@model YYBagProgram.Models.ViewModel.MemberRoleViewModel;
+
+@{
+    ViewData["titlemsg"] = "會員角色管理(首頁)";
+}
+
+<head>
+    <title>YYBag - @ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/Pagination.min.css" />
+    <link rel="stylesheet" href="~/css/member.min.css" />
+</head>
+<div class="main_editor_1200">
+    <span class="member_span_1">會員角色管理</span>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MemberRoles[0].MemberId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Members[0].strMemberName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MemberRoles[0].Role)
+                </th>
+                <th>
+                    編輯
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.MemberRoles ?? new List<MemberRole>())
+            {
+                string MemberId = item.MemberId;
+                string MemberName = Model.Members?.Where(row => row.strMemberId.Equals(MemberId)).FirstOrDefault()?.strMemberName ?? string.Empty;
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MemberId)
+                    </td>
+                    <td>
+                        @MemberName
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role)
+                    </td>
+                    <td>
+                        <a asp-action="ManageMemberShipEdit" asp-controller="Member" asp-route-MemberId="@item.MemberId" asp-route-page="@Model.CurremtPage">修改會員角色</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!--分頁器-->
+    <div class="page_area">
+        <div class="page_area_select">
+            <div class="page_area_pre_head" onclick="Onhead()">
+                <sapn>第一頁</sapn>
+            </div>
+            <div class="page_area_pre" onclick="preview(@Model.CurremtPage-1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" />
+                </svg>
+                <span>上一頁</span>
+            </div>
+        </div>
+        <div class="page_area_number">
+            <div class="page_area_number_container">
+                @{
+                    for (int i = 0; i < Model.TotalPage; i++)
+                    {
+                        int currentpage = i + 1;
+                        <div class="page_area_number_item">
+                            <a href="#" onclick="changePage(@currentpage)">@currentpage</a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="page_area_select">
+            <div class="page_area_next" onclick="next(@Model.CurremtPage+1)">
+                <span>下一頁</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#797979" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5" />
+                </svg>
+            </div>
+            <div class="page_area_next_end" onclick="end()">
+                <span>最後一頁</span>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        var numberElements = document.querySelectorAll(".page_area_number_item");
+        var currentpageindex = @Model.CurremtPage -1;
+        var totaglpages = @Model.TotalPage;
+
+        window.onload = () => {
+            numberElements[currentpageindex].classList.add("item_selected");
+        }
+
+        function next(page) {
+            if (page <= totaglpages) {
+                changePage(page);
+            }
+        }
+
+        function preview(page) {
+            if (page >= 1) {
+                changePage(page);
+            }
+        }
+
+        function changePage(page) {
+            window.location.href = '/products/productsmain/' + page;
+        }
+
+        function end(page) {
+            page = totaglpages;
+            changePage(page)
+        }
+        function Onhead(page) {
+            page = 1;
+            changePage(page)
+        }
+    </script>
+}

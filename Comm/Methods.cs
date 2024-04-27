@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Text;
 using System.Security.Cryptography;
+using System.Web;
 
 
 namespace YYBagProgram.Comm
@@ -118,48 +119,60 @@ namespace YYBagProgram.Comm
             return targetpath;
         }
 
-        //取得密碼的hash值
-        public static string HashPassword(string password)
+        public static string EncryptStringToBase64(string plainText, string SecretKey)
         {
-            if (password.Length == 0 || password == null)
+            using (Aes aesAlg = Aes.Create())
             {
-                return string.Empty;
-            }
-            //SHA256
-            using (var sha256 = SHA256.Create())
-            {
-                //將密碼轉換為位元組陣列
-                var bytes = Encoding.UTF8.GetBytes(password);
+                byte[] keyBytes = Encoding.UTF8.GetBytes(SecretKey);
+                Array.Resize(ref keyBytes, 32);
 
-                //計算密碼hash
-                var hash = sha256.ComputeHash(bytes);
+                aesAlg.Key = keyBytes;
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
 
-                //將hash轉為16進為字串
-                var hexString = BitConverter.ToString(hash, 0, hash.Length).Replace("-", "");
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                return hexString;
+                byte[] encryptedBytes;
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] buffer = Encoding.UTF8.GetBytes(plainText);
+                        csEncrypt.Write(buffer, 0, buffer.Length);
+                        csEncrypt.FlushFinalBlock();
+                        encryptedBytes = msEncrypt.ToArray();
+                    }
+                }
+
+                return HttpUtility.UrlEncode(Convert.ToBase64String(encryptedBytes));
             }
         }
 
-        //檢查密碼跟hash值是否相同
-        public static bool VerifyHashedPassword(string password, string hashedpassword)
+        public static string DecryptBase64String(string base64String, string SecretKey)
         {
-            if (password.Length == 0 || password == null)
+            byte[] encryptedBytes = Convert.FromBase64String(HttpUtility.UrlDecode(base64String));
+            using (Aes aesAlg = Aes.Create())
             {
-                return false;
-            }
+                byte[] keyBytes = Encoding.UTF8.GetBytes(SecretKey);
+                Array.Resize(ref keyBytes, 32);
 
-            var bytes = Encoding.UTF8.GetBytes(password);
+                aesAlg.Key = keyBytes;
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
 
-            using (var sha256 = SHA256.Create())
-            {
-                var hash = sha256.ComputeHash(bytes);
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-                var hexString = BitConverter.ToString(hash).Replace("-", "");
-
-                return hexString == hashedpassword;
+                using (MemoryStream msDecrypt = new MemoryStream(encryptedBytes))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
             }
         }
-
     }
 }
