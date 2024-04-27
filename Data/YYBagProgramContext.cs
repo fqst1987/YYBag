@@ -24,6 +24,7 @@ namespace YYBagProgram.Data
             modelBuilder.Entity<Classification>().HasKey(p => new { p.Id });
             modelBuilder.Entity<ClassificationDetail>().HasKey(p => new { p.Id, p.strBagsId });
             modelBuilder.Entity<Members>().HasKey(p => new { p.strMemberEmail });
+            modelBuilder.Entity<MemberRole>().HasKey(p => new { p.MemberId });
         }
 
 
@@ -44,5 +45,7 @@ namespace YYBagProgram.Data
         public DbSet<Classification> Classification { get; set; }
 
         public DbSet<ClassificationDetail> ClassificationDetail { get; set; }
+
+        public DbSet<MemberRole> MemberRole { get; set; }
     }
 }
