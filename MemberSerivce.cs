@@ -1,14 +1,12 @@
 ﻿using System.Text;
 using YYBagProgram.Data;
 using System.Security.Cryptography;
-using YYBagProgram.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Diagnostics.Metrics;
-using Newtonsoft.Json.Linq;
+using YYBagProgram.Interface;
+
 
 namespace YYBagProgram
 {
-    public class MemberSerivce
+    public class MemberSerivce : IMemberScopeService
     {
         private readonly YYBagProgramContext _context;
 
@@ -40,7 +38,7 @@ namespace YYBagProgram
         }
 
         //取得密碼的hash值
-        public static string HashPassword(string password)
+        public string HashPassword(string password)
         {
             if (password.Length == 0 || password == null)
             {
@@ -63,7 +61,7 @@ namespace YYBagProgram
         }
 
         //檢查密碼跟hash值是否相同
-        public static bool VerifyHashedPassword(string password, string hashedpassword)
+        public bool VerifyHashedPassword(string password, string hashedpassword)
         {
             if (password.Length == 0 || password == null)
             {

@@ -1,86 +1,44 @@
 [
   {
-    "outputFileName": "css/homepage.min.css",
-    "inputFiles": [
-      "css/homepage.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/homepage.min.css",
-    "inputFiles": [
-      "css/homepage.min.css"
-    ]
-  },
-  {
-    "outputFileName": "css/product.min.css",
-    "inputFiles": [
-      "css/product.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/product.min.css",
-    "inputFiles": [
-      "css/product.min.css"
-    ]
-  },
-  {
-    "outputFileName": "css/ClassificationLayout.min.css",
-    "inputFiles": [
-      "css/ClassificationLayout.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/ClassificationLayout.min.css",
-    "inputFiles": [
-      "css/ClassificationLayout.min.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/carousel.min.css",
-    "inputFiles": [
-      "css/carousel.min.css"
-    ]
-  },
-  {
-    "outputFileName": "css/carousel.min.css",
-    "inputFiles": [
-      "css/carousel.css"
-    ]
-  },
-  {
-    "outputFileName": "css/Pagination.min.css",
-    "inputFiles": [
-      "css/Pagination.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/Pagination.min.css",
-    "inputFiles": [
-      "css/Pagination.min.css"
-    ]
-  },
-  {
-    "outputFileName": "css/member.min.css",
-    "inputFiles": [
-      "css/member.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/member.min.css",
-    "inputFiles": [
-      "css/member.min.css"
-    ]
-  }
-  {
-    "outputFileName": "javascript/Carousel.min.js",
+    "outputFileName": "wwwroot/javascript/Carousel.min.js",
     "inputFiles": [
       "javascript/Carousel.js"
     ]
   },
   {
-    "outputFileName": "wwwroot/js/Carousel.min.js",
+    "outputFileName": "wwwroot/css/carousel.min.css",
     "inputFiles": [
-      "javascript/Carousel.min.js"
+      "css/carousel.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/ClassificationLayout.min.css",
+    "inputFiles": [
+      "css/ClassificationLayout.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/homepage.min.css",
+    "inputFiles": [
+      "css/homepage.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/member.min.css",
+    "inputFiles": [
+      "css/member.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Pagination.min.css",
+    "inputFiles": [
+      "css/Pagination.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/product.min.css",
+    "inputFiles": [
+      "css/product.css"
     ]
   }
 ]

@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
 using Microsoft.AspNetCore.Authorization;
 using Google.Apis.Auth;
+using YYBagProgram.Comm;
+
+
 
 namespace YYBagProgram.Controllers
 {
@@ -15,14 +17,13 @@ namespace YYBagProgram.Controllers
         private readonly YYBagProgramContext _context;
         private readonly IWebHostEnvironment _enviroment;
         private readonly IConfiguration _configuration;
-        private readonly MemberSerivce _memberserivce;
+        
 
-        public MemberController(YYBagProgramContext context, IWebHostEnvironment enviroment, IConfiguration configuration, MemberSerivce memberserivce)
+        public MemberController(YYBagProgramContext context, IWebHostEnvironment enviroment, IConfiguration configuration)
         {
             _context = context;
             _enviroment = enviroment;
             _configuration = configuration;
-            _memberserivce = memberserivce;
         }
 
         #region 會員中心
@@ -72,8 +73,8 @@ namespace YYBagProgram.Controllers
 
                 if (member != null)
                 {
-                    string strHashPassword = MemberSerivce.HashPassword(password);
-                    bool isPasswordCorrect = MemberSerivce.VerifyHashedPassword(password, strHashPassword);
+                    string strHashPassword = Methods.HashPassword(password);
+                    bool isPasswordCorrect = Methods.VerifyHashedPassword(password, strHashPassword);
 
                     if (isPasswordCorrect)
                     {
@@ -178,16 +179,16 @@ namespace YYBagProgram.Controllers
 
         #region 註冊
         [HttpGet]
-        public async Task<IActionResult> Register() 
+        public IActionResult Register() 
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Register")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(Members member)
         {
-            if (_memberserivce.isAccountRegister(member.strMemberPhone ?? string.Empty, member.strMemberEmail))
+            if (isAccountRegister(member.strMemberPhone ?? string.Empty, member.strMemberEmail))
             {
                 ModelState.AddModelError("strMemberEmail", "此信箱/手機已被註冊");
                 return View(member);
@@ -213,12 +214,15 @@ namespace YYBagProgram.Controllers
 
                 //取得密碼的hash值
                 var password = member.strMemberPassWord ?? string.Empty;
-                var hashpassword = MemberSerivce.HashPassword(password);
+                var hashpassword = Methods.HashPassword(password);
                 member.strMemberPassWord = hashpassword;
 
-                _context.Add(member);
+
+                //寫入會員Role表
+
+                _context.Member.Add(member);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Home", "Hompage");
+                return RedirectToAction("Login", "Member");
             }
             else
             {
@@ -227,5 +231,26 @@ namespace YYBagProgram.Controllers
         }
         #endregion
 
+
+        private bool isAccountRegister(string? phone, string email)
+        {
+            bool result = false;
+
+            //檢查看看有沒有相同email
+            if (email.Length > 0 && email != null)
+            {
+                if (_context.Member.Any(row => row.strMemberEmail.Equals(email)))
+                    result = true;
+            }
+
+            //檢查看看有沒有相同phonenumber
+            if (phone.Length > 0 && phone != null)
+            {
+                if (_context.Member.Any(row => row.strMemberPhone.Equals(phone)))
+                    result = true;
+            }
+
+            return result;
+        }
     }
 }
