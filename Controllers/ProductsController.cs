@@ -8,6 +8,7 @@ using YYBagProgram.Comm;
 using System.Data.Common;
 using System;
 using System.Drawing.Printing;
+using YYBagProgram.Models.ViewModel;
 
 namespace YYBagProgram.Controllers
 {

@@ -1,74 +1,44 @@
 [
   {
-    "outputFileName": "css/homepage.min.css",
+    "outputFileName": "wwwroot/javascript/Carousel.min.js",
     "inputFiles": [
-      "css/homepage.css"
-    ]
-  },
-  {
-    "outputFileName": "css/product.min.css",
-    "inputFiles": [
-      "css/product.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/product.min.css",
-    "inputFiles": [
-      "css/product.min.css"
-    ]
-  },
-  {
-    "outputFileName": "CSS/ClassificationLayout.min.css",
-    "inputFiles": [
-      "CSS/ClassificationLayout.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/ClassificationLayout.min.css",
-    "inputFiles": [
-      "CSS/ClassificationLayout.min.css"
+      "javascript/Carousel.js"
     ]
   },
   {
     "outputFileName": "wwwroot/css/carousel.min.css",
     "inputFiles": [
-      "CSS/carousel.min.css"
+      "css/carousel.css"
     ]
   },
   {
-    "outputFileName": "CSS/carousel.min.css",
+    "outputFileName": "wwwroot/css/ClassificationLayout.min.css",
     "inputFiles": [
-      "CSS/carousel.css"
-    ]
-  },
-  {
-    "outputFileName": "CSS/Pagination.min.css",
-    "inputFiles": [
-      "CSS/Pagination.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/Pagination.min.css",
-    "inputFiles": [
-      "CSS/Pagination.min.css"
-    ]
-  },
-  {
-    "outputFileName": "JS/Carousel.min.js",
-    "inputFiles": [
-      "JS/Carousel.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/Carousel.min.js",
-    "inputFiles": [
-      "JS/Carousel.min.js"
+      "css/ClassificationLayout.css"
     ]
   },
   {
     "outputFileName": "wwwroot/css/homepage.min.css",
     "inputFiles": [
-      "wwwroot/css/homepage.css"
+      "css/homepage.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/member.min.css",
+    "inputFiles": [
+      "css/member.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Pagination.min.css",
+    "inputFiles": [
+      "css/Pagination.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/product.min.css",
+    "inputFiles": [
+      "css/product.css"
     ]
   }
 ]

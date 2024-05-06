@@ -1,19 +1,22 @@
 ﻿@{
-    ViewData["titlemsg"] = "TestForIdentity";
+    ViewData["titlemsg"] = "買你的包, 包你所買";
+    string google_client_id = ViewData["google_client_id"]?.ToString() ?? string.Empty;
 }
-
-<p>
-    <a href="/Home/Login">Login</a>
-</p>
-<p>
-    <a href="/Home/Logout">Logout</a>
-</p>
-<p>
-    <a href="/Home/UseForm">UseForm</a>
-</p>
-<p>
-    <a href="/Home/UserInfoForm">UserInfoForm</a>
-</p>
-<p>
-    <a href="/Home/AdminForm">AdminForm</a>
-</p>
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/homepage.min.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<div id="g_id_onload"
+     data-client_id=@google_client_id
+     data-login_uri="https://localhost:7215/home/ValidGoogleLogin"
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin"
+     data-type="standard"
+     data-size="large"
+     data-theme="outline"
+     data-text="sign_in_with"
+     data-shape="rectangular"
+     data-logo_alignment="left">
+</div>

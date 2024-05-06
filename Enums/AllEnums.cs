@@ -38,30 +38,20 @@ namespace YYBagProgram.Enums
             PreOrder = 2,
         }
 
-        public enum Color
+        public enum MemberRole
         {
-            [Display(Name = "請選擇顏色")]
+            [Display(Name = "請選擇身分")]
             Default = 0,
-            [Display(Name = "米白色")]
-            Offwhite = 1,
-            [Display(Name = "白色")]
-            White = 2,
-            [Display(Name = "黑色")]
-            Black = 3,
-            [Display(Name = "黃色")]
-            Yellow = 4,
-            [Display(Name = "奶茶色")]
-            Milktea = 5,
-            [Display(Name = "棕色")]
-            Brown = 6,
-            [Display(Name = "綠色")]
-            Green = 7,
-            [Display(Name = "紅色")]
-            Red = 8,
-            [Display(Name = "粉紅色")]
-            Pink = 9,
-            [Display(Name = "藍色")]
-            Blue = 10,
+            [Display(Name = "一般顧客")]
+            Client = 1,
+            [Display(Name = "一般員工")]
+            Staff = 2,
+            [Display(Name = "管理者")]
+            Supervisor = 3,
+            [Display(Name = "工程人員")]
+            Engineer = 4,
+            [Display(Name = "完全功能使用者")]
+            Admin = 9,
         }
 
         public enum OrderStatus
@@ -85,5 +75,19 @@ namespace YYBagProgram.Enums
             [Display(Name = "退貨")]
             Return = 8,
         }
+
+        //public enum MemberStatus
+        //{
+        //    [Display(Name = "未登入")]
+        //    NoLogin = 0,
+        //    [Display(Name = "已登入")]
+        //    Login = 1,
+        //    [Display(Name = "未驗證")]
+        //    NoReview = 2,
+        //    [Display(Name = "重設密碼token過期")]
+        //    ResetPasswordTokenExpire = 3,
+        //    [Display(Name = "驗證帳戶token過期")]
+        //    ReviewTokenExpire = 4,
+        //}
     }
 }

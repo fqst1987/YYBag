@@ -1,53 +1,179 @@
-﻿@model YYBagProgram.Models.Members
-
+﻿@model YYBagProgram.Models.Members;
 @{
-    ViewData["titlemsg"] = "建立新會員";
+    ViewData["titlemsg"] = "註冊會員";
 }
-
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<div class="main_editor">
-    <div class="main_top_column_mid" id="register_up">
-        <form asp-action="Register" asp-controller="Member" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="strMemberId" />
-            <div class="form_group">
-                <label asp-for="strMemberName" class="comm_label"></label>
-                <input asp-for="strMemberName" class="comm_input_320" placeholder="請填寫真實姓名" />
-                <span asp-validation-for="strMemberName" class="text-danger"></span>
+
+<div class="main_editor_950">
+    <div id="client_login_top" class="main_row_mid">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x500/">
+        </div>
+        <div class="div_login">
+            <span class="member_span_1">註冊會員</span>
+            <form asp-action="Register" asp-controller="Member" method="post" id="form">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="strMemberId" type="hidden" value="temp" />
+                <input asp-for="isReview" type="hidden" value="false" />
+                <input asp-for="isGoogleAccount" type="hidden" value="false" />
+                <div class="member_input_area"> 
+                    <input asp-for="strMemberEmail" class="member_input_320" placeholder="請輸入Email(必要)" id="input_email" />
+                    <span asp-validation-for="strMemberEmail" class="span_danger" id="span_email"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="password" asp-for="strMemberPassWord" class="member_input_320" placeholder="password 密碼最少6位(必要)" id="input_password_1" />
+                    <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_password_1"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="password" class="member_input_320" placeholder="password 再輸入一次(必要)" id="input_password_2" />
+                    <span class="span_danger" id="span_password_2"></span>
+                </div>
+                <div class="member_input_area">
+                    <input asp-for="strMemberName" class="member_input_320" placeholder="請填寫姓名" id="input_name"/>
+                    <span asp-validation-for="strMemberName" class="span_danger" id="span_name"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="date" asp-for="dateBirthday" class="member_input_320" placeholder="選擇生日日期" value="" />
+                    <span asp-validation-for="dateBirthday" class="span_dange"></span>
+                </div>
+                <div class="member_input_area">
+                    <input type="number" asp-for="strMemberPhone" class="member_input_320" placeholder="請輸入手機" />
+                    <span asp-validation-for="strMemberPhone" class="span_dange"></span>
+                </div>
+                <input type="button" value="註冊會員" class="member_btn_full" id="btn_sunmit" />
+            </form>
+            <div id="member_login" style="position: relative; margin: 10px 0 0 0 ">
+                <a asp-action="Login" asp-controller="Member" class="a_login">登入會員</a>
             </div>
-            <div class="form_group">
-                <label asp-for="dateBirthday" class="comm_label"></label>
-                <input type="date" asp-for="dateBirthday" class="comm_input_320" />
-                <span asp-validation-for="dateBirthday" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberPassWord" class="comm_label"></label>
-                <input type="password" asp-for="strMemberPassWord" class="comm_input_320" placeholder="密碼最長20個英數字元" />
-                <span asp-validation-for="strMemberPassWord" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberPhone" class="comm_label"></label>
-                <input type="number" asp-for="strMemberPhone" class="comm_input_320" />
-                <span asp-validation-for="strMemberPhone" class="text-danger"></span>
-            </div>
-            <div class="form_group">
-                <label asp-for="strMemberEmail" class="comm_label"></label>
-                <input asp-for="strMemberEmail" class="comm_input_320" />
-                <span asp-validation-for="strMemberEmail" class="text-danger"></span>
-            </div>
-            <div class="form_submit">
-                <input type="submit" value="送出" class="btn_full" id="btn_sunmit" />
-            </div>
-        </form>
-        <div style="position: relative; left:50px">
-            <button type="button" class="btn_full" id="btn_cancel" onclick="location.href='@Url.Action("Login", "Home")'">取消</button>
         </div>
     </div>
 </div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        $(document).ready(function () {
+
+            function getToken() {
+                var token = '@Html.AntiForgeryToken()'
+                token = $(token).val();
+                return token;
+            }
+
+            //驗證帳號是否正確
+            function CheckEmail(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue
+                };
+                $.ajax({
+                    url: 'CheckMemberEmail/',
+                    method: 'POST',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                })
+            }
+
+            // 寄送驗證碼
+            function sendMailToken(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue,
+                };
+                $.ajax({
+                    url: 'sendMailTokenForReview/',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        if (!response.token || !response.expirationTime) {
+                            callback(false);
+                        }
+                        else {
+                            callback(true);
+                        }
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                });
+            }
+
+            $('#btn_sunmit').click(function (event) {
+
+                var inputvalue = $('#input_email').val().trim();
+
+                //先刪除全部danger
+                $('.span_danger').each(function () {
+                    $(this).html("");
+                })
+
+                //email是否有填
+                if ($('#input_email').val().length == 0) {
+                    $('#span_email').html("請輸入email");
+                    $('#input_email').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查是否密碼是否有六位
+                if ($('#input_password_1').val().length < 6) {
+                    $('#span_password_1').html("密碼格式不正確")
+                    $('#input_password_1').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查輸入兩次是否相同
+                if ($('#input_password_1').val() != $('#input_password_2').val()) {
+                    $('#span_password_2').html("兩次密碼輸入不相同");
+                    event.preventDefault();
+                    return;
+                }
+
+                //姓名是否有填
+                if ($('#input_name').val().length == 0) {
+                    $('#span_name').html("請輸入姓名");
+                    $('#input_name').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查此email是否有註冊
+                CheckEmail(inputvalue, function (response) {
+                    if (response) {
+                        $('#span_email').html("此email已經被註冊過了，請換一個email");
+                        $('#input_email').focus();
+                        event.preventDefault();
+                        return;
+                    }
+
+                    //寄送驗證信
+                    sendMailToken(inputvalue, function (response) {
+                        if (!response) {
+                            $('#span_email').html("發生錯誤，請稍後再試");
+                            $('#input_email').focus();
+                            event.preventDefault();
+                            return;
+                        }
+                        else {
+                            alert("請至信箱重設密碼");
+                            $('#form').submit();
+                        }
+                    });
+                });
+            });
+        })
+    </script>
 }

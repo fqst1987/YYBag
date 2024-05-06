@@ -6,6 +6,7 @@ using Microsoft.VisualBasic;
 using System.Drawing.Printing;
 using YYBagProgram.Data;
 using YYBagProgram.Models;
+using YYBagProgram.Models.ViewModel;
 
 namespace YYBagProgram.Controllers
 {

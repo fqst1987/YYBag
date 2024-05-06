@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["titlemsg"] = "驗證帳號";
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+</head>
+<div class="main_editor_950">
+    <div id="resetpassword_top" class="main_row_mid">
+        <div class="div_login_ad">
+            <img src="https://fakeimg.pl/500x500/">
+        </div>
+        <div class="div_login">
+            <span class="member_span_1" style="right:10px">驗證信箱</span>
+            <div class="member_input_area" style="right:10px">
+                <input class="member_input_320" placeholder="請輸入註冊之Email(必要)" id="input_email" />
+                <span class="span_danger" id="span_email"></span>
+            </div>
+            <button type="button" class="member_btn_full" id="btn_sunmit">寄送驗證信箱信件</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            function getToken() {
+                var token = '@Html.AntiForgeryToken()'
+                token = $(token).val();
+                return token;
+            }
+
+            // 寄送驗證碼
+            function sendMailToken(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue,
+                };
+                $.ajax({
+                    url: 'sendMailTokenForReview/',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        if (!response.token || !response.expirationTime) {
+                            callback(false);
+                        }
+                        else {
+                            callback(true);
+                        }
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                });
+            }
+
+            //驗證帳號是否正確
+            function CheckEmail(inputvalue, callback) {
+                var postData = {
+                    email: inputvalue
+                };
+                $.ajax({
+                    url: 'CheckMemberEmail/',
+                    method: 'POST',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (errormessage) {
+                        callback(false);
+                    }
+                })
+            }
+
+            $('#btn_sunmit').click(function (event) {
+                //先清除掉span
+                $('#span_email').html("");
+
+                var inputvalue = $('#input_email').val().trim();
+                //判斷是否有輸入email
+                if (inputvalue.length == 0) {
+                    $('#span_email').html("請輸入註冊之Email");
+                    $('#input_email').focus();
+                    event.preventDefault();
+                    return;
+                }
+
+                //檢查此email是否有註冊
+                CheckEmail(inputvalue, function (response) {
+                    if (!response) {
+                        $('#span_email').html("請確認信箱");
+                        $('#input_email').focus();
+                        event.preventDefault();
+                        return;
+                    }
+
+                    //寄送驗證信
+                    sendMailToken(inputvalue, function (response) {
+                        if (!response) {
+                            $('#span_email').html("發生錯誤，請稍後再試");
+                            $('#input_email').focus();
+                            event.preventDefault();
+                            return;
+                        }
+                        else {
+                            alert("請至註冊之信箱進行驗證");
+                        }
+                    });
+                });
+
+            })
+        })
+
+    </script>
+}

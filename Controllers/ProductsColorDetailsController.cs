@@ -16,6 +16,7 @@ using YYBagProgram.Comm;
 using YYBagProgram.Data;
 using YYBagProgram.Enums;
 using YYBagProgram.Models;
+using YYBagProgram.Models.ViewModel;
 using static YYBagProgram.Enums.AllEnums;
 
 namespace YYBagProgram.Controllers

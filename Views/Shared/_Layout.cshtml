@@ -16,7 +16,7 @@
     <div class="menu_wrapper">
         <div class="memu_wrapper_mid">
             <div style="width:20%">
-                <button type="button" onclick="location.href='@Url.Action("HomePage", "Home")'" class="btn_home">
+                <button type="button" onclick="location.href='@Url.Action("Index", "Home")'" class="btn_home">
                     <img class="img_logo" src="~/images/30x30.png" alt="" />
                     <p>YYBag</p>
                 </button>
@@ -64,6 +64,11 @@
                     <li id="shoplist">
                         <span>
                             <a asp-action="ShopList" asp-controller="Member">購物車</a>
+                        </span>
+                    </li>
+                    <li id="shoplist">
+                        <span>
+                            <a asp-action="MemberCenterAdminister" asp-controller="Member">會員中心</a>
                         </span>
                     </li>
                     @if (!User.Identity.IsAuthenticated)

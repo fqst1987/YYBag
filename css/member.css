@@ -1,0 +1,299 @@
+﻿/*dom*/
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font-family: "Microsoft JhengHei";
+}
+
+input {
+    color: #797979;
+    border: none;
+    outline: none;
+    border-bottom: 1px #A7BEC6 solid;
+}
+
+    input::placeholder {
+        color: #DFDFDF;
+        font-size: 14px;
+    }
+
+div {
+    display: flex;
+    position: relative;
+}
+
+label {
+    color: #797979;
+}
+/*dom*/
+
+/*comm_use*/
+.memberlistblock, .memberlistblock_h {
+    width: 100%;
+    height: 40px;
+    /*background-color: #F6E1DC;*/
+}
+
+.member_label {
+    font-size: 14px;
+    font-family: "Microsoft JhengHei";
+    margin: 0 1em 0 0;
+    width: 60px;
+    text-align: end;
+}
+
+.member_input {
+    text-align: center;
+    font-size: 14px;
+    font-family: "Microsoft JhengHei";
+}
+
+.btn_comfirm {
+    width: 60px;
+    height: 35px;
+    background-color: #B4A29E;
+    color: white;
+    border: 2px #F4F4F4 solid;
+    font-size: 14px;
+}
+
+    .btn_comfirm:hover {
+        cursor: pointer;
+    }
+
+.a_membercenter_h, .a_membercenter {
+    width: 100%;
+    height: auto;
+    display: flex;
+    padding: 0 0 0 1em;
+    font-size: 14px;
+    color: #797979;
+    align-items: center;
+}
+
+    .a_membercenter_h:hover, .a_membercenter:hover {
+        color: #E3BCB5;
+        cursor: pointer;
+    }
+
+
+/*comm_use*/
+
+/*center_main(cluding login register forgetpassword comfirmemail)*/
+.main_editor_950 {
+    width: 1200px;
+    height: auto;
+    min-height: 950px;
+    background-color: #F6F2F1;
+}
+
+.main_editor_1200 {
+    width: 1200px;
+    height: auto;
+    min-height: 1200px;
+    position: relative;
+    background-color: #F6F2F1;
+}
+
+.main_column_start {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    align-items: start;
+    margin: 30px 20px;
+}
+/*center_main*/
+
+/*computer*/
+/*member_center_administer*/
+.membercenter_administer_main {
+    width: 100%;
+    height: auto;
+    margin: 30px 0 0 0;
+}
+
+.membercenter_block {
+    width: 320px;
+    height: 400px;
+    background-color: #F5F4F0;
+    border: 2px #BFCAC2 solid;
+    margin: 0 2% 3% 0;
+}
+
+.member_span_1 {
+    font-size: 28px;
+    color: #797979;
+    padding: 1em 0 0 1em;
+}
+
+.member_span_2 {
+    font-size: 18px;
+    color: #797979;
+    padding: 0 0 0 1em;
+}
+
+.member_span_3 {
+    font-size: 16px;
+    color: #797979;
+    padding: 0 0 0 1em;
+}
+/*member_center_administer*/
+
+/*member_center_client*/
+.membercenter_client_list {
+    width: 25%;
+    height: auto;
+    padding: 1em;
+}
+
+.memberlogo {
+    width: 100%;
+    height: 80px;
+}
+
+    .memberlogo img {
+        border-radius: 50%;
+    }
+
+.membercenter_client_edit {
+    width: 75%;
+    height: auto;
+    margin: 10px 20px;
+    background-color: white;
+}
+
+.memberinfo_1 {
+    width: 100%;
+    height: 60px;
+}
+
+    .memberinfo_1 h2 {
+        display: flex;
+        align-items: center;
+        font-family: "Microsoft JhengHei";
+        color: #797979;
+        margin: 0 0 0 2em;
+    }
+
+.memberinfo_2 {
+    width: 100%;
+    height: auto;
+    margin: 1em 0 0 0;
+}
+
+.membercenter_client_edit_list_block {
+    height: 30px;
+    align-items: center;
+    margin: 1em 0 1em 3em;
+}
+
+#showPasswordCheckbox {
+    font-size: 8px;
+}
+/*member_center_client*/
+
+/*style change*/
+.div_none {
+    display: none;
+}
+
+.flex_just_center {
+    justify-content: center;
+}
+
+.flex_just_start {
+    justify-content: start;
+}
+
+.flex_direction_row {
+    flex-direction: row;
+}
+
+.flex_direction_column {
+    flex-direction: column;
+}
+
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
+.align_item_center {
+    align-items: center;
+    ;
+}
+
+.no_padding {
+    padding: 0;
+}
+
+.no_margin {
+    margin: 0;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.transform_x {
+    transform: translateX(-25%);
+}
+
+.border_underlint {
+    border-bottom: 1px #BFCAC2 solid;
+}
+
+.selected {
+    color: #E3BCB5;
+}
+/*style change*/
+/*computer*/
+
+/*media*/
+@media (max-width: 768px) {
+    .main_editor_950 {
+        width: 100%;
+    }
+
+    .member_span_1 {
+        padding: 1em 0 0 0;
+    }
+
+    .membercenter_block {
+        margin: 0 0 2em;
+        height: auto;
+    }
+
+    .memberlistblock {
+        display: none;
+    }
+
+    .member_span_2:active {
+        text-decoration: underline;
+    }
+
+    .membercenter_client_edit {
+        width: 100%;
+        margin: 0;
+    }
+
+    .member_span_3 {
+        padding: 0;
+    }
+
+    .membercenter_client_edit_list_block {
+        margin: 0;
+    }
+
+    .btn_comfirm {
+        width: 35px;
+        height: 20px;
+        font-size: 10px;
+        padding: 0;
+        border: none;
+    }
+}
+/*media*/

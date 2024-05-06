@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Data;
-using YYBagProgram.Enums;
+using System.Text;
+using System.Security.Cryptography;
+using System.Web;
+
 
 namespace YYBagProgram.Comm
 {
@@ -114,6 +117,62 @@ namespace YYBagProgram.Comm
                 targetpath = oriImageUrl;
             }
             return targetpath;
+        }
+
+        public static string EncryptStringToBase64(string plainText, string SecretKey)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                byte[] keyBytes = Encoding.UTF8.GetBytes(SecretKey);
+                Array.Resize(ref keyBytes, 32);
+
+                aesAlg.Key = keyBytes;
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                byte[] encryptedBytes;
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] buffer = Encoding.UTF8.GetBytes(plainText);
+                        csEncrypt.Write(buffer, 0, buffer.Length);
+                        csEncrypt.FlushFinalBlock();
+                        encryptedBytes = msEncrypt.ToArray();
+                    }
+                }
+
+                return HttpUtility.UrlEncode(Convert.ToBase64String(encryptedBytes));
+            }
+        }
+
+        public static string DecryptBase64String(string base64String, string SecretKey)
+        {
+            byte[] encryptedBytes = Convert.FromBase64String(HttpUtility.UrlDecode(base64String));
+            using (Aes aesAlg = Aes.Create())
+            {
+                byte[] keyBytes = Encoding.UTF8.GetBytes(SecretKey);
+                Array.Resize(ref keyBytes, 32);
+
+                aesAlg.Key = keyBytes;
+                aesAlg.Mode = CipherMode.ECB;
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(encryptedBytes))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
         }
     }
 }

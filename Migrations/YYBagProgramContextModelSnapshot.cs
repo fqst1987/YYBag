@@ -33,7 +33,7 @@ namespace YYBagProgram.Migrations
 
                     b.HasKey("strBagsId");
 
-                    b.ToTable("MonthlyHots");
+                    b.ToTable("CarouselSetting");
                 });
 
             modelBuilder.Entity("YYBagProgram.Models.Classification", b =>
@@ -63,17 +63,34 @@ namespace YYBagProgram.Migrations
                     b.ToTable("ClassificationDetail");
                 });
 
+            modelBuilder.Entity("YYBagProgram.Models.MemberRole", b =>
+                {
+                    b.Property<string>("MemberId")
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("MemberId");
+
+                    b.ToTable("MemberRole");
+                });
+
             modelBuilder.Entity("YYBagProgram.Models.Members", b =>
                 {
-                    b.Property<string>("strMemberPhone")
-                        .HasColumnType("varchar(15)");
+                    b.Property<string>("strMemberEmail")
+                        .HasColumnType("varchar(30)");
 
-                    b.Property<DateTime>("dateBirthday")
+                    b.Property<DateTime?>("dateBirthday")
                         .HasColumnType("date");
 
-                    b.Property<string>("strMemberEmail")
+                    b.Property<bool?>("isGoogleAccount")
                         .IsRequired()
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("isReview")
+                        .IsRequired()
+                        .HasColumnType("bit");
 
                     b.Property<string>("strMemberId")
                         .IsRequired()
@@ -81,13 +98,16 @@ namespace YYBagProgram.Migrations
 
                     b.Property<string>("strMemberName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("strMemberPassWord")
                         .IsRequired()
                         .HasColumnType("varchar(max)");
 
-                    b.HasKey("strMemberPhone");
+                    b.Property<string>("strMemberPhone")
+                        .HasColumnType("varchar(15)");
+
+                    b.HasKey("strMemberEmail");
 
                     b.ToTable("Member");
                 });
@@ -238,6 +258,19 @@ namespace YYBagProgram.Migrations
                     b.HasKey("strID", "strColor", "ProductStatus");
 
                     b.ToTable("ProductsColorDetail");
+                });
+
+            modelBuilder.Entity("YYBagProgram.Models.Token.Tokens", b =>
+                {
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("date");
+
+                    b.HasKey("Token");
+
+                    b.ToTable("Tokens");
                 });
 #pragma warning restore 612, 618
         }
