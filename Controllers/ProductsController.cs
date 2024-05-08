@@ -16,12 +16,15 @@ namespace YYBagProgram.Controllers
     {
         private readonly YYBagProgramContext? _context;
         private readonly IWebHostEnvironment? _enviroment;
-        private readonly int pageSize = 10;
+        private readonly IConfiguration _config;
+        private int pageSize { get; }
 
-        public ProductsController(YYBagProgramContext context, IWebHostEnvironment enviroment)
+        public ProductsController(YYBagProgramContext context, IWebHostEnvironment enviroment, IConfiguration config)
         {
             _context = context;
             _enviroment = enviroment;
+            _config = config;
+            pageSize = Int16.Parse(_config.GetSection("pageSize").Value);
         }
 
         #region 商品 主頁 Administer 

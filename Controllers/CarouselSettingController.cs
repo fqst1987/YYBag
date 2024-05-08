@@ -19,12 +19,10 @@ namespace YYBagProgram.Controllers
     public class CarouselSettingController : Controller
     {
         private readonly YYBagProgramContext _context;
-        private readonly IWebHostEnvironment _enviroment;
         private readonly int pageSize = 10;
-        public CarouselSettingController(YYBagProgramContext context, IWebHostEnvironment enviroment)
+        public CarouselSettingController(YYBagProgramContext context)
         {
             _context = context;
-            _enviroment = enviroment;
         }
 
         #region 主頁

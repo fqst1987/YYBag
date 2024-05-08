@@ -1,8 +1,8 @@
 [
   {
-    "outputFileName": "wwwroot/javascript/Carousel.min.js",
+    "outputFileName": "wwwroot/javascript/carousel.min.js",
     "inputFiles": [
-      "javascript/Carousel.js"
+      "javascript/carousel.js"
     ]
   },
   {
@@ -40,5 +40,24 @@
     "inputFiles": [
       "css/product.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/_layout.min.css",
+    "inputFiles": [
+      "css/_layout.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/yybag.min.css",
+    "inputFiles": [
+      "css/yybag.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/home.min.css",
+    "inputFiles": [
+      "css/home.css"
+    ]
   }
+
 ]

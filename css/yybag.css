@@ -1,0 +1,81 @@
+﻿/*overall dom*/
+body{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+div {
+    display: flex;
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+    font-family: "Microsoft JhengHei";
+}
+
+label {
+    color: #797979;
+}
+
+input {
+    color: #797979;
+    border: none;
+    outline: none;
+    border-bottom: 1px #A7BEC6 solid;
+}
+
+    input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+/*overall dom*/
+
+/*page*/
+.container {
+    width: 100%;
+    height: auto;
+}
+.container_mid {
+    width: 80%;
+    max-width: 1920px;
+    height: 100%;
+    min-height: 1280px;
+    margin: 0 auto;
+}
+/*page*/
+/*change style*/
+.flex_just_content_center {
+    justify-content: center;
+}
+
+.fiex_just_content_start {
+    justify-content: start;
+}
+
+.flex_just_content_spacebetween {
+    justify-content: space-between;
+}
+
+.flex_direction_row {
+    flex-direction: row;
+}
+
+.flex_direction_column {
+    flex-direction: column;
+}
+
+.flex_align_item_center {
+    align-items: center;
+}
+
+.flex_align_self_center {
+    align-self: center;
+}
+/*change style*/
+
+@media (max-width: 800px) {
+    .container_mid{
+        width: 100%;
+    }
+}

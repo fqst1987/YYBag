@@ -15,21 +15,22 @@ namespace YYBagProgram.Controllers
     public class ClassificationController : Controller
     {
         private readonly YYBagProgramContext _context;
-        private readonly IWebHostEnvironment _environment;
-        private readonly ILogger _logger;
+        private readonly IConfiguration _config;
+        private int pageSize { get; set; }
  
-        public ClassificationController(YYBagProgramContext context, IWebHostEnvironment environment)
+        public ClassificationController(YYBagProgramContext context, IConfiguration config)
         {
             _context = context;
-            _environment = environment;
+            _config = config;
+            pageSize = Int16.Parse(_config.GetSection("pageSize").Value);
         }
 
         #region 自訂分類 主頁
         [HttpGet]
-        [Route("Classification/Main/{page}")]
-        public async Task<IActionResult> Main(int page)
+        [Route("Classification/Main/{page = 1}")]
+        public async Task<IActionResult> Main(int page = 1)
         {
-            int pageSize = 10;
+
             if (_context.Classification != null)
             {
                 var classifications = await _context.Classification.ToListAsync();

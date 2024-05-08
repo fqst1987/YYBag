@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YYBagProgram.Data;
+using YYBagProgram.Models.ViewModel;
 
 
 namespace YYBagProgram.Controllers
@@ -10,20 +12,26 @@ namespace YYBagProgram.Controllers
     public class HomeController : Controller
     {
         private readonly YYBagProgramContext _context;
-        private readonly IConfiguration _configuration;
 
-        public HomeController(YYBagProgramContext context, IConfiguration configuration)
+        public HomeController(YYBagProgramContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Home()
         {
-            string id = _configuration["GoogleApiClientId"];
-            ViewData["google_client_id"] = id;
-            return View();
+            HomeViewModel vm = new HomeViewModel();
+            if(_context.CarouselSetting != null)
+            {
+                vm.CarouselSettings = await _context.CarouselSetting.ToListAsync();
+            }
+            if (_context.Product != null)
+            {
+                vm.Products = await _context.Product.ToListAsync();
+            }
+
+            return View(vm);
         }
 
         /// <summary>

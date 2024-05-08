@@ -1,0 +1,54 @@
+﻿@model YYBagProgram.Models.ViewModel.HomeViewModel
+@{
+    ViewData["titlemsg"] = "買你的包, 包你所買";
+    string google_client_id = ViewData["google_client_id"]?.ToString() ?? string.Empty;
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/carousel.min.css" />
+    <link rel="stylesheet" href="~/css/home.min.css" />
+</head>
+<div class="home flex_direction_column">
+    <!--carousel-->
+    <div class="carousel_area">
+        <div class="carousel">
+            <div class="carousel_container" id="carousel">
+                @{
+                    for (int i = 0; i < Model.CarouselSettings?.Count; i++)
+                    {
+                        <a asp-action="Details" asp-controller="Products" asp-route-strBagsId="@Model.CarouselSettings[i].strBagsId">
+                            <img class="carousel_img" src="@Model.CarouselSettings[i].imgurl" />
+                        </a>
+
+                    }
+                }
+            </div>
+        </div>
+        <div class="carousel_btn_preview" tabindex="-1" id="carousel_btn_preview" onclick="previewimg()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-left" viewBox="0 0 16 16">
+                <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753" />
+            </svg>
+        </div>
+        <div class="carousel_btn_next" tabindex="-1" id="carousel_btn_next" onclick="nextimg()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-right" viewBox="0 0 16 16">
+                <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
+            </svg>
+        </div>
+        <div class="btn_select_img_area">
+            @{
+                for (int i = 0; i < Model.CarouselSettings?.Count; i++)
+                {
+                    <div class="btn_select_img"></div>
+                }
+            }
+        </div>
+    </div>
+    <!--allproducts-->
+    <div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/javascript/Carousel.min.js"></script>
+}

@@ -1,13 +1,14 @@
-﻿.page_area {
-    width: 800px;
+﻿.main{
+    width:100%;
+    height: 100%;
+}
+.page_area {
+    width: 41%;
+    max-width: 800px;
     height: 30px;
-    display: flex;
-    position: absolute;
-    flex-direction: row;
+    left 50%;
     justify-content: space-between;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .page_area_select {
@@ -52,10 +53,9 @@
 .page_area_number {
     width: 150px;
     height: 100%;
-    display: flex;
-    position: relative;
     flex-direction: row;
     overflow-x: hidden;
+    justify-content:center;
 }
 
 .page_area_number_container {
@@ -93,4 +93,10 @@
 
 .item_selected a {
     color: #E3BCB5
+}
+
+@media (max-width: 800px){
+    .page_area{
+        width: 100%;
+    }
 }
