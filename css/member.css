@@ -100,28 +100,45 @@
 /*center_main*/
 
 /*member_login*/
-.span_login {
+/*member_register*/
+.span_login, .span_register {
     width: 100%;
     height: 100px;
     justify-content: center;
-    align-items: end;
+    align-items: end
 }
-.login{
+
+.login, .register {
     width: 100%;
     height: 400px;
     flex-direction: column;
     justify-content: flex-end;
 }
-    .span_login span{
-        font-size: 28px;
+
+.span_login span {
+    font-size: 28px;
+}
+.span_register span {
+    font-size: 28px;
+}
+
+.forget_password, .member_login {
+    flex-direction: row-reverse;
+}
+    .forget_password a{
+        color: blue;
+        font-size: 12px;
+        margin: 2px 5px 0 5px;
+    }
+    .member_login a {
+        color: blue;
+        font-size: 12px;
     }
 
 .member_input_area {
     width: 100%;
     flex-direction: column;
-    height: 50px;
-    margin-bottom: 2em;
-}
+}      
 .div_login form{
     display: flex;
     position: relative;
@@ -137,6 +154,8 @@
 }
 
 /*member_login*/
+/*member_register*/
+
 
 /*member_center_administer*/
 .membercenter_administer_main {

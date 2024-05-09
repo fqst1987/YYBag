@@ -8,5 +8,8 @@ namespace YYBagProgram.Models.ViewModel
 
         public IList<Product> Products { get; set; }
 
+        public IList<Classification> Classifications { get; set; }
+
+        public IList<ProductColor> ProductColors { get; set; }
     }
 }

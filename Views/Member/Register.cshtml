@@ -8,46 +8,48 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-<div class="main_editor_950">
-    <div id="client_login_top" class="main_row_mid">
-        <div class="div_login_ad">
-            <img src="https://fakeimg.pl/500x500/">
+<div class="main flex_direction_row flex_just_center">
+    <div class="div_login_ad">
+        <img src="https://fakeimg.pl/500x500/">
+    </div>
+    <div class="div_login flex_direction_column flex_align_item_center">
+        <div class="span_register">
+            <span>註冊會員</span>
         </div>
-        <div class="div_login">
-            <span class="member_span_1">註冊會員</span>
+        <div class="register">
             <form asp-action="Register" asp-controller="Member" method="post" id="form">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="strMemberId" type="hidden" value="temp" />
                 <input asp-for="isReview" type="hidden" value="false" />
                 <input asp-for="isGoogleAccount" type="hidden" value="false" />
-                <div class="member_input_area"> 
-                    <input asp-for="strMemberEmail" class="member_input_320" placeholder="請輸入Email(必要)" id="input_email" />
+                <div class="member_input_area">
+                    <input asp-for="strMemberEmail" class="input_1" placeholder="請輸入Email(必要)" id="input_email" />
                     <span asp-validation-for="strMemberEmail" class="span_danger" id="span_email"></span>
                 </div>
                 <div class="member_input_area">
-                    <input type="password" asp-for="strMemberPassWord" class="member_input_320" placeholder="password 密碼最少6位(必要)" id="input_password_1" />
+                    <input type="password" asp-for="strMemberPassWord" class="input_1" placeholder="password 密碼最少6位(必要)" id="input_password_1" />
                     <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_password_1"></span>
                 </div>
                 <div class="member_input_area">
-                    <input type="password" class="member_input_320" placeholder="password 再輸入一次(必要)" id="input_password_2" />
+                    <input type="password" class="input_1" placeholder="password 再輸入一次(必要)" id="input_password_2" />
                     <span class="span_danger" id="span_password_2"></span>
                 </div>
                 <div class="member_input_area">
-                    <input asp-for="strMemberName" class="member_input_320" placeholder="請填寫姓名" id="input_name"/>
+                    <input asp-for="strMemberName" class="input_1" placeholder="請填寫姓名" id="input_name" />
                     <span asp-validation-for="strMemberName" class="span_danger" id="span_name"></span>
                 </div>
                 <div class="member_input_area">
-                    <input type="date" asp-for="dateBirthday" class="member_input_320" placeholder="選擇生日日期" value="" />
-                    <span asp-validation-for="dateBirthday" class="span_dange"></span>
+                    <input type="date" asp-for="dateBirthday" class="input_1" placeholder="選擇生日日期" value="" />
+                    <span asp-validation-for="dateBirthday" class="span_danger"></span>
                 </div>
                 <div class="member_input_area">
-                    <input type="number" asp-for="strMemberPhone" class="member_input_320" placeholder="請輸入手機" />
-                    <span asp-validation-for="strMemberPhone" class="span_dange"></span>
+                    <input type="number" asp-for="strMemberPhone" class="input_1" placeholder="請輸入手機" />
+                    <span asp-validation-for="strMemberPhone" class="span_danger"></span>
                 </div>
                 <input type="button" value="註冊會員" class="member_btn_full" id="btn_sunmit" />
             </form>
-            <div id="member_login" style="position: relative; margin: 10px 0 0 0 ">
-                <a asp-action="Login" asp-controller="Member" class="a_login">登入會員</a>
+            <div id="member_login" class="member_login">
+                <a asp-action="Login" asp-controller="Member">登入會員</a>
             </div>
         </div>
     </div>

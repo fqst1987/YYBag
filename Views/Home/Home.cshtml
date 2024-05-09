@@ -19,7 +19,6 @@
                         <a asp-action="Details" asp-controller="Products" asp-route-strBagsId="@Model.CarouselSettings[i].strBagsId">
                             <img class="carousel_img" src="@Model.CarouselSettings[i].imgurl" />
                         </a>
-
                     }
                 }
             </div>
@@ -43,9 +42,55 @@
             }
         </div>
     </div>
+    <!--classification-->
+    <div class="classification flex_direction_row">
+        <ul>
+            @{
+                foreach (var classification in Model.Classifications)
+                {
+                    <li><a asp-action="ClassificationMain" asp-controller="Classification" asp-route-Id="@classification.Id" asp-route-page="1">@classification.Name</a></li>
+                }
+            }
+        </ul>
+    </div>
     <!--allproducts-->
-    <div>
+    <div class="allproducts flex_direction_row">
+        @{
+            foreach (var product in Model.Products)
+            {
+                string strBagsId = product.strBagsId;
+                string strBagsName = product.strBagsName;
+                int iPrice = product.iPrice;
+                string strBagsImgUrls = product.strImageUrl;
+                string urltemp = strBagsImgUrls.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                string url = urltemp.Substring(urltemp.IndexOf(@"\upload")).Replace(@"\", "/");
+                <div class="product_main">
+                    <a asp-action="Details" asp-controller="Products" asp-route-strBagsId="@product.strBagsId">
+                        <img id="product_photo_url" class="product_photo" src="@url" />
+                    </a>
+                    <div class="product_color_collection">
+                        @{
+                            for (int j = 0; j < Model.ProductColors?.Where(row => row.strBagsId.Equals(strBagsId)).ToList()?.Count; j++)
+                            {
 
+                                <div class="product_color">
+                                    @Model.ProductColors[j].strColor
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name_price">
+                            <span>@strBagsName</span>
+                            <span>@iPrice</span>
+                        </div>
+                        <div class="btn_addchart">
+                            <img src="/icons/cart4.svg" style="width: 25px; height: 25px" />
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>
 

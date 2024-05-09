@@ -49,7 +49,7 @@ namespace YYBagProgram.Controllers
         }
 
         [HttpGet]
-        [Route("Classification/ClassificationMain/{Id}/{page}")]
+        [Route("Classification/ClassificationMain/{id}/{page}")]
         public async Task<IActionResult> ClassificationMain(string Id, int page)
         {
             int pageSize = 3;

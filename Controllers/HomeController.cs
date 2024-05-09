@@ -22,6 +22,7 @@ namespace YYBagProgram.Controllers
         public async Task<IActionResult> Home()
         {
             HomeViewModel vm = new HomeViewModel();
+
             if(_context.CarouselSetting != null)
             {
                 vm.CarouselSettings = await _context.CarouselSetting.ToListAsync();
@@ -29,6 +30,14 @@ namespace YYBagProgram.Controllers
             if (_context.Product != null)
             {
                 vm.Products = await _context.Product.ToListAsync();
+            }
+            if (_context.Classification != null)
+            {
+                vm.Classifications = await _context.Classification.ToListAsync();
+            }
+            if (_context.ProductColor != null)
+            {
+                vm.ProductColors = await _context.ProductColor.ToListAsync();
             }
 
             return View(vm);
