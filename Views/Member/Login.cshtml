@@ -9,22 +9,24 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-<div class="main_editor_950">
-    <div id="client_login_top" class="main_row_mid">
-        <div class="div_login_ad">
-            <img src="https://fakeimg.pl/500x500/">
+<div class="main flex_direction_row flex_just_center">
+    <div class="div_login_ad">
+        <img src="https://fakeimg.pl/500x500/">
+    </div>
+    <div class="div_login flex_direction_column flex_align_item_center">
+        <div class="span_login">
+            <span> 登入</span>
         </div>
-        <div class="div_login">
-            <sapn class="member_span_1"> 登入</sapn>
+        <div class="login">
             <form asp-action="Login" asp-controller="Member" method="post" id="form">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="member_input_area" id="client_login">
-                    <input class="member_input_320" type="text" asp-for="strMemberGuid" placeholder="請輸入註冊之Email" id="input_email" />
-                    <span asp-validation-for="strMemberGuid" class="span_danger" id="span_email"></span>
+                    <input type="text" class="input_1" asp-for="strMemberGuid" placeholder="請輸入註冊之Email" id="input_email" />
+                    <span class="span_danger" id="span_email"></span>
                 </div>
                 <div class="member_input_area" id="client_login_password">
-                    <input class="member_input_320" type="password" asp-for="strMemberPassWord" placeholder="請輸入密碼" id="input_password" />
-                    <span asp-validation-for="strMemberPassWord" class="span_danger" id="span_passowrd"></span>
+                    <input type="password" class="input_1" asp-for="strMemberPassWord" placeholder="請輸入密碼" id="input_password" />
+                    <span class="span_danger" id="span_passowrd"></span>
                 </div>
                 <input type="button" value="送出" class="member_btn_full" id="btn_sunmit" />
             </form>
@@ -32,7 +34,7 @@
                 <a asp-action="Register" asp-controller="Member" class="a_register">註冊</a>
                 <a asp-action="ForgetPassword" asp-controller="Member" class="a_resetpassword">忘記密碼</a>
             </div>
-            <hr style="border:1px #B5BAC0 solid; position:relative; width:80%;" />
+            <hr style="border:1px #B5BAC0 solid; position:relative; width:100%;" />
             <div class="external_login_area">
                 <div style="margin: 15px 20px;">
                     <div id="g_id_onload"

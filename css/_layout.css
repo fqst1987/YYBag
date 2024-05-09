@@ -115,6 +115,9 @@ p {
 /*footer*/
 
 @media (max-width: 800px) {
+    .menu_wrapper{
+        width: 100%;
+    }
     .memu_wrapper_mid {
         width: 100%;
         flex-direction: column;

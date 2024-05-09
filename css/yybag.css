@@ -1,4 +1,9 @@
 ﻿/*overall dom*/
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 body{
     margin: 0;
     height: 100%;
@@ -24,11 +29,11 @@ input {
     outline: none;
     border-bottom: 1px #A7BEC6 solid;
 }
+span {
+    color: #797979;
+    font-family: "Microsoft JhengHei";
+}
 
-    input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
 /*overall dom*/
 
 /*page*/
@@ -44,17 +49,17 @@ input {
     margin: 0 auto;
 }
 /*page*/
-/*change style*/
-.flex_just_content_center {
+/*style change*/
+.div_none {
+    display: none;
+}
+
+.flex_just_center {
     justify-content: center;
 }
 
-.fiex_just_content_start {
+.flex_just_start {
     justify-content: start;
-}
-
-.flex_just_content_spacebetween {
-    justify-content: space-between;
 }
 
 .flex_direction_row {
@@ -65,14 +70,38 @@ input {
     flex-direction: column;
 }
 
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
 .flex_align_item_center {
     align-items: center;
 }
 
-.flex_align_self_center {
-    align-self: center;
+.no_padding {
+    padding: 0;
 }
-/*change style*/
+
+.no_margin {
+    margin: 0;
+}
+
+.font_bold {
+    font-weight: bold;
+}
+
+.transform_x {
+    transform: translateX(-25%);
+}
+
+.border_underlint {
+    border-bottom: 1px #BFCAC2 solid;
+}
+
+.selected {
+    color: #E3BCB5;
+}
+/*style change*/
 
 @media (max-width: 800px) {
     .container_mid{

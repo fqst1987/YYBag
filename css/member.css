@@ -1,37 +1,4 @@
-﻿/*dom*/
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-a {
-    text-decoration: none;
-    font-family: "Microsoft JhengHei";
-}
-
-input {
-    color: #797979;
-    border: none;
-    outline: none;
-    border-bottom: 1px #A7BEC6 solid;
-}
-
-    input::placeholder {
-        color: #DFDFDF;
-        font-size: 14px;
-    }
-
-div {
-    display: flex;
-    position: relative;
-}
-
-label {
-    color: #797979;
-}
-/*dom*/
-
-/*comm_use*/
+﻿/*comm_use*/
 .memberlistblock, .memberlistblock_h {
     width: 100%;
     height: 40px;
@@ -80,10 +47,25 @@ label {
         cursor: pointer;
     }
 
-
+.member_btn_full {
+    background-color: #B4A29E;
+    color: white;
+    border: 2px #F4F4F4 solid;
+    font-size: 14px;
+    height: 30px;
+}
+.span_danger{
+    width: 100%;
+    height: 25px;
+    color: red;
+    text-align-last: center;
+}
 /*comm_use*/
-
 /*center_main(cluding login register forgetpassword comfirmemail)*/
+.main {
+    width: 100%;
+    height: 100%;
+}
 .main_editor_950 {
     width: 1200px;
     height: auto;
@@ -106,9 +88,56 @@ label {
     align-items: start;
     margin: 30px 20px;
 }
+.div_login {
+    max-width: 400px;
+    height: 100%;
+    width: 36.5%;
+    min-height: 500px;
+}
+.div_login_ad {
+    max-width: 500px;
+}
 /*center_main*/
 
-/*computer*/
+/*member_login*/
+.span_login {
+    width: 100%;
+    height: 100px;
+    justify-content: center;
+    align-items: end;
+}
+.login{
+    width: 100%;
+    height: 400px;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+    .span_login span{
+        font-size: 28px;
+    }
+
+.member_input_area {
+    width: 100%;
+    flex-direction: column;
+    height: 50px;
+    margin-bottom: 2em;
+}
+.div_login form{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+.input_1 {
+    font-size: 16px;
+    width: 100%;
+    height: 25px;
+    text-align-last: center;
+}
+
+/*member_login*/
+
 /*member_center_administer*/
 .membercenter_administer_main {
     width: 100%;
@@ -128,6 +157,7 @@ label {
     font-size: 28px;
     color: #797979;
     padding: 1em 0 0 1em;
+    width: 100%;
 }
 
 .member_span_2 {
@@ -196,69 +226,23 @@ label {
 }
 /*member_center_client*/
 
-/*style change*/
-.div_none {
-    display: none;
-}
-
-.flex_just_center {
-    justify-content: center;
-}
-
-.flex_just_start {
-    justify-content: start;
-}
-
-.flex_direction_row {
-    flex-direction: row;
-}
-
-.flex_direction_column {
-    flex-direction: column;
-}
-
-.flex_wrap {
-    flex-wrap: wrap;
-}
-
-.align_item_center {
-    align-items: center;
-    ;
-}
-
-.no_padding {
-    padding: 0;
-}
-
-.no_margin {
-    margin: 0;
-}
-
-.font_bold {
-    font-weight: bold;
-}
-
-.transform_x {
-    transform: translateX(-25%);
-}
-
-.border_underlint {
-    border-bottom: 1px #BFCAC2 solid;
-}
-
-.selected {
-    color: #E3BCB5;
-}
-/*style change*/
-/*computer*/
 
 /*media*/
 @media (max-width: 768px) {
+    .main{
+        width: 100%;
+    }
+    .div_login{
+        width:100%;
+    }
+    .div_login_ad{
+        display: none;
+    }
     .main_editor_950 {
         width: 100%;
     }
-
     .member_span_1 {
+        width: 100%;
         padding: 1em 0 0 0;
     }
 
