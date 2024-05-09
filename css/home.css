@@ -50,10 +50,11 @@
     width: 100%;
     flex-wrap: wrap;
 }
-
+.product_name_price{
+    flex-direction:column;
+}
 /*商品顯示部分*/
-
-@media (max-width: 800px){
+@media (max-width: 800px) {
     .product_main{
         width: 40%;
         max-width: auto;

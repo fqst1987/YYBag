@@ -19,171 +19,169 @@
     <link rel="stylesheet" href="~/css/product.min.css" />
 </head>
 
-<div class="main_editor_detail">
-    <div class="main_top_column_mid">
-        <div class="product_detail_1">
-            <div class="product_detail_photo">
-                @* big product image show *@
-                <div class="product_detail_photo_top">
-                    <img class="product_detail_img_495" src="" alt="YoYo's Bag" />
-                </div>
-                @*small product image show*@
-                <div class="product_detail_photo_bottom">
-                    @{
-                        for (int i = 0; i < urls.Length; i++)
+<div class="main flex_direction_column">
+    <div class="product_detail_1">
+        <div class="product_detail_photo">
+            @* big product image show *@
+            <div class="product_detail_photo_top">
+                <img class="product_detail_img_top" src="" alt="YoYo's Bag" />
+            </div>
+            @*small product image show*@
+            <div class="product_detail_photo_bottom">
+                @{
+                    for (int i = 0; i < urls.Length; i++)
+                    {
+                        int startIndex = urls[i].IndexOf(@"\upload");
+                        if (i >= uplimit)
                         {
-                            int startIndex = urls[i].IndexOf(@"\upload");
-                            if (i >= uplimit)
+                            if (startIndex != -1)
                             {
-                                if (startIndex != -1)
-                                {
-                                        <img class="product_detail_img_95 none_display" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
-                                }
+                                <img class="product_detail_img_95 none_display" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
                             }
-                            else
+                        }
+                        else
+                        {
+                            if (startIndex != -1)
                             {
-                                if (startIndex != -1)
-                                {
-                                        <img class="product_detail_img_95" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
-                                }
+                                <img class="product_detail_img_95" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
                             }
                         }
                     }
-                    <button class="btn_preview" tabindex="-1" onclick="preimgs()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-left" viewBox="0 0 16 16">
-                            <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753" />
-                        </svg>
-                    </button>
-                    <button class="btn_next" tabindex="-1" onclick="nextimgs()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-right" viewBox="0 0 16 16">
-                            <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
-                        </svg>
-                    </button>
+                }
+                <button class="btn_preview" tabindex="-1" onclick="preimgs()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-left" viewBox="0 0 16 16">
+                        <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753" />
+                    </svg>
+                </button>
+                <button class="btn_next" tabindex="-1" onclick="nextimgs()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-caret-right" viewBox="0 0 16 16">
+                        <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="product_detail_select">
+            <sapn class="product_detail_select_productname">@product.strBagsName</sapn>
+            <span style="display: none" id="oriprice">@oriPrice</span>
+            <span class="product_detail_select_price"></span>
+            <div class="product_detail_color">
+                <h3 class="product_h3">顏色</h3>
+                <div class="product_detail_form_icon" id="product_detail_form_color">
+                    @{
+                        foreach (var obj in productcolor)
+                        {
+                            //get color
+                            string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images;
+
+                            //generate btn_productcolor
+                            <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
+                                <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
+                                <spam>@obj.strColor</spam>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
-            <div class="product_detail_select">
-                <sapn class="product_detail_select_productname">@product.strBagsName</sapn>
-                <span style="display: none" id="oriprice">@oriPrice</span>
-                <span class="product_detail_select_price"></span>
-                <div class="product_detail_color">
-                    <h3 class="product_h3">顏色</h3>
-                    <div class="product_detail_form_icon" id="product_detail_form_color">
+            <div class="product_detail_status">
+                <h3 class="product_h3">狀態</h3>
+                <div class="product_detail_form" id="product_detail_form_staus">
+                    <div class="product_detail_form_icon" id="deliverydays">
+                    </div>
+                    <div class="product_detail_form_icon">
                         @{
-                            foreach (var obj in productcolor)
+                            if (!productscolordetail.Any(row => (int)row.ProductStatus == 1))
                             {
-                                //get color
-                                string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images;
+                                <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
+                                    <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                    <span>現貨</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
+                                    <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                    <span>現貨</span>
+                                </div>
+                            }
 
-                                //generate btn_productcolor
-                                    <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
-                                        <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
-                                        <spam>@obj.strColor</spam>
-                                    </div>
+                            if (!productscolordetail.Any(row => (int)row.ProductStatus == 2))
+                            {
+                                <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
+                                    <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                    <span>預購</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
+                                    <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                    <span>預購</span>
+                                </div>
                             }
                         }
                     </div>
                 </div>
-                <div class="product_detail_status">
-                    <h3 class="product_h3">狀態</h3>
-                    <div class="product_detail_form" id="product_detail_form_staus">
-                        <div class="product_detail_form_icon" id="deliverydays">
-                        </div>
-                        <div class="product_detail_form_icon">
-                            @{
-                                if (!productscolordetail.Any(row => (int)row.ProductStatus == 1))
-                                {
-                                        <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
-                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                            <span>現貨</span>
-                                        </div>
-                                }
-                                else
-                                {
-                                        <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
-                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                            <span>現貨</span>
-                                        </div>
-                                }
-
-                                if (!productscolordetail.Any(row => (int)row.ProductStatus == 2))
-                                {
-                                        <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
-                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                            <span>預購</span>
-                                        </div>
-                                }
-                                else
-                                {
-                                        <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
-                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                            <span>預購</span>
-                                        </div>
-                                }
-                            }
-                        </div>
+            </div>
+            <div class="product_detail_remain">
+                <h3 class="product_h3">數量</h3>
+                <div style="display:flex; flex-direction: column;">
+                    <div class="input_quantity">
+                        <button class="btn_quantity" aria-label="Decrease" id="btn_quantity_decrease">
+                            <img src="~/icons/dash-lg.svg" style="width: 15px; height: 15px" />
+                        </button>
+                        <input type="number" id="productuplimit" class="comm_input_30" value="1" role="spinbutton" min="1" data-upper_limit="10" />
+                        <button class="btn_quantity" aria-label="Increase" id="btn_quantity_increase">
+                            <img src="~/icons/plus-lg.svg" style="width: 15px; height: 15px" />
+                        </button>
+                        <span id="span_remain" class="span_remain"></span>
                     </div>
+                    <span class="error_message"></span>
                 </div>
-                <div class="product_detail_remain">
-                    <h3 class="product_h3">數量</h3>
-                    <div style="display:flex; flex-direction: column;">
-                        <div class="input_quantity">
-                            <button class="btn_quantity" aria-label="Decrease" id="btn_quantity_decrease">
-                                <img src="~/icons/dash-lg.svg" style="width: 15px; height: 15px" />
-                            </button>
-                            <input type="number" id="productuplimit" class="comm_input_30" value="1" role="spinbutton" min="1" data-upper_limit="10" />
-                            <button class="btn_quantity" aria-label="Increase" id="btn_quantity_increase">
-                                <img src="~/icons/plus-lg.svg" style="width: 15px; height: 15px" />
-                            </button>
-                            <span id="span_remain" class="span_remain"></span>
-                        </div>
-                        <span class="error_message"></span>
-                    </div>
-                </div>
-                <div class="product_detail_buy">
-                    <button class="product_detail_addchart">
-                        <img src="/icons/cart4.svg" style="width: 25px; height: 25px; margin: 0 5px" />
-                        <span>加入購物車</span>
-                    </button>
-                    <button class="product_detail_addchart">
-                        <span>直接購買</span>
-                    </button>
-                </div>
+            </div>
+            <div class="product_detail_buy">
+                <button class="product_detail_addchart">
+                    <img src="/icons/cart4.svg" style="width: 25px; height: 25px; margin: 0 5px" />
+                    <span>加入購物車</span>
+                </button>
+                <button class="product_detail_addchart">
+                    <span>直接購買</span>
+                </button>
             </div>
         </div>
-        <div class="product_detail_2">
-            <span class="product_detail_span">商品規格</span>
-            <div class="product_detail_Specification">
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">商品分類</h3>
-                    <span class="product_h4">@strBagType</span>
-                </div>
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">長度</h3>
-                    <span class="product_h4">@product.dLength cm</span>
-                </div>
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">寬度</h3>
-                    <span class="product_h4">@product.dWidth cm</span>
-                </div>
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">高度</h3>
-                    <span class="product_h4">@product.dHigh cm</span>
-                </div>
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">重量</h3>
-                    <span class="product_h4">@product.dWeight g</span>
-                </div>
-                <div class="product_detail_Specification_1">
-                    <h3 class="product_h3">材質</h3>
-                    <span class="product_h4">@product.strMaterial</span>
-                </div>
+    </div>
+    <div class="product_detail_2">
+        <span class="product_detail_span">商品規格</span>
+        <div class="product_detail_Specification">
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">商品分類</h3>
+                <span class="product_h4">@strBagType</span>
+            </div>
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">長度</h3>
+                <span class="product_h4">@product.dLength cm</span>
+            </div>
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">寬度</h3>
+                <span class="product_h4">@product.dWidth cm</span>
+            </div>
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">高度</h3>
+                <span class="product_h4">@product.dHigh cm</span>
+            </div>
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">重量</h3>
+                <span class="product_h4">@product.dWeight g</span>
+            </div>
+            <div class="product_detail_Specification_1">
+                <h3 class="product_h3">材質</h3>
+                <span class="product_h4">@product.strMaterial</span>
             </div>
         </div>
-        <div class="product_detail_3">
-            <span class="product_detail_span">商品敘述</span>
-            <div>
-                @Html.Raw(product.strDescription);
-            </div>
+    </div>
+    <div class="product_detail_3">
+        <span class="product_detail_span">商品敘述</span>
+        <div class="flex_direction_column" id="note">
+            @Html.Raw(product.strDescription);
         </div>
     </div>
 </div>
@@ -192,7 +190,7 @@
         //definitions
         var uplimitimgs = 5;
         var imgelements = document.querySelectorAll(".product_detail_img_95");
-        var imgshowelement = document.querySelector(".product_detail_img_495")
+        var imgshowelement = document.querySelector(".product_detail_img_top")
         var btnproductcolorelements = document.querySelectorAll(".btn_productcolor");
         var btnproductstatuselements = document.querySelectorAll(".btn_productstatus");
         var numberinput = document.querySelector(".comm_input_30");
@@ -431,8 +429,8 @@
                 }
             }
             //product_detail_photo_top
-            var product_detail_img_495 = document.querySelector(".product_detail_img_495")
-            product_detail_img_495.src = imgelements[0].src;
+            var product_detail_img_top = document.querySelector(".product_detail_img_top")
+            product_detail_img_top.src = imgelements[0].src;
         })
     </script>
 }
