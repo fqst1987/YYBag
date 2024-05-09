@@ -40,6 +40,7 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<ICryptographyService, MemberService>();
 builder.Services.AddScoped<ISendEmailService, MemberService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 //全域範圍的驗證機制組態設定(全環境cookie套用)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
