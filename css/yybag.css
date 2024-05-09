@@ -29,6 +29,10 @@ input {
     outline: none;
     border-bottom: 1px #A7BEC6 solid;
 }
+    input::placeholder {
+        color: #E7E7E5;
+    }
+
 span {
     color: #797979;
     font-family: "Microsoft JhengHei";
