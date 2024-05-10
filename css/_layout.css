@@ -95,11 +95,9 @@ p {
 
 .btn_social_media {
     position: absolute;
-    display: flex;
     float: right;
     text-align: left;
     align-content: center;
-    ;
     border: none;
     align-items: center;
     margin: 0 2% 0 0;
@@ -139,4 +137,10 @@ p {
         .menu_items a {
             font-size: 14px;
         }
+    .footer{
+        flex-direction: column;
+    }
+    .btn_social_media{
+        position: relative;
+    }
 }
