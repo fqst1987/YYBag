@@ -27,6 +27,8 @@ namespace YYBagProgram.Data
             modelBuilder.Entity<Members>().HasKey(p => new { p.strMemberEmail });
             modelBuilder.Entity<MemberRole>().HasKey(p => new { p.MemberId });
             modelBuilder.Entity<Tokens>().HasKey(p => new { p.Token });
+            modelBuilder.Entity<Order>().HasKey(p => new { p.strOrderId });
+            modelBuilder.Entity<OrderDetail>().HasKey(p => new { p.strOrderId });
         }
 
 
@@ -51,5 +53,6 @@ namespace YYBagProgram.Data
         public DbSet<MemberRole> MemberRole { get; set; }
 
         public DbSet<Tokens> Tokens { get; set; }
+
     }
 }

@@ -11,23 +11,28 @@ namespace YYBagProgram.Models
         [DisplayName("訂單編號")]
         [Required]
         [Key]
-        [Column(TypeName = "varchar(20)")]
-        public string strOrderGuid { get; set; }
+        [Column(TypeName = "varchar(10)")]
+        public string strOrderId { get; set; }
 
         [DisplayName("商品編號")]
         [Required]
         [Column(TypeName = "varchar(8)")]
         public string strBagsId { get; set; }
 
-        [DisplayName("最後價格")]
+        [DisplayName("價格")]
         [Required]
         [Column(TypeName = "int")]
         public int iFinalPrice { get; set; }
 
-        [DisplayName("商品數量")]
+        [DisplayName("數量")]
         [Required]
         [Column(TypeName = "int")]
         public int iQuantity { get; set; }
+
+        [DisplayName("總額")]
+        [Required]
+        [Column(TypeName = "int")]
+        public int iTotal { get; set; }
 
         [DisplayName("訂單狀態")]
         [Required]

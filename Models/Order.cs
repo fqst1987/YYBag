@@ -9,14 +9,13 @@ namespace YYBagProgram.Models
     {
         [DisplayName("訂單編號")]
         [Required]
-        [Column(TypeName ="varchar(20)")]
-        [Key]
-        public string strOrderGuid { get; set; }
+        [Column(TypeName ="varchar(10)")]
+        public string strOrderId { get; set; }
 
         [DisplayName("會員編號")]
         [Required]
-        [Column(TypeName = "int")]
-        public int iMemberId { get; set; }
+        [Column(TypeName = "varchar(10)")]
+        public string strMemberId { get; set; }
 
         [DisplayName("收件人姓名")]
         [Required]
