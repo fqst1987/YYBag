@@ -40,7 +40,8 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<ICryptographyService, MemberService>();
 builder.Services.AddScoped<ISendEmailService, MemberService>();
 builder.Services.AddScoped<TokenService>();
-builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<CartService>();
+
 
 //全域範圍的驗證機制組態設定(全環境cookie套用)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
@@ -96,7 +97,11 @@ app.MapControllerRoute(
     pattern: "{controller=Member}/{action=CheckMember}/{account}/{password}");
 
 app.MapControllerRoute(
+    name: "AddtoCart",
+    pattern: "{controller=Cart}/{action=AddtoCart}");
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=index}");
+    pattern: "{controller=home}/{action=home}/{id?}");
 
 app.Run();

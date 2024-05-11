@@ -36,14 +36,14 @@
                         {
                             if (startIndex != -1)
                             {
-                                <img class="product_detail_img_95 none_display" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
+                                        <img class="product_detail_img_95 none_display" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
                             }
                         }
                         else
                         {
                             if (startIndex != -1)
                             {
-                                <img class="product_detail_img_95" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
+                                        <img class="product_detail_img_95" src="@urls[i].Substring(startIndex).Replace(" \\", "/" )" />
                             }
                         }
                     }
@@ -74,10 +74,10 @@
                             string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images;
 
                             //generate btn_productcolor
-                            <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
-                                <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
-                                <spam>@obj.strColor</spam>
-                            </div>
+                                    <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
+                                        <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
+                                        <span>@obj.strColor</span>
+                                    </div>
                         }
                     }
                 </div>
@@ -91,32 +91,32 @@
                         @{
                             if (!productscolordetail.Any(row => (int)row.ProductStatus == 1))
                             {
-                                <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
-                                    <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                    <span>現貨</span>
-                                </div>
+                                        <div class="btn_productstatus disable" id="btn_productstatus_1" data-productstatus="1">
+                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>現貨</span>
+                                        </div>
                             }
                             else
                             {
-                                <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
-                                    <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
-                                    <span>現貨</span>
-                                </div>
+                                        <div class="btn_productstatus" id="btn_productstatus_1" data-productstatus="1">
+                                            <img src="~/icons//backpack.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>現貨</span>
+                                        </div>
                             }
 
                             if (!productscolordetail.Any(row => (int)row.ProductStatus == 2))
                             {
-                                <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
-                                    <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                    <span>預購</span>
-                                </div>
+                                        <div class="btn_productstatus disable" id="btn_productstatus_2" data-productstatus="2">
+                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>預購</span>
+                                        </div>
                             }
                             else
                             {
-                                <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
-                                    <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
-                                    <span>預購</span>
-                                </div>
+                                        <div class="btn_productstatus" id="btn_productstatus_2" data-productstatus="2">
+                                            <img src="~/icons/airplane.svg" style="width:16px; height: 16px; padding: 5px" />
+                                            <span>預購</span>
+                                        </div>
                             }
                         }
                     </div>
@@ -139,11 +139,11 @@
                 </div>
             </div>
             <div class="product_detail_buy">
-                <button class="product_detail_addchart">
+                <button class="product_detail_addchart" type="button">
                     <img src="/icons/cart4.svg" style="width: 25px; height: 25px; margin: 0 5px" />
                     <span>加入購物車</span>
                 </button>
-                <button class="product_detail_addchart">
+                <button class="product_detail_addchart" type="button">
                     <span>直接購買</span>
                 </button>
             </div>
@@ -197,6 +197,7 @@
         var errormessage = document.querySelector(".error_message");
         var btn_increase = document.getElementById("btn_quantity_increase");
         var btn_decrease = document.getElementById("btn_quantity_decrease");
+        var price = 0;
 
         //color selected
         btnproductcolorelements.forEach(btnproductcolorelement => {
@@ -303,10 +304,11 @@
 
         function displayRemain(data) {
             var remain = data[0].iRemain;
-            var price = data[0].iPrice;
+            price = data[0].iPrice;
             var deliverydays = data[0].iDeliveryDays;
             var oripriceElement = document.getElementById("oriprice");
-            var oriprice = parseInt(oripriceElement.innerHTML);
+            var oriprice = @oriPrice;
+            //refresh discount
             if (price == oriprice) {
                 oripriceElement.style.display = 'none';
                 document.querySelector(".product_detail_select_price").innerHTML = "$" + price;
@@ -429,9 +431,51 @@
                 }
             }
             //product_detail_photo_top
-            var product_detail_img_top = document.querySelector(".product_detail_img_top")
+            var product_detail_img_top = document.querySelector(".product_detail_img_top");
             product_detail_img_top.src = imgelements[0].src;
         })
+
+        //adddtochart
+        var addtocartElement = document.querySelector(".product_detail_addchart");
+        addtocartElement.addEventListener("click", () => {
+            var id = (@Model.Product.strBagsId).toString();
+            var id_color = document.querySelector('.btn_productcolor_selected').dataset.strid.toString();
+            var color = document.querySelector('.btn_productcolor_selected').dataset.strcolor.toString();
+            var productstatus = parseInt(document.querySelector('.btn_productstatus_selected').dataset.productstatus);
+            var quantity = parseInt(document.getElementById('productuplimit').value);
+            var iprice = price;
+            addtocart(id, id_color, color, productstatus, quantity, iprice, function (response) {
+                if (!response) {
+                    alert("error");
+                }
+                else {
+                    alert("success");
+                }
+            });
+        })
+
+        function addtocart(id, colorid, productstatus, quantity, price, callback) {
+            var postData = {
+                id: id,
+                colorid: colorid,
+                status: productstatus,
+                quantity: quantity,
+                price: price,
+            };
+            console.log(JSON.stringify(postData));
+            $.ajax({
+                url: '/Cart/AddtoCart/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(postData),
+                success: function (response) {
+                    callback(response);
+                },
+                error: function (erroemessage) {
+                    callback(false);
+                }
+            });
+        }
     </script>
 }
 

@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using YYBagProgram.Service;
+using YYBagProgram.Models.Cart;
 
 namespace YYBagProgram.Controllers
 {
     //Cart
     public class CartController : Controller
     {
+        private readonly CartService _cartService;
+        
+        public CartController(CartService cartService)
+        {
+            _cartService = cartService;
+        }
+
         //[Authorize]
         public IActionResult CartMain()
         {
@@ -13,10 +22,10 @@ namespace YYBagProgram.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddtoCart(string strBagsId)
+        [Route("Cart/AddtoCart")]
+        public async Task<IActionResult> AddtoCart([FromBody] CartItem postData)
         {
-            return View();
+            return Json(new { success = true });
         }
     }
 }

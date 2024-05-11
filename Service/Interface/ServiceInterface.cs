@@ -42,12 +42,4 @@ namespace YYBagProgram.Service.Interface
         public Task<IList<MemberRole>> GetMmeberRoles([Optional ]string id);
     }
 
-    public interface ISessionService
-    {
-        public void SetObjectAsJson(ISession session, string key, object value);
-
-        public T GetObjectFromJson<T>(ISession session, string key);
-
-        public void Remove(ISession session, string key);
-    }
 }
