@@ -1,0 +1,50 @@
+﻿@model YYBagProgram.Models.Cart.Cart;
+
+@{
+    Layout = null;
+    int cartitemscount = (int)ViewData["cartItemCount"];
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/cartitems.min.css" />
+</head>
+
+@{
+    if (cartitemscount > 0)
+    {
+        foreach (var item in Model.Items)
+        {
+            <div class="item_area">
+                @{
+                    int startindex = item.imgurl.IndexOf("/upload");
+                    string imgurl = item.imgurl.Substring(startindex);
+                }
+                <img src="@imgurl" />
+                <div class="item_info_area">
+                    <span class="span_item_name">@item.name</span>
+                    <div class="item_info">
+                        <div class="item_info_color">
+                            <span>顏色 @item.color</span>
+                        </div>
+                        <div class="item_info_count">
+                            <span>數量 @item.quantity</span>
+                        </div>
+                        <div class="item_info_price">
+                            <span>價格 @item.price</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <hr class="cartitem_hr"/>
+        <span class="totalamount">總額 @Model.TotalAmount</span>
+        <div class="checkout" id="checkout"><span>前往結帳</span></div>
+    }
+}
+@section Scripts{
+    <script>
+        $('dcoument').ready(function () {
+            $('#checkout')
+        })
+    </script>
+}  

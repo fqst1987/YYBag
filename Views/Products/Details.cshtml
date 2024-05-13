@@ -17,6 +17,7 @@
 <head>
     <title>YYBag-@ViewData["titlemsg"]</title>
     <link rel="stylesheet" href="~/css/product.min.css" />
+    <link rel="stylesheet" href="~/css/alert.min.css" />
 </head>
 
 <div class="main flex_direction_column">
@@ -74,10 +75,10 @@
                             string imgUrl = productscolordetail.Where(row => row.strID.Equals(obj.strID)).FirstOrDefault().Images;
 
                             //generate btn_productcolor
-                                    <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
-                                        <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
-                                        <span>@obj.strColor</span>
-                                    </div>
+                            <div class="btn_productcolor" data-strID="@obj.strID" data-strColor="@obj.strColor">
+                                <img src="@imgUrl" style="width: 22px; height: 22px; padding: 0 5px 0 0 " />
+                                <span>@obj.strColor</span>
+                            </div>
                         }
                     }
                 </div>
@@ -184,6 +185,13 @@
             @Html.Raw(product.strDescription);
         </div>
     </div>
+    <!--alert-->
+    <div id="modal_alertSucess" class="modal_alertSucess">
+        <div class="modal_alertSucess_content" id="modal_alertSucess_content">
+            <img src="https://fakeimg.pl/100x100/" style="padding-top: 30px;">
+            <p id="modal_alertSucess_message"></p>
+        </div>
+    </div>
 </div>
 @section Scripts {
     <script>
@@ -198,6 +206,7 @@
         var btn_increase = document.getElementById("btn_quantity_increase");
         var btn_decrease = document.getElementById("btn_quantity_decrease");
         var price = 0;
+        var bagname = document.querySelector(".product_detail_select_productname").innerHTML;
 
         //color selected
         btnproductcolorelements.forEach(btnproductcolorelement => {
@@ -435,7 +444,33 @@
             product_detail_img_top.src = imgelements[0].src;
         })
 
+        //加入購物車alert
+        window.onclick = function (event) {
+            var modal = document.getElementById("modal_alertSucess");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function openModal(message) {
+
+            var modal = document.getElementById("modal_alertSucess");
+            var modalMessage = document.getElementById("modal_alertSucess_message");
+            modalMessage.innerText = message;
+            modal.style.display = "block";
+
+            setTimeout(function () {
+                modal.style.display = "none";
+            }, 3000);
+        }
+
         //adddtochart
+        function getToken() {
+            var token = '@Html.AntiForgeryToken()'
+            token = $(token).val();
+            return token;
+        }
+
         var addtocartElement = document.querySelector(".product_detail_addchart");
         addtocartElement.addEventListener("click", () => {
             var id = (@Model.Product.strBagsId).toString();
@@ -444,32 +479,47 @@
             var productstatus = parseInt(document.querySelector('.btn_productstatus_selected').dataset.productstatus);
             var quantity = parseInt(document.getElementById('productuplimit').value);
             var iprice = price;
-            addtocart(id, id_color, color, productstatus, quantity, iprice, function (response) {
+            var imgurl = document.querySelector(".btn_productcolor_selected").querySelector("img").src;
+            addtocart(id, bagname, id_color, color, productstatus, quantity, iprice, imgurl, function (response) {
                 if (!response) {
                     alert("error");
                 }
                 else {
-                    alert("success");
+                    openModal("已加入購物車!");
                 }
             });
         })
 
-        function addtocart(id, colorid, productstatus, quantity, price, callback) {
+        function addtocart(id, bagname, colorid, color, productstatus, quantity, price, imgurl, callback) {
             var postData = {
                 id: id,
+                name: bagname,
                 colorid: colorid,
+                color: color,
                 status: productstatus,
                 quantity: quantity,
                 price: price,
+                imgurl: imgurl
             };
-            console.log(JSON.stringify(postData));
+
             $.ajax({
                 url: '/Cart/AddtoCart/',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(postData),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken", getToken());
+                },
                 success: function (response) {
                     callback(response);
+
+                    $.ajax({
+                        url: '/Cart/GetCartItemCount',
+                        type: 'GET',
+                        success: function (data) {
+                            $('#cartItemCountPartial').html(data);
+                        }
+                    });
                 },
                 error: function (erroemessage) {
                     callback(false);

@@ -7,12 +7,14 @@ ul {
     margin-block-start: 0;
     margin-block-end: 0;
     padding-left: 0;
-    align-items: center;
+    height: 100%;
 }
 
 li {
     list-style-type: none;
     margin-right: 1em;
+    height: 100%;
+    align-content: center;
 }
 
 a {
@@ -75,8 +77,8 @@ p {
         font-size: 16px;
         font-family: "Microsoft JhengHei"
     }
-/*header*/
 
+/*header*/
 /*footer*/
 .menu_wrapper_bottom {
     height: 200px;
