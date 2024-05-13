@@ -8,7 +8,7 @@
             this.Items = new List<CartItem>();
         }
 
-        public List<CartItem> Items;
+        public List<CartItem> Items { get; set; }
 
         public int TotalAmount
         {

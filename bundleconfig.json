@@ -58,6 +58,17 @@
     "inputFiles": [
       "css/home.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/alert.min.css",
+    "inputFiles": [
+      "css/alert.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/cartitems.min.css",
+    "inputFiles": [
+      "css/cartitems.css"
+    ]
   }
-
 ]

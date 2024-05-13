@@ -1,5 +1,7 @@
 ﻿using YYBagProgram.Models.Cart;
 using System.Text.Json;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace YYBagProgram.Service
 {
@@ -14,22 +16,23 @@ namespace YYBagProgram.Service
 
         public bool isCartSessionExist()
         {
-            return _contextAccessor.HttpContext.Session.Keys.Contains("Cart");
+            return _contextAccessor.HttpContext.Session.Keys.Contains("cart");
         }
         
         public Cart GetCartSession()
         {
-            string cartJson = _contextAccessor.HttpContext.Session.GetString("Cart") ?? string.Empty;
+            byte[] cartBytes = _contextAccessor.HttpContext.Session.Get("cart");
 
-            if (!string.IsNullOrEmpty(cartJson)) 
+            if (cartBytes != null)
             {
+                string cartJson = Encoding.UTF8.GetString(cartBytes);
                 return JsonSerializer.Deserialize<Cart>(cartJson);
             }
-            
+
             return new Cart();
         }
 
-        public void SetCartSession(string inputJson)
+        public async Task SetCartSession(string inputJson)
         {
             CartItem cartItem = new CartItem();
 
@@ -40,7 +43,7 @@ namespace YYBagProgram.Service
 
             //如果cart裡面有cartitem同樣的id_color則數量相加, 沒有的話就新增一個
             Cart cart = GetCartSession();
-            int existingIndex = cart.Items.FindIndex(item => item.id_color.Equals(cartItem.id_color));
+            int existingIndex = cart.Items.FindIndex(item => item.colorid.Equals(cartItem.colorid));
             if (existingIndex != -1)
             {
                 cart.Items[existingIndex].quantity += cartItem.quantity;
@@ -48,7 +51,48 @@ namespace YYBagProgram.Service
             else
             {
                 cart.Items.Add(cartItem);
-            }        
+            }
+            _contextAccessor.HttpContext.Session.Set("cart", SerializeObject(cart));
+
+            await Task.CompletedTask;
+        }
+
+        public async Task SetCartSession(CartItem cartItem)
+        {
+            //如果cart裡面有cartitem同樣的id_color則數量相加, 沒有的話就新增一個
+            Cart cart = GetCartSession();
+            int existingIndex = cart.Items.FindIndex(item => item.colorid.Equals(cartItem.colorid));
+            if (existingIndex != -1)
+            {
+                cart.Items[existingIndex].quantity += cartItem.quantity;
+            }
+            else
+            {
+                cart.Items.Add(cartItem);
+            }
+
+            _contextAccessor.HttpContext.Session.Set("cart", SerializeObject(cart));
+
+            await Task.CompletedTask;
+        }
+
+        private byte[] SerializeObject(object obj)
+        {
+            var jsonString = string.Empty;
+            if (obj == null)
+                return null;
+
+            jsonString = JsonSerializer.Serialize(obj);
+            return Encoding.UTF8.GetBytes(jsonString);
+        }
+
+        private T DeserializeObject<T>(byte[] data)
+        {
+            if (data == null)
+                return default;
+
+            var jsonString = Encoding.UTF8.GetString(data);
+            return JsonSerializer.Deserialize<T>(jsonString);
         }
 
         public void RemoveCartSession()
