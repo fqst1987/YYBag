@@ -10,9 +10,9 @@ using System.Globalization;
 using YYBagProgram.Comm;
 using System.Web;
 using System.Security.Claims;
-using MailKit;
 using YYBagProgram.Enums;
 using YYBagProgram.Service;
+using YYBagProgram.Models.CartFolder;
 
 namespace YYBagProgram.Controllers
 {
@@ -25,6 +25,7 @@ namespace YYBagProgram.Controllers
         private readonly ISendEmailService _sendEmailService;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly TokenService _tokenService;
+        private readonly CartService _cartService;
 
         public MemberController
             (
@@ -32,7 +33,8 @@ namespace YYBagProgram.Controllers
             ICryptographyService cryptographyservice, 
             ISendEmailService sendemailservice, 
             IHttpContextAccessor contextAccessor,
-            TokenService tokenService
+            TokenService tokenService,
+            CartService cartservice
             )
         {
             _memberService = memberservice;
@@ -40,32 +42,105 @@ namespace YYBagProgram.Controllers
             _sendEmailService = sendemailservice;
             _contextAccessor = contextAccessor;
             _tokenService = tokenService;
+            _cartService = cartservice;
         }
 
         #region 會員中心
+
+        [HttpGet]
+        public IActionResult MemberCenter()
+        {
+            var user = HttpContext.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                var claims = user.Claims;
+                var claimrole = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(claimrole))
+                {
+                    switch (claimrole.ToLower())
+                    {
+                        case "client":
+                            return RedirectToAction("Account", "Member");
+
+                        case "administer":
+                            return RedirectToAction("MemberCenterAdminister", "Member");
+                    }
+                }
+            }
+            return RedirectToAction("NoLogin", "Member");
+        }
+
         //client
         [HttpGet]
-        //[Authorize]
+        [Authorize(Roles = "Administer")]
         public IActionResult MemberCenterAdminister()
         {
             return View();
         }
 
-        public IActionResult MemberCenterClient()
-        {
-            return View();
-        }
-
-
-        #endregion
-
-        #region 購物車
         [HttpGet]
         [Authorize(Roles = "Client")]
-        public IActionResult MemberShopChart()
+        public async Task<IActionResult> Account()
         {
-            return View();
+            //先從claim取得email
+            var userclaim = HttpContext.User.Claims;
+            string userEmail = userclaim.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            Members member = _memberService.GetMmebers(userEmail).Result.FirstOrDefault() ?? new Members();
+            return View(member);
         }
+
+        /// <summary>
+        /// 變更會員個人資料
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateMember([FromBody] Members postData)
+        {
+            if (postData != null)
+            {
+                if(postData.dateBirthday != null)
+                {
+                    postData.dateBirthday = new DateTime(postData.dateBirthday.Value.Year, postData.dateBirthday.Value.Month, postData.dateBirthday.Value.Day);
+                }
+                await _memberService.UpdateMember(postData);
+                return Json(new { result = true });
+            }
+            
+            return Json(new { result = false });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> MemberCart()
+        {
+            CartViewModel vm = new CartViewModel();
+            Cart cart = _cartService.GetCartSession();
+            IList<ProductsColorDetail> productsColorDetails = await _memberService.GetProductRemain(cart);
+            var userclaim = HttpContext.User.Claims;
+            string userEmail = userclaim.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            Members member = _memberService.GetMmebers(userEmail).Result.FirstOrDefault() ?? new Members();
+
+            vm.MemberCart = cart;
+            vm.Member = member;
+            vm.ProductsColorDetails = productsColorDetails;
+
+            return View(vm);
+        }
+
+        /// <summary>
+        /// 刪除session
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Member/DeleteSession")]
+        public async Task<IActionResult> DeleteSession(string itemId)
+        {
+            await _cartService.RemoveCartSession(itemId);
+            return Json( new { success = true} );
+        }
+
         #endregion
 
         #region 本月主打
@@ -127,7 +202,7 @@ namespace YYBagProgram.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
                     //成功後轉跳至首頁
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Home", "Home");
                     
                 }
                 else
@@ -250,7 +325,7 @@ namespace YYBagProgram.Controllers
         public IActionResult LogOut()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Home", "Home");
         }
         #endregion
 

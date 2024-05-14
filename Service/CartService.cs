@@ -1,4 +1,4 @@
-﻿using YYBagProgram.Models.Cart;
+﻿using YYBagProgram.Models.CartFolder;
 using System.Text.Json;
 using System.Text;
 using Microsoft.AspNetCore.Http;
@@ -76,6 +76,19 @@ namespace YYBagProgram.Service
             await Task.CompletedTask;
         }
 
+        public async Task SetCartSession(Cart cart)
+        {
+            if (!_contextAccessor.HttpContext.Session.Keys.Contains("cart"))
+            {
+                _contextAccessor.HttpContext.Session.Set("cart", SerializeObject(cart));
+            }
+            else
+            {
+                await RemoveCartSession();
+                _contextAccessor.HttpContext.Session.Set("cart", SerializeObject(cart));
+            }
+        }
+
         private byte[] SerializeObject(object obj)
         {
             var jsonString = string.Empty;
@@ -95,9 +108,22 @@ namespace YYBagProgram.Service
             return JsonSerializer.Deserialize<T>(jsonString);
         }
 
-        public void RemoveCartSession()
+        public async Task RemoveCartSession()
         {
             _contextAccessor.HttpContext.Session.Remove("Cart");
+
+            await Task.CompletedTask;
+        }
+
+        public async Task RemoveCartSession(string colorid)
+        {
+            var cart = GetCartSession();
+            if (cart != null)
+            {
+                cart.Items.RemoveAll(item => item.colorid.Equals(colorid));
+                await SetCartSession(cart);
+
+            }
         }
     }
 }

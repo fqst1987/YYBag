@@ -44,6 +44,5 @@ namespace YYBagProgram.Models
         [Column(TypeName = "bit")]
         [Required]
         public bool isGoogleAccount { get; set; } = false;
-
     }
 }

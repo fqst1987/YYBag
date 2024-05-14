@@ -1,4 +1,4 @@
-﻿@model YYBagProgram.Models.Cart.Cart;
+﻿@model YYBagProgram.Models.CartFolder.Cart;
 
 @{
     Layout = null;
@@ -7,6 +7,12 @@
 
 <head>
     <link rel="stylesheet" href="~/css/cartitems.min.css" />
+    <script>
+        function redirectToMemberCart() {
+            var url = '@Url.Action("MemberCart", "Member")';
+            window.location.href = url;
+        }
+    </script>
 </head>
 
 @{
@@ -36,15 +42,8 @@
                 </div>
             </div>
         }
-        <hr class="cartitem_hr"/>
+        <hr class="cartitem_hr" />
         <span class="totalamount">總額 @Model.TotalAmount</span>
-        <div class="checkout" id="checkout"><span>前往結帳</span></div>
+        <div class="checkout" onclick="redirectToMemberCart()"><span>前往結帳</span></div>
     }
 }
-@section Scripts{
-    <script>
-        $('dcoument').ready(function () {
-            $('#checkout')
-        })
-    </script>
-}  

@@ -4,6 +4,10 @@
     height: 40px;
     /*background-color: #F6E1DC;*/
 }
+    .memberlistblock_h svg{
+        align-self: center;
+        margin-left: 1em;
+    }
 
 .member_label {
     font-size: 14px;
@@ -41,10 +45,21 @@
     color: #797979;
     align-items: center;
 }
+.a_membercenter{
+    margin-left: 4em;
+}
 
     .a_membercenter_h:hover, .a_membercenter:hover {
         color: #E3BCB5;
         cursor: pointer;
+    }
+.a_membercenter_logout{
+    color: #797979;
+    margin-left: 1em;
+    margin-top: 2em;
+}
+    .a_membercenter_logout:hover {
+        color: #E3BCB5;
     }
 
 .member_btn_full {
@@ -62,9 +77,12 @@
 }
 /*comm_use*/
 /*center_main(cluding login register forgetpassword comfirmemail)*/
-.main {
+.main, .membercenter_main {
     width: 100%;
     height: 100%;
+}
+.membercenter_main {
+    flex-direction: column;
 }
 .main_editor_950 {
     width: 1200px;
@@ -97,8 +115,13 @@
 .div_login_ad {
     max-width: 500px;
 }
+.membercenter_span_title{
+    width: 70%;
+    font-size: 16px;
+    margin: 3em 15% 1em 15%;
+    padding-left: 1em;
+}
 /*center_main*/
-
 /*member_login*/
 /*member_register*/
 /*member_forget*/
@@ -194,20 +217,54 @@
     font-size: 16px;
     color: #797979;
     padding: 0 0 0 1em;
+    align-self: center;
 }
 /*member_center_administer*/
 
 /*member_center_client*/
+.cart_list{
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+}
+.membercenter_productstatus {
+    width: 100%;
+    flex-direction: row;
+    align-content: center;
+    margin-left: 3em;
+    margin-top: 5px;
+}
+    .membercenter_productstatus button {
+        color: #797979;
+        margin-right: 2em;
+        text-decoration: underline;
+        background: none;
+        border: none;
+    }
+        .membercenter_productstatus button:hover {
+            color: #E3BCB5;
+            cursor: pointer;
+        }
+.membercenter_client_main {
+    width: 70%;
+    margin: 0 auto;
+}
 .membercenter_client_list {
     width: 25%;
     height: auto;
     padding: 1em;
+    flex-direction: column;
 }
+    .membercenter_client_list hr {
+        margin-top: 1em;
+        width: 100%;
+        border: 1px #A7BEC6 solid;
+    }
 
-.memberlogo {
-    width: 100%;
-    height: 80px;
-}
+    .memberlogo {
+        width: 100%;
+        height: 50px;
+    }
 
     .memberlogo img {
         border-radius: 50%;
@@ -216,15 +273,19 @@
 .membercenter_client_edit {
     width: 75%;
     height: auto;
-    margin: 10px 20px;
+    padding: 1em;
     background-color: white;
 }
+    .membercenter_client_edit hr {
+        margin-top: 1em;
+        width: 90%;
+        border: 1px #A7BEC6 solid;
+    }
 
 .memberinfo_1 {
     width: 100%;
-    height: 60px;
+    height: 50px;
 }
-
     .memberinfo_1 h2 {
         display: flex;
         align-items: center;
@@ -248,12 +309,102 @@
 #showPasswordCheckbox {
     font-size: 8px;
 }
+/*cart*/
+.btn_quantity_increase, .btn_quantity_decrease {
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px #E2E2E2 solid;
+    display: flex;
+    position: relative;
+}
+    .btn_quantity_increase:hover, .btn_quantity_decrease:hover {
+        cursor: pointer;
+    }
+
+.cart_btn_img{
+    width: 15px;
+    height: 15px
+}
+
+.item_info_price {
+    font-size: 14px;
+}
+.item_info_amount {
+    font-size: 14px;
+}
+.item_info_color {
+    font-size: 14px;
+    align-items: center;
+}
+.item_info_count_area {
+    padding-left: 5px;
+    font-size: 14px;
+}
+    .item_info_count_area input {
+        width: 100px;
+    }
+.item_info_count{
+    flex-direction: row;
+    position: absolute;
+    right: 0;
+    margin-right: 5%;
+}
+.item_info {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 5px;
+    justify-content: space-between;
+}
+.span_item_name {
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    align-content: center;
+    padding-left: 5px;
+}
+.item_area {
+    width: 100%;
+    height: auto;
+    padding: 10px 2em;
+    flex-direction: row;
+}
+.product_img{
+    width: 20%;
+    height: auto;
+    object-fit: contain;
+}
+.item_info_area {
+    width: 75%;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.delete{
+    width: 5%;
+    height: auto;
+    background: none;
+    border: none;
+    font-size: 14px;
+    padding:0;
+}
+    .delete:hover{
+        cursor: pointer;
+    }
+
+/*cart*/
 /*member_center_client*/
-
-
 /*media*/
-@media (max-width: 800px) {
-    .main{
+@media (max-width: 850px) {
+    .memberinfo_1 h2 {
+        margin-left: 5px;
+    }
+    .membercenter_productstatus {
+        margin-left: 5px;
+    }
+    .main {
         width: 100%;
     }
     .div_login{
@@ -302,6 +453,37 @@
         font-size: 10px;
         padding: 0;
         border: none;
+    }
+
+    /*account*/
+    .membercenter_client_main{
+        width:100%;
+    }
+    .membercenter_span_title{
+        margin-left: 0;
+    }
+    .a_membercenter_h{
+        font-size: 12px;
+    }
+    .memberlistblock_h svg{
+        margin-left: 5px;
+    }
+    /*account*/
+    /*cart*/
+    .item_area {
+        padding: 10px 0;
+    }
+    .item_info_price {
+        font-size: 12px;
+    }
+    .item_info_count{
+        margin: 0;
+    }
+}
+@media (max-width: 650px) {
+    .btn_quantity_increase, .btn_quantity_decrease {
+        width: 20px;
+        height: 20px;
     }
 }
 /*media*/

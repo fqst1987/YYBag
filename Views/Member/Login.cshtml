@@ -97,7 +97,7 @@
             /*會員的帳號是否被啟用*/
             function ismemberenable(email, callback) {
                 var postData = {
-                    email: email,
+                    account: email,
                 };
                 $.ajax({
                     url: 'CheckMemberEnable/',

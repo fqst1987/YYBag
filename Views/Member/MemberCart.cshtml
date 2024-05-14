@@ -1,0 +1,284 @@
+﻿@model YYBagProgram.Models.ViewModel.CartViewModel;
+@{
+    ViewData["titlemsg"] = "會員購物車";
+    //現貨
+    int status_1 = Model.MemberCart.Items.Where(row => row.status == 1).Count();
+    int status_2 = Model.MemberCart.Items.Where(row => row.status == 2).Count();
+}
+<head>
+    <title>YYBag-@ViewData["titlemsg"]</title>
+    <link rel="stylesheet" href="~/css/member.min.css" />
+    <link rel="stylesheet" href="~/css/alert.min.css" />
+</head>
+<div class="membercenter_main">
+    <span class="membercenter_span_title">我的會員中心</span>
+    <div class="membercenter_client_main">
+        <div class="membercenter_client_list">
+            <div class="memberlogo">
+                <img src="https://fakeimg.pl/50x50/">
+                <span class="member_span_3">@Model.Member.strMemberName</span>
+            </div>
+            <hr />
+            <div class="memberlistblock_h align_item_center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B7493" class="bi bi-person-plus" viewBox="0 0 16 16">
+                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+                </svg>
+                <a class="a_membercenter_h" href="@Url.Action("MemberCenter","Member")" id="myinfo">個人資料</a>
+            </div>
+            <div class="memberlistblock">
+                <a class="a_membercenter" href="#" id="address">收件地址</a>
+            </div>
+            <div class="memberlistblock">
+                <a class="a_membercenter" href="@Url.Action("ForgetPassword", "Member")" id="changepassword">更改密碼</a>
+            </div>
+            <div class="memberlistblock_h align_item_center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B7493" class="bi bi-bag" viewBox="0 0 16 16">
+                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" />
+                </svg>
+                <a class="a_membercenter_h" href="@Url.Action("MemberCart", "Member")" id="cart">購物車</a>
+            </div>
+            <div class="memberlistblock_h align_item_center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#5B7493" class="bi bi-card-checklist" viewBox="0 0 16 16">
+                    <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z" />
+                    <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0" />
+                </svg>
+                <a class="a_membercenter_h" href="#" id="shoplist">購買清單</a>
+            </div>
+            <a class="a_membercenter_logout" href="@Url.Action("Logout", "Member")">登出</a>
+        </div>
+        <div class="membercenter_client_edit flex_direction_column">
+            <div class="memberinfo_1 flex_direction_column">
+                <h2>購物車</h2>
+                <div class="membercenter_productstatus">
+                    <button id="link_status_1" type="button">現貨(@status_1)</button>
+                    <button id="link_status_2" type="button">預購(@status_2)</button>
+                </div>
+            </div>
+            <hr />
+            <div class="cart_list" id="status_1">
+                @{
+                    foreach(var cartitem in Model.MemberCart.Items.Where(row => row.status == 1))
+                    {
+                        var remain = Model.ProductsColorDetails.Where(row => row.strID.Equals(cartitem.colorid)).Select(row => row.iRemain).FirstOrDefault();
+                            <div class="item_area" data-itemid="@cartitem.colorid">
+                                @{
+                                int startindex = cartitem.imgurl.IndexOf("/upload");
+                                string imgurl = cartitem.imgurl.Substring(startindex);
+                                }
+                                <img src="@imgurl" class="product_img" />
+                                <div class="item_info_area">
+                                    <span class="span_item_name">@cartitem.name</span>
+                                    <div class="item_info_count_area">
+                                        <div class="item_info_color">
+                                            <span>顏色 @cartitem.color</span>
+                                        </div>
+                                        <div class="item_info_count">
+                                            <button class="btn_quantity_decrease" aria-label="Decrease">
+                                                <img src="~/icons/dash-lg.svg" class="cart_btn_img" />
+                                            </button>
+                                            <input type="number" class="productuplimit" value="@cartitem.quantity" role="spinbutton" min="1" data-upper_limit="@remain" />
+                                            <button class="btn_quantity_increase" aria-label="Increase">
+                                                <img src="~/icons/plus-lg.svg" class="cart_btn_img" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="item_info">
+                                        <div class="item_info_price">
+                                            <span id="price_1">單價 NT.@cartitem.price</span>
+                                        </div>
+                                        <div class="item_info_amount">
+                                            <span id="amount_1">小計 NT.@cartitem.amount</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="delete">x</button>
+                            </div>
+                    }
+                }
+            </div>
+            <div class="cart_list" id="status_2">
+                @{
+                    foreach (var cartitem in Model.MemberCart.Items.Where(row => row.status == 2))
+                    {
+                        var remain = Model.ProductsColorDetails.Where(row => row.strID.Equals(cartitem.colorid)).Select(row => row.iRemain).FirstOrDefault();
+                            <div class="item_area" data-itemid="@cartitem.colorid">
+                                @{
+                                int startindex = cartitem.imgurl.IndexOf("/upload");
+                                string imgurl = cartitem.imgurl.Substring(startindex);
+                                }
+                                <img src="@imgurl" class="product_img" />
+                                <div class="item_info_area">
+                                    <span class="span_item_name">@cartitem.name</span>
+                                    <div class="item_info_count_area">
+                                        <div class="item_info_color">
+                                            <span>顏色 @cartitem.color</span>
+                                        </div>
+                                        <div class="item_info_count">
+                                            <button class="btn_quantity_decrease" aria-label="Decrease">
+                                                <img src="~/icons/dash-lg.svg" class="cart_btn_img" />
+                                            </button>
+                                            <input type="number" class="productuplimit" value="@cartitem.quantity" role="spinbutton" min="1" data-upper_limit="@remain" />
+                                            <button class="btn_quantity_increase" aria-label="Increase">
+                                                <img src="~/icons/plus-lg.svg" class="cart_btn_img" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="item_info">
+                                        <div class="item_info_price">
+                                            <span id="price_2">單價 NT.@cartitem.price</span>
+                                        </div>
+                                        <div class="item_info_amount">
+                                            <span id="amount_2">小計 NT.@cartitem.amount</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="delete">x</button>
+                            </div>
+                    }
+                }
+            </div>
+            <hr />
+            <a href="@Url.Action("CVSMap", "")"
+        </div>
+    </div>
+    <!--alert-->
+    <div id="modal_alertSucess" class="modal_alertSucess">
+        <div class="modal_alertSucess_content" id="modal_alertSucess_content">
+            <img src="https://fakeimg.pl/100x100/" style="padding-top: 30px;">
+            <p id="modal_alertSucess_message"></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $(window).on('load', function () {
+                $('#cart').css('color', "#E3BCB5");
+                $('#status_2').css('display', 'none');
+            });
+
+            function getToken() {
+                var token = '@Html.AntiForgeryToken()'
+                token = $(token).val();
+                return token;
+            };
+
+            //alert
+            function openModal(message) {
+
+                var modal = document.getElementById("modal_alertSucess");
+                var modalMessage = document.getElementById("modal_alertSucess_message");
+                modalMessage.innerText = message;
+                modal.style.display = "block";
+
+                setTimeout(function () {
+                    modal.style.display = "none";
+                }, 3000);
+            }
+
+            //sselect productstatus_1
+            $('#link_status_1').on('click', function (event) {
+                event.preventDefault();
+                $('#status_1').css('display', '');
+                $('#status_2').css('display', 'none');
+            });
+
+            $('#link_status_2').on('click', function (event) {
+                event.preventDefault();
+                $('#status_1').css('display', 'none');
+                $('#status_2').css('display', '');
+
+            });
+
+            // input_quantity
+            function updatevalue(newvalue, input) {
+                var upperLimit = parseInt(input.data('upper_limit'));
+                price = parseInt(input.closest('.item_area').find('.item_info_price span').text().replace('單價 NT.', ''));
+                var totalPrice = price * newvalue;
+
+                if (newvalue > upperLimit) {
+                    input.val(upperLimit);
+                    totalPrice = price * upperLimit;
+                } else if (newvalue < 1) {
+                    input.val(1);
+                    totalPrice = price;
+                } else {
+                    input.val(newvalue);
+                }
+
+                input.closest('.item_area').find('.item_info_amount span').text('小計 NT.' + totalPrice.toFixed(0));
+            }
+
+            $('.productuplimit').each(function () {
+                $(this).on('input', function () {
+                    const value = parseInt($(this).val());
+                    var upperLimit = parseInt($(this).data('upper_limit'));
+                    if (!isNaN(value)) {
+                        updatevalue(value, $(this));
+                    }
+                });
+            });
+
+
+            $('.btn_quantity_increase').each(function () {
+                $(this).on('click', function () {
+                    var numberinput = $(this).closest('.item_info_count_area').find('.productuplimit');
+                    let value = parseInt(numberinput.val());
+                    updatevalue(value + 1, numberinput);
+                });
+            });
+
+            $('.btn_quantity_decrease').each(function () {
+                $(this).on('click', function () {
+                    var numberinput = $(this).closest('.item_info_count_area').find('.productuplimit');
+                    let value = parseInt(numberinput.val());
+                    updatevalue(value - 1, numberinput);
+                });
+            });
+
+            $('.delete').each(function () {
+                $(this).on('click', function () {
+                    var itemId = $(this).closest('.item_area').data('itemid');
+                    deleteSession(itemId, function (response) {
+                        if (response) {
+                            openModal("真可惜，請您在挑挑看吧!!");
+                            location.reload();
+                        }
+                        else {
+                            openModal("發生錯誤");
+                        }
+                    });               
+                });
+            });
+
+            //delete session
+            function deleteSession(itemId, callback) {
+                var postData = {
+                    itemId: itemId
+                };
+                $.ajax({
+                    url: '/Member/DeleteSession',
+                    method: 'POST',
+                    data: postData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", getToken());
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            callback(true);
+                        }
+                        else {
+                            callback(false);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        callback(false);
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -5,18 +5,20 @@
     <title>YYBag-@ViewData["titlemsg"]</title>
     <link rel="stylesheet" href="~/css/member.min.css" />
 </head>
-<div class="main_editor_950">
-    <div id="resetpassword_top" class="main_row_mid">
-        <div class="div_login_ad">
-            <img src="https://fakeimg.pl/500x500/">
+<div class="main flex_direction_row flex_just_center">
+    <div class="div_login_ad">
+        <img src="https://fakeimg.pl/500x500/">
+    </div>
+    <div class="div_login flex_direction_column flex_align_item_center">
+        <div class="span_register">
+            <span>驗證信箱</span>
         </div>
-        <div class="div_login">
-            <span class="member_span_1" style="right:10px">驗證信箱</span>
-            <div class="member_input_area" style="right:10px">
-                <input class="member_input_320" placeholder="請輸入註冊之Email(必要)" id="input_email" />
+        <div class="login">
+            <div class="member_input_area">
+                <input class="input_1" placeholder="請輸入註冊之Email(必要)" id="input_email" />
                 <span class="span_danger" id="span_email"></span>
             </div>
-            <button type="button" class="member_btn_full" id="btn_sunmit">寄送驗證信箱信件</button>
+            <input type="submit" value="寄送重設密碼信件" class="member_btn_full" id="btn_sunmit" />
         </div>
     </div>
 </div>

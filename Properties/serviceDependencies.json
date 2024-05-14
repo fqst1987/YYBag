@@ -3,9 +3,13 @@
     "secrets1": {
       "type": "secrets"
     },
+    "sqlite1": {
+      "ignored": "true",
+      "type": "sqlite"
+    },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:YYBagContext",
+      "connectionId": "ConnectionStrings:YYBagProgramContext",
       "dynamicId": null
     }
   }

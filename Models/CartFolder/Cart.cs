@@ -1,4 +1,4 @@
-﻿namespace YYBagProgram.Models.Cart
+﻿namespace YYBagProgram.Models.CartFolder
 {
     [Serializable]
     public class Cart

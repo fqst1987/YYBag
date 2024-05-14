@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using YYBagProgram.Models;
+using YYBagProgram.Models.CartFolder;
 
 namespace YYBagProgram.Service.Interface
 {
@@ -40,6 +41,8 @@ namespace YYBagProgram.Service.Interface
         public Task<IList<Members>> GetMmebers([Optional] string email);
 
         public Task<IList<MemberRole>> GetMmeberRoles([Optional ]string id);
+
+        public Task<IList<ProductsColorDetail>> GetProductRemain(Cart cart);
     }
 
 }

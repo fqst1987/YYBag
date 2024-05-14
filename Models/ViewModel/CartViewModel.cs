@@ -1,15 +1,11 @@
-﻿namespace YYBagProgram.Models.ViewModel
+﻿using YYBagProgram.Models.CartFolder;
+namespace YYBagProgram.Models.ViewModel;
+
+public class CartViewModel
 {
-    public class CartViewModel
-    {
-        public IList<Order> orders { get; set; }
+    public Cart MemberCart { get; set; }
 
-        public IList<OrderDetail> ordersdetail { get; set; }
+    public Members Member { get; set; }
 
-        public IList<Product> products { get; set; }
-
-        public IList<ProductColor> productcolors {  get; set; }
-
-        public IList<ProductsColorDetail> productscolordetail { get; set; }
-    }
+    public IList<ProductsColorDetail> ProductsColorDetails { get; set; }
 }

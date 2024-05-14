@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using YYBagProgram.Service;
-using YYBagProgram.Models.Cart;
+using YYBagProgram.Models.CartFolder;
 
 namespace YYBagProgram.Controllers
 {

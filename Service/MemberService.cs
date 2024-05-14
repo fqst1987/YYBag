@@ -14,6 +14,7 @@ using MailKit.Security;
 using MailKit.Net.Smtp;
 using YYBagProgram.Comm;
 using Microsoft.AspNetCore.Identity;
+using YYBagProgram.Models.CartFolder;
 
 namespace YYBagProgram.Service
 {
@@ -426,6 +427,26 @@ namespace YYBagProgram.Service
             {
                 return await _context.MemberRole.ToListAsync();
             }
+        }
+
+        public async Task<IList<ProductsColorDetail>> GetProductRemain(Cart cart)
+        {
+            List<ProductsColorDetail> productsColorDetails = new List<ProductsColorDetail>();
+            
+            if(cart != null && cart.Items.Count > 0)
+            {
+                foreach(var item in cart.Items)
+                {
+                    ProductsColorDetail productsColorDetail = await _context.ProductsColorDetail.Where(row => row.strID.Equals(item.colorid)).FirstOrDefaultAsync();
+
+                    if (productsColorDetail != null)
+                    {
+                        productsColorDetails.Add(productsColorDetail);
+                    }
+                }
+            }
+
+            return productsColorDetails;
         }
 
     }

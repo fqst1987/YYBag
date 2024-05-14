@@ -20,7 +20,6 @@ builder.Services.AddHttpContextAccessor();
 
 //Sessions=====
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSession();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -41,6 +40,7 @@ builder.Services.AddScoped<ICryptographyService, MemberService>();
 builder.Services.AddScoped<ISendEmailService, MemberService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<ICryptographyService, CryptographyService>();
 
 
 //全域範圍的驗證機制組態設定(全環境cookie套用)
@@ -95,6 +95,10 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "CheckMember",
     pattern: "{controller=Member}/{action=CheckMember}/{account}/{password}");
+
+app.MapControllerRoute(
+    name: "UpdateMember",
+    pattern: "{controller=Member}/{action=UpdateMember}");
 
 app.MapControllerRoute(
     name: "AddtoCart",
